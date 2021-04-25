@@ -31,7 +31,9 @@ card *remove_last(linked_list *list);
 
 node *find(const char *card, linked_list *list);
 
-void move_card(const char *card, linked_list *source, linked_list *destination);
+void move_card_search(const char *card, linked_list *source, linked_list *destination);
+
+void move_card_node(node *card, linked_list *source, linked_list *destination);
 
 void print_linked_list(linked_list *list);
 

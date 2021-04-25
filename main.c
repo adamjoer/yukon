@@ -2,9 +2,25 @@
 #include <stdlib.h>
 
 #include "linked_list.h"
+#include "gui.h"
+#include "io.h"
+#include "game.h"
 
 int main() {
 
+    linked_list *list = load_from_file("C:\\Users\\Adam\\CLionProjects\\card_game\\sorted_deck.txt");
+    if (!list)
+        return 1;
+
+    linked_list **columns = distribute_cards_into_columns(list);
+
+    print_board(columns);
+
+    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+//        printf("Column %d:\n", i + 1);
+//        print_linked_list(columns[i]);
+        free_linked_list(columns[i]);
+    }
 /*
     linked_list *list = malloc(sizeof(linked_list));
 
@@ -45,6 +61,7 @@ int main() {
 */
 
 
+/*
     linked_list *list1 = malloc(sizeof(linked_list));
     list1->head = list1->dummy = NULL;
 
@@ -84,14 +101,14 @@ int main() {
     printf("List 2:\n");
     print_linked_list(list2);
 
-    move_card("KS", list1, list2);
+    move_card_search("KS", list1, list2);
 
     printf("\nList 1:\n");
     print_linked_list(list1);
     printf("List 2:\n");
     print_linked_list(list2);
 
-    move_card("TC", list2, list1);
+    move_card_search("TC", list2, list1);
 
     printf("\nAfter:\nList 1:\n");
     print_linked_list(list1);
@@ -110,6 +127,7 @@ int main() {
 
     free_linked_list(list1);
     free_linked_list(list2);
+*/
 
     return 0;
 }

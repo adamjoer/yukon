@@ -7,6 +7,10 @@
 
 #include "linked_list.h"
 
+void shuffle_deck(linked_list *list, int length);
+
+void shuffle_array(node **array, int length);
+
 linked_list **distribute_cards_into_columns(linked_list *list);
 
 int get_card_value(char name);

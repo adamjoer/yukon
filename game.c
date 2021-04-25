@@ -1,7 +1,53 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "game.h"
+
+void shuffle_deck(linked_list *list, int length) {
+    node *node_pointers[length];
+
+    node *cursor = list->head;
+    for (int i = 0; i < length; ++i) {
+        node_pointers[i] = cursor;
+        cursor = cursor->next;
+    }
+
+    shuffle_array(node_pointers, length);
+
+    for (int i = 0; i < length; ++i) {
+        if (i == 0) {
+            list->head = node_pointers[i];
+            node_pointers[i]->prev = list->dummy;
+            node_pointers[i]->next = node_pointers[i + 1];
+
+            list->dummy->next = node_pointers[i];
+
+        } else if (i == length - 1) {
+            node_pointers[i]->prev = node_pointers[i - 1];
+            node_pointers[i]->next = list->dummy;
+
+            list->dummy->prev = node_pointers[i];
+
+        } else {
+            node_pointers[i]->prev = node_pointers[i - 1];
+            node_pointers[i]->next = node_pointers[i + 1];
+        }
+    }
+}
+
+void shuffle_array(node *array[], int length) {
+    srand( time(NULL));
+
+    node *temp;
+    size_t random_index;
+    for (int i = 0; i < length - 1; ++i) {
+        random_index = i + rand() / (RAND_MAX / (length - i) + 1);
+        temp = array[random_index];
+        array[random_index] = array[i];
+        array[i] = temp;
+    }
+}
 
 linked_list **distribute_cards_into_columns(linked_list *list) {
     if (!list)
@@ -81,7 +127,7 @@ char get_card_name(int value) {
         case 7:
         case 8:
         case 9:
-            return '0' + value;
+            return ((int) '0') + value;
         case 10:
             return 'T';
         case 11:

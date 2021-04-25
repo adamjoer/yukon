@@ -3,7 +3,10 @@
 
 #include "linked_list.h"
 
-void print_board(linked_list **columns);
+char *last_command;
+char *message;
+
+void print_board(linked_list *columns[]);
 
 void clear_console();
 

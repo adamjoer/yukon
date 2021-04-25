@@ -21,6 +21,8 @@ typedef struct linked_list {
     node *dummy;
 } linked_list;
 
+int length(linked_list *list);
+
 void add_first(card *x, linked_list *list);
 
 void add_last(card *x, linked_list *list);

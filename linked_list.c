@@ -3,6 +3,21 @@
 
 #include "linked_list.h"
 
+int length(linked_list *list) {
+    if (!list || !list->head)
+        return 0;
+
+    node *cursor = list->head;
+
+    int length = 0;
+    while (cursor != list->dummy) {
+        length++;
+        cursor = cursor->next;
+    }
+
+    return length;
+}
+
 // Function for adding a card to the beginning of a linked list
 void add_first(card *x, linked_list *list) {
 

@@ -5,6 +5,9 @@
 #include "gui.h"
 #include "game.h"
 
+char *last_command;
+char *message;
+
 void print_board(linked_list *columns[]) {
     node *cursors[NUMBER_OF_COLUMNS];
 
@@ -15,9 +18,8 @@ void print_board(linked_list *columns[]) {
             longest_column_length = len;
     }
 
-
     int buffer_length = (longest_column_length * (NUMBER_OF_COLUMNS * 3) + 8) +
-                        32 +
+                        34 +
                         (last_command ? (int) strlen(last_command) : 0) +
                         (message ? (int) strlen(message) : 0);
     char buffer[buffer_length];
@@ -31,7 +33,7 @@ void print_board(linked_list *columns[]) {
     }
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "\n\n");
 
-    int foundation_count = 1;
+    int foundation_counter = 1;
     for (int i = 0; i < longest_column_length; ++i) {
 
         for (int j = 0; j < NUMBER_OF_COLUMNS; ++j) {
@@ -50,8 +52,8 @@ void print_board(linked_list *columns[]) {
             cursors[j] = cursors[j]->next;
         }
 
-        if (i <= 6 && i % 2 == 0)
-            number_of_chars_written += sprintf(buffer + number_of_chars_written, "\t[]\tF%d", foundation_count++);
+        if (i % 2 == 0 && foundation_counter <= NUMBER_OF_FOUNDATIONS)
+            number_of_chars_written += sprintf(buffer + number_of_chars_written, "\t[]\tF%d", foundation_counter++);
 
         number_of_chars_written += sprintf(buffer + number_of_chars_written, "\n");
     }
@@ -65,11 +67,11 @@ void print_board(linked_list *columns[]) {
         number_of_chars_written += sprintf(buffer + number_of_chars_written, "\nLAST Command:\n");
         number_of_chars_written += sprintf(buffer + number_of_chars_written, "Message:\n");
     }
-    number_of_chars_written += sprintf(buffer + number_of_chars_written, "INPUT >");
+    number_of_chars_written += sprintf(buffer + number_of_chars_written, "INPUT > ");
+
+    clear_console();
 
     printf("%s", buffer);
-
-    printf("buffer_length=%d, number_of_chars_written=%d\n", buffer_length, number_of_chars_written);
 
     if (number_of_chars_written > buffer_length) {
         printf("\nWARNING: buffer is not long enough (length: %d, written: %d)\n",
@@ -86,3 +88,10 @@ void clear_console() {
 #endif
 }
 
+void set_message(char *new_message) {
+    message = new_message;
+}
+
+void set_last_command(char *new_last_command) {
+    last_command = new_last_command;
+}

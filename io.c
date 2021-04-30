@@ -137,7 +137,9 @@ int get_user_input() {
 
     scanf("%s", buffer);
 
-    if (strlen(buffer) == 1) {
+    size_t command_length = strlen(buffer);
+    if (command_length == 1) {
+
         if (buffer[0] == 'Q') {
             // Quit current game
 
@@ -148,14 +150,14 @@ int get_user_input() {
             // Unknown input
         }
 
-    } else {
+    } else if (command_length == 2) {
 
         if (buffer[0] == 'Q' && buffer[1] == 'Q') {
             // Quit program
 
         } else if (buffer[0] == 'L' && buffer[1] == 'D') {
-            // Load a deck of cards from file <filename>
-            // If filename is not specified, load a sorted deck by default
+            // Load a deck from file
+            // Here, no file is specified, so a default deck should be loaded
 
         } else if (buffer[0] == 'S' && buffer[1] == 'W') {
             // Show all cards
@@ -167,15 +169,28 @@ int get_user_input() {
             // Shuffle random
 
         } else if (buffer[0] == 'S' && buffer[1] == 'D') {
-            // Save cards to a file name <filename>
-            // If <filename> is not specified, write to file named 'cards.txt'
+            // Save cards to a file
+            // Here, no filename is specified, so cards should be saved to default filename 'cards.txt'
+
+        } else {
+            // Unknown input
+        }
+
+    } else {
+
+        if (buffer[0] == 'L' && buffer[1] == 'D' && buffer[2] == ' ') {
+            // Load a deck from file
+            // Here, a file might be specified
+
+        } else if (buffer[0] == 'S' && buffer[1] == 'D' && buffer[2] == ' ') {
+            // Save cards to a file
+            // Here, a filename might be specified
 
         } else {
             // Game moves
             // REGEX string if we can use it: /^[\w]{2}(:[\w]{2})?->[\w]{2}$/gm
-
-
         }
+
     }
 
     return 0;

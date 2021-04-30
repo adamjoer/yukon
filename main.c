@@ -12,8 +12,22 @@ int main() {
     if (!list)
         return 1;
 
+    shuffle_deck(list, length(list));
+
     linked_list **columns = distribute_cards_into_columns(list);
 
+    char buffer[128];
+
+    print_board(columns);
+
+    scanf("%s", buffer);
+    set_last_command(buffer);
+    set_message("Hello World!");
+    print_board(columns);
+
+    scanf("%s", buffer);
+    set_last_command(buffer);
+    set_message("Hello You!");
     print_board(columns);
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
@@ -21,6 +35,7 @@ int main() {
 //        print_linked_list(columns[i]);
         free_linked_list(columns[i]);
     }
+
 /*
     linked_list *list = malloc(sizeof(linked_list));
 
@@ -55,6 +70,14 @@ int main() {
     foo->visible = false;
     add_last(foo, list);
 
+    printf("length = %d\n", length(list));
+
+    printf("Before:\n");
+    print_linked_list(list);
+
+    shuffle_deck(list, 4);
+
+    printf("After:\n");
     print_linked_list(list);
 
     free_linked_list(list);

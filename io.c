@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <regex.h>
 
 #include "io.h"
 #include "game.h"
@@ -126,5 +128,55 @@ int validate_file(char *filepath) {
     }
 
     fclose(file);
+    return 0;
+}
+
+int get_user_input() {
+
+    char buffer[128];
+
+    scanf("%s", buffer);
+
+    if (strlen(buffer) == 1) {
+        if (buffer[0] == 'Q') {
+            // Quit current game
+
+        } else if (buffer[0] == 'P') {
+            // Start game with current deck
+
+        } else {
+            // Unknown input
+        }
+
+    } else {
+
+        if (buffer[0] == 'Q' && buffer[1] == 'Q') {
+            // Quit program
+
+        } else if (buffer[0] == 'L' && buffer[1] == 'D') {
+            // Load a deck of cards from file <filename>
+            // If filename is not specified, load a sorted deck by default
+
+        } else if (buffer[0] == 'S' && buffer[1] == 'W') {
+            // Show all cards
+
+        } else if (buffer[0] == 'S' && buffer[1] == 'I') {
+            // Shuffle split
+
+        } else if (buffer[0] == 'S' && buffer[1] == 'R') {
+            // Shuffle random
+
+        } else if (buffer[0] == 'S' && buffer[1] == 'D') {
+            // Save cards to a file name <filename>
+            // If <filename> is not specified, write to file named 'cards.txt'
+
+        } else {
+            // Game moves
+            // REGEX string if we can use it: /^[\w]{2}(:[\w]{2})?->[\w]{2}$/gm
+
+
+        }
+    }
+
     return 0;
 }

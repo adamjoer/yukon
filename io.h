@@ -10,8 +10,18 @@
 
 #include "linked_list.h"
 
+/*
+char *moved_card;
+
+char *source_column;
+
+char *destination_column;
+*/
+
 linked_list *load_from_file(char *filepath);
 
 int validate_file(char *filepath);
+
+int get_user_input();
 
 #endif //CARD_GAME_IO_H

@@ -180,11 +180,11 @@ int get_user_input() {
 
         if (buffer[0] == 'L' && buffer[1] == 'D' && buffer[2] == ' ') {
             // Load a deck from file
-            // Here, a file might be specified
+            // Here, a file might be specified (If there is something after the space)
 
         } else if (buffer[0] == 'S' && buffer[1] == 'D' && buffer[2] == ' ') {
             // Save cards to a file
-            // Here, a filename might be specified
+            // Here, a filename might be specified (If there is something after the space)
 
         } else {
             // Game moves

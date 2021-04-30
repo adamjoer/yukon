@@ -17,14 +17,14 @@ linked_list *load_from_file(char *filepath) {
     linked_list *list = malloc(sizeof(linked_list));
     list->head = list->dummy = NULL;
 
-    char buffer[2];
+    char name, suit;
 
     card *new_card;
-    while (fscanf(file, "%s\n", buffer) != EOF) {
+    while (fscanf(file, "%c%c\n", &name, &suit) != EOF) {
         new_card = malloc(sizeof(card));
-        new_card->name = buffer[0];
-        new_card->suit = buffer[1];
-        new_card->value = get_card_value(buffer[0]);
+        new_card->name = name;
+        new_card->suit = suit;
+        new_card->value = get_card_value(name);
         new_card->visible = false;
 
         add_last(new_card, list);
@@ -57,7 +57,7 @@ int validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    while (fscanf(file, "%s\r\n", buffer) != EOF) {
+    while (fscanf(file, "%[^\r\n] ", buffer) != EOF) {
         if (strlen(buffer) != 2) {
             printf("Unknown card format '%s' on line %d: Valid format is [name-char][suit-char] e.g. TH for ten of hearts\n",
                    buffer, line_number);

@@ -28,7 +28,6 @@ linked_list *load_from_file(char *filepath) {
         add_last(new_card, list);
     }
 
-
     fclose(file);
 
     return list;
@@ -47,7 +46,11 @@ int validate_file(char *filepath) {
 
     int card_value;
     int line_number = 1;
-    int clubs_count = 0, diamonds_count = 0, hearts_count = 0, spades_count = 0;
+
+    int suit_count[4];
+    for (int i = 0; i < 4; ++i)
+        suit_count[i] = 0;
+
     int card_count[13];
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
@@ -69,16 +72,16 @@ int validate_file(char *filepath) {
 
         switch (buffer[1]) {
             case 'C':
-                clubs_count++;
+                ++suit_count[0];
                 break;
             case 'D':
-                diamonds_count++;
+                ++suit_count[1];
                 break;
             case 'H':
-                hearts_count++;
+                ++suit_count[2];
                 break;
             case 'S':
-                spades_count++;
+                ++suit_count[3];
                 break;
             default:
                 printf("Unknown card suit '%c' on line %d: Valid suits are C, D, H, S\n", buffer[1], line_number);
@@ -87,39 +90,41 @@ int validate_file(char *filepath) {
         }
 
         if (++card_count[card_value - 1] > 4) {
-            printf("Too many '%c' cards. Excess is on line %d\n", get_card_name(card_value), line_number);
+            printf("Too many '%c' cards. Excess is on line %d\n", buffer[0], line_number);
             fclose(file);
             return WRONG_NAME_CARD_COUNT;
         }
 
-        line_number++;
+        ++line_number;
     }
 
-    if (clubs_count != 13) {
-        printf("Wrong number of clubs cards: Should be 13 not %d\n", clubs_count);
-        fclose(file);
-        return WRONG_SUIT_CARD_COUNT;
-    }
+    for (int i = 0; i < 4; ++i) {
+        if (suit_count[i] != 13) {
 
-    if (diamonds_count != 13) {
-        printf("Wrong number of diamonds cards: Should be 13 not %d\n", diamonds_count);
-        fclose(file);
-        return WRONG_SUIT_CARD_COUNT;
-    }
+            char *suit;
+            switch (i) {
+                case 0:
+                    suit = "Clubs";
+                    break;
+                case 1:
+                    suit = "Diamonds";
+                    break;
+                case 2:
+                    suit = "Hearts";
+                    break;
+                case 3:
+                    suit = "Spades";
+                    break;
+                default:
+                    suit = "UNKNOWN";
+            }
+            printf("Wrong number of %s cards: Should be 13 not %d\n", suit, suit_count[i]);
 
-    if (hearts_count != 13) {
-        printf("Wrong number of hearts cards: Should be 13 not %d\n", hearts_count);
-        fclose(file);
-        return WRONG_SUIT_CARD_COUNT;
-    }
-
-    if (spades_count != 13) {
-        printf("Wrong number of spades cards: Should be 13 not %d\n", spades_count);
-        fclose(file);
-        return WRONG_SUIT_CARD_COUNT;
+            fclose(file);
+            return WRONG_SUIT_CARD_COUNT;
+        }
     }
 
     fclose(file);
-
     return 0;
 }

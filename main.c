@@ -127,6 +127,12 @@ int main() {
                     break;
                 }
 
+                if (columns) {
+                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                        free_linked_list(columns[i], false);
+                    }
+                }
+
                 shuffle_deck(list, length(list));
                 columns = distribute_cards_into_columns_for_show(list, true);
                 set_message("OK");

@@ -3,6 +3,8 @@
 
 #include "linked_list.h"
 
+#define BUFFER_LENGTH 512
+
 void print_board(linked_list *columns[]);
 
 void clear_console();

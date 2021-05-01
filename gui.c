@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "gui.h"
 #include "game.h"
@@ -11,18 +10,17 @@ char *message;
 void print_board(linked_list *columns[]) {
     node *cursors[NUMBER_OF_COLUMNS];
 
-    int longest_column_length = 0;
-    for (int i = 0, len; i < NUMBER_OF_COLUMNS; ++i) {
-        len = length(columns[i]);
-        if (len > longest_column_length)
-            longest_column_length = len;
+    int longest_column_length = LONGEST_COLUMN_LENGTH;
+
+    if (columns) {
+        for (int i = 0, len; i < NUMBER_OF_COLUMNS; ++i) {
+            len = length(columns[i]);
+            if (len > longest_column_length)
+                longest_column_length = len;
+        }
     }
 
-    int buffer_length = (longest_column_length * (NUMBER_OF_COLUMNS * 3) + 8) +
-                        34 +
-                        (last_command ? (int) strlen(last_command) : 0) +
-                        (message ? (int) strlen(message) : 0);
-    char buffer[buffer_length];
+    char buffer[BUFFER_LENGTH];
     int number_of_chars_written = 0;
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
@@ -73,9 +71,9 @@ void print_board(linked_list *columns[]) {
 
     printf("%s", buffer);
 
-    if (number_of_chars_written > buffer_length) {
+    if (number_of_chars_written > BUFFER_LENGTH) {
         printf("\nWARNING: buffer is not long enough (length: %d, written: %d)\n",
-               buffer_length,
+               BUFFER_LENGTH,
                number_of_chars_written);
     }
 }

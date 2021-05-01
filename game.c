@@ -37,7 +37,7 @@ void shuffle_deck(linked_list *list, int length) {
 }
 
 void shuffle_array(node *array[], int length) {
-    srand( time(NULL));
+    srand(time(NULL));
 
     node *temp;
     size_t random_index;
@@ -49,9 +49,11 @@ void shuffle_array(node *array[], int length) {
     }
 }
 
-linked_list **distribute_cards_into_columns(linked_list *list) {
+linked_list **distribute_cards_into_columns_for_game(linked_list *list) {
     if (!list)
         return NULL;
+
+    linked_list *list_copy = copy_linked_list(list);
 
     static linked_list *columns[NUMBER_OF_COLUMNS];
 
@@ -64,30 +66,73 @@ linked_list **distribute_cards_into_columns(linked_list *list) {
         columns[i]->head = columns[i]->dummy = NULL;
     }
 
-    add_last(remove_last(list), columns[0]);
-    columns[0]->head->card->visible = true;
-
     node *cursor;
     int counter;
-    for (int i = NEXT_SHORTEST_COLUMN_LENGTH; i <= LONGEST_COLUMN_LENGTH; ++i) {
-        cursor = list->dummy->prev;
+    for (int i = LONGEST_COLUMN_LENGTH; i >= NEXT_SHORTEST_COLUMN_LENGTH; --i) {
+        cursor = list_copy->dummy->prev;
         counter = 0;
 
         while (++counter < i) {
             if (counter <= 5)
                 cursor->card->visible = true;
+            else
+                cursor->card->visible = false;
 
             cursor = cursor->prev;
         }
+        cursor->card->visible = false;
 
-        move_card_node(cursor, list, columns[i - NEXT_SHORTEST_COLUMN_LENGTH + 1]);
+        move_card_node(cursor, list_copy, columns[i - NEXT_SHORTEST_COLUMN_LENGTH + 1]);
     }
 
-    free(list);
+    add_last(remove_last(list_copy), columns[0]);
+    columns[0]->head->card->visible = true;
 
+    free(list_copy);
     return columns;
 }
 
+linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
+    if (!list)
+        return NULL;
+
+    linked_list *list_copy = copy_linked_list(list);
+
+    static linked_list *columns[NUMBER_OF_COLUMNS];
+
+    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+        columns[i] = malloc(sizeof(linked_list));
+        if (!columns[i]) {
+            printf("ERROR: malloc failed on column #%d\n", i + 1);
+            return columns;
+        }
+        columns[i]->head = columns[i]->dummy = NULL;
+    }
+
+    node *cursor;
+    int counter, column_length;
+    for (int i = NUMBER_OF_COLUMNS - 1; i >= 0; --i) {
+        cursor = list_copy->dummy->prev;
+        counter = 0;
+
+        if (i < 3) {
+            column_length = 8;
+        } else {
+            column_length = 7;
+        }
+
+        while (++counter < column_length) {
+            cursor->card->visible = visible;
+            cursor = cursor->prev;
+        }
+
+        cursor->card->visible = visible;
+        move_card_node(cursor, list_copy, columns[i]);
+    }
+
+    free(list_copy);
+    return columns;
+}
 
 int get_card_value(char name) {
     switch (name) {
@@ -127,7 +172,7 @@ char get_card_name(int value) {
         case 7:
         case 8:
         case 9:
-            return ((int) '0') + value;
+            return '0' + value;
         case 10:
             return 'T';
         case 11:

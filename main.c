@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "linked_list.h"
 #include "gui.h"
@@ -8,149 +7,169 @@
 
 int main() {
 
-    linked_list *list = load_from_file("C:\\Users\\Adam\\CLionProjects\\card_game\\sorted_deck.txt");
-    if (!list)
-        return 1;
+    linked_list *list = NULL;
+    linked_list **columns = NULL;
+    char *filepath = NULL;
+    bool play_phase_active = false;
+    bool keep_playing = true;
+    while (true) {
+        print_board(columns);
+        if (!keep_playing) {
+            printf("\n");
+            break;
+        }
 
-    shuffle_deck(list, length(list));
+        switch (get_user_command()) {
+            case QUIT_PROGRAM:
+                if (play_phase_active) {
+                    set_message("Command not available in play phase");
+                    break;
+                }
 
-    linked_list **columns = distribute_cards_into_columns(list);
+                set_message("Goodbye!");
+                keep_playing = false;
+                break;
 
-    char buffer[128];
+            case LOAD_FILE:
+                if (play_phase_active) {
+                    set_message("Command not available in play phase");
+                    break;
+                }
 
-    print_board(columns);
+                if (get_argument()[0] == '\0') {
+                    filepath = "decks/sorted_deck.txt";
 
-    scanf("%s", buffer);
-    set_last_command(buffer);
-    set_message("Hello World!");
-    print_board(columns);
+                } else {
+                    filepath = get_argument();
+                }
 
-    scanf("%s", buffer);
-    set_last_command(buffer);
-    set_message("Hello You!");
-    print_board(columns);
+                if (list)
+                    free_linked_list(list, true);
+                if (columns) {
+                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                        free_linked_list(columns[i], false);
+                    }
+                    columns = NULL;
+                }
 
-    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-//        printf("Column %d:\n", i + 1);
-//        print_linked_list(columns[i]);
-        free_linked_list(columns[i]);
+                if (validate_file(filepath) == 0) {
+                    list = load_from_file(filepath);
+                    set_message("OK");
+                    columns = distribute_cards_into_columns_for_show(list, false);
+
+                }
+                break;
+
+            case PLAY:
+                if (!list) {
+                    set_message("No valid deck loaded");
+                    break;
+                }
+
+                if (play_phase_active) {
+                    set_message("Game already active");
+                    break;
+                }
+
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+                columns = NULL;
+
+                columns = distribute_cards_into_columns_for_game(list);
+                play_phase_active = true;
+                set_message("OK");
+                break;
+
+            case QUIT_GAME:
+                if (!play_phase_active) {
+                    set_message("No active game");
+                    break;
+                }
+
+                play_phase_active = false;
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+                columns = NULL;
+                set_message("OK");
+                break;
+
+            case SHOW_CARDS:
+                if (play_phase_active) {
+                    set_message("Command not available in play phase");
+                    break;
+                }
+
+                if (!list) {
+                    set_message("No valid deck loaded");
+                    break;
+                }
+
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+                columns = NULL;
+
+                columns = distribute_cards_into_columns_for_show(list, true);
+
+                set_message("OK");
+                break;
+
+            case SHUFFLE_RANDOM:
+                if (play_phase_active) {
+                    set_message("Command not available in play phase");
+                    break;
+                }
+
+                if (!list) {
+                    set_message("No valid deck loaded");
+                    break;
+                }
+
+                shuffle_deck(list, length(list));
+                columns = distribute_cards_into_columns_for_show(list, true);
+                set_message("OK");
+
+            case SAVE_DECK:
+                if (play_phase_active) {
+                    set_message("Command not available in play phase");
+                    break;
+                }
+
+                if (!list) {
+                    set_message("No valid deck loaded");
+                    break;
+                }
+
+                if (get_argument()[0] == '\0') {
+                    filepath = "cards.txt";
+
+                } else {
+                    filepath = get_argument();
+                }
+
+                save_deck_to_file(list, filepath);
+                set_message("OK");
+                break;
+
+            case WRONG_INPUT_FORMAT:
+                set_message("Unknown command");
+                break;
+
+            case MOVE_CARD:
+                // TODO
+                set_message("Command not implemented");
+        }
     }
 
-/*
-    linked_list *list = malloc(sizeof(linked_list));
+    free_linked_list(list, false);
 
-    list->head = NULL;
-    list->dummy = NULL;
-
-    card *foo = malloc(sizeof(card));
-    foo->name = 'K';
-    foo->suit = 'H';
-    foo->value = 13;
-    foo->visible = true;
-    add_last(foo, list);
-
-    foo = malloc(sizeof(card));
-    foo->name = 'K';
-    foo->suit = 'S';
-    foo->value = 11;
-    foo->visible = true;
-    add_last(foo, list);
-
-    foo = malloc(sizeof(card));
-    foo->name = 'T';
-    foo->suit = 'C';
-    foo->value = 10;
-    foo->visible = false;
-    add_last(foo, list);
-
-    foo = malloc(sizeof(card));
-    foo->name = '2';
-    foo->suit = 'D';
-    foo->value = 2;
-    foo->visible = false;
-    add_last(foo, list);
-
-    printf("length = %d\n", length(list));
-
-    printf("Before:\n");
-    print_linked_list(list);
-
-    shuffle_deck(list, 4);
-
-    printf("After:\n");
-    print_linked_list(list);
-
-    free_linked_list(list);
-*/
-
-
-/*
-    linked_list *list1 = malloc(sizeof(linked_list));
-    list1->head = list1->dummy = NULL;
-
-    linked_list *list2 = malloc(sizeof(linked_list));
-    list2->head = list2->dummy = NULL;
-
-    card *foo = malloc(sizeof(card));
-    foo->name = 'K';
-    foo->suit = 'H';
-    foo->value = 13;
-    foo->visible = true;
-    add_last(foo, list1);
-
-    foo = malloc(sizeof(card));
-    foo->name = 'K';
-    foo->suit = 'S';
-    foo->value = 11;
-    foo->visible = true;
-    add_last(foo, list1);
-
-    foo = malloc(sizeof(card));
-    foo->name = 'T';
-    foo->suit = 'C';
-    foo->value = 10;
-    foo->visible = false;
-    add_last(foo, list2);
-
-    foo = malloc(sizeof(card));
-    foo->name = '2';
-    foo->suit = 'H';
-    foo->value = 2;
-    foo->visible = false;
-    add_last(foo, list2);
-
-    printf("Before:\nList 1:\n");
-    print_linked_list(list1);
-    printf("List 2:\n");
-    print_linked_list(list2);
-
-    move_card_search("KS", list1, list2);
-
-    printf("\nList 1:\n");
-    print_linked_list(list1);
-    printf("List 2:\n");
-    print_linked_list(list2);
-
-    move_card_search("TC", list2, list1);
-
-    printf("\nAfter:\nList 1:\n");
-    print_linked_list(list1);
-
-    printf("List 2:\n");
-    print_linked_list(list2);
-
-    printf("\n");
-    for (int i = 0; i < 4; ++i) {
-        printf("Removing #%d...\n", i + 1);
-        free(remove_last(list1));
-//        print_linked_list(list1);
+    if (columns) {
+        for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+            free_linked_list(columns[i], true);
+        }
     }
-
-    print_linked_list(list1);
-
-    free_linked_list(list1);
-    free_linked_list(list2);
-*/
 
     return 0;
 }

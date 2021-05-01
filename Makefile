@@ -1,5 +1,5 @@
 card_game: main.o linked_list.o gui.o io.o game.o
-	gcc main.o linked_list.o gui.o io.o game.o -o foo
+	gcc main.o linked_list.o gui.o io.o game.o -o card_game
 
 main.o: main.c linked_list.h gui.h io.h game.h
 	gcc -c main.c

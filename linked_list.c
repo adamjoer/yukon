@@ -67,7 +67,6 @@ void add_first(card *x, linked_list *list) {
 
     // The first element's prev should point at dummy;
     insert->prev = *dummy;
-
 }
 
 // Function for adding a card to the end of a linked list
@@ -177,6 +176,11 @@ card *remove_last(linked_list *list) {
     return card;
 }
 
+// Function to get the last card in a linked list
+card *last(linked_list *list){
+    return list->dummy->prev->card;
+}
+
 // Function for searching a list linked for a specific card, returns null if it isn't in it
 node *find(const char *card, linked_list *list) {
 
@@ -214,6 +218,8 @@ void move_card_search(const char *card, linked_list *source, linked_list *destin
     move_card_node(moved, source, destination);
 }
 
+// Function for moving a given card, and any potential cards after it, from one linked list to another.
+// The cards will be added to the end of the destination list.
 void move_card_node(node *card, linked_list *source, linked_list *destination) {
 
     // Pointers to make the code (a bit) less fugly
@@ -269,6 +275,49 @@ void move_card_node(node *card, linked_list *source, linked_list *destination) {
         free(*source_dummy);
         *source_head = *source_dummy = NULL;
     }
+}
+
+// Function for copying a linked list, without altering it in any way
+// This does not copy the cards in that linked list,
+// so the copy's nodes will point at the same cards as the original
+linked_list *copy_linked_list(linked_list *list) {
+    if(!list)
+        return NULL;
+
+    linked_list *list_copy = malloc(sizeof(linked_list));
+    list_copy->dummy = malloc(sizeof(node));
+    list_copy->dummy->card = NULL;
+
+    node *copy_cursor = list->head;
+    node *cur_node;
+    node *prev_node;
+    int i = 1, n = length(list);
+    while (copy_cursor != list->dummy) {
+        prev_node = cur_node;
+
+        cur_node = malloc(sizeof(node));
+        cur_node->card = copy_cursor->card;
+
+        if (i == 1) {
+            list_copy->head = cur_node;
+            list_copy->dummy->next = cur_node;
+            cur_node->prev = list_copy->dummy;
+
+        } else if (i == n) {
+            prev_node->next = cur_node;
+            cur_node->prev = prev_node;
+            cur_node->next = list_copy->dummy;
+            list_copy->dummy->prev = cur_node;
+        } else {
+            cur_node->prev = prev_node;
+            prev_node->next = cur_node;
+        }
+
+        copy_cursor = copy_cursor->next;
+        ++i;
+    }
+
+    return list_copy;
 }
 
 void print_linked_list(linked_list *list) {

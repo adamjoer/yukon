@@ -31,14 +31,18 @@ card *remove_first(linked_list *list);
 
 card *remove_last(linked_list *list);
 
+card *last(linked_list *list);
+
 node *find(const char *card, linked_list *list);
 
 void move_card_search(const char *card, linked_list *source, linked_list *destination);
 
 void move_card_node(node *card, linked_list *source, linked_list *destination);
 
+linked_list *copy_linked_list(linked_list *list);
+
 void print_linked_list(linked_list *list);
 
-void free_linked_list(linked_list *list);
+void free_linked_list(linked_list *list, bool free_cards);
 
 #endif //CARD_GAME_LINKED_LIST_H

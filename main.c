@@ -154,13 +154,14 @@ int main() {
                 set_message("OK");
                 break;
 
-            case WRONG_INPUT_FORMAT:
-                set_message("Unknown command");
-                break;
-
             case MOVE_CARD:
                 // TODO
                 set_message("Command not implemented");
+                break;
+
+            case WRONG_INPUT_FORMAT:
+                set_message("Unknown command");
+                break;
         }
     }
 

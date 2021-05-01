@@ -136,6 +136,7 @@ int main() {
                 shuffle_deck(list, length(list));
                 columns = distribute_cards_into_columns_for_show(list, true);
                 set_message("OK");
+                break;
 
             case SAVE_DECK:
                 if (play_phase_active) {
@@ -159,13 +160,14 @@ int main() {
                 set_message("OK");
                 break;
 
-            case WRONG_INPUT_FORMAT:
-                set_message("Unknown command");
-                break;
-
             case MOVE_CARD:
                 // TODO
                 set_message("Command not implemented");
+                break;
+
+            case WRONG_INPUT_FORMAT:
+                set_message("Unknown command");
+                break;
         }
     }
 

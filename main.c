@@ -130,6 +130,7 @@ int main() {
                 shuffle_deck(list, length(list));
                 columns = distribute_cards_into_columns_for_show(list, true);
                 set_message("OK");
+                break;
 
             case SAVE_DECK:
                 if (play_phase_active) {

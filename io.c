@@ -144,7 +144,7 @@ int validate_file(char *filepath) {
     return 0;
 }
 
-int get_user_input() {
+int get_user_command() {
 
     static char buffer[128];
 

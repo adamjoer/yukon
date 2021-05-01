@@ -25,7 +25,7 @@ linked_list *load_from_file(char *filepath);
 
 int validate_file(char *filepath);
 
-int get_user_input();
+int get_user_command();
 
 void save_deck_to_file(linked_list *list, char *filepath);
 

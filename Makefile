@@ -1,7 +1,20 @@
-card_game:
-	gcc-10 game.c -c -o cmake-build-debug/game.o
-	gcc-10 linked_list.c -c -o cmake-build-debug/linked_list.o
-	gcc-10 gui.c -c -o cmake-build-debug/gui.o
-	gcc-10 io.c -c -o cmake-build-debug/io.o
-	gcc-10 main.c -c -o cmake-build-debug/main.o
-	gcc-10 cmake-build-debug/main.o cmake-build-debug/game.o cmake-build-debug/linked_list.o cmake-build-debug/gui.o cmake-build-debug/io.o -o card_game
+card_game: main.o linked_list.o gui.o io.o game.o
+	gcc main.o linked_list.o gui.o io.o game.o -o foo
+
+main.o: main.c linked_list.h gui.h io.h game.h
+	gcc -c main.c
+
+linked_list.o: linked_list.c linked_list.h
+	gcc -c linked_list.c
+
+gui.o: gui.c gui.h game.h
+	gcc -c gui.c
+
+io.o: io.c io.h game.h
+	gcc -c io.c
+
+game.o: game.c game.h
+	gcc -c game.c
+	
+clean:
+	rm foo main.o linked_list.o gui.o io.o game.o

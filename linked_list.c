@@ -353,7 +353,9 @@ void print_linked_list(linked_list *list) {
 }
 
 // Function for freeing a linked list to prevent memory leak
-void free_linked_list(linked_list *list) {
+void free_linked_list(linked_list *list, bool free_cards) {
+    if (!list)
+        return;
 
     // Pointer for going over the list
     node *cursor = list->head;
@@ -371,7 +373,8 @@ void free_linked_list(linked_list *list) {
         cursor = cursor->next;
 
         // Free node and its card
-        free(temp->card);
+        if (free_cards)
+            free(temp->card);
         free(temp);
     }
 

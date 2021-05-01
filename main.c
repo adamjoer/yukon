@@ -7,7 +7,7 @@
 
 int main() {
 
-    linked_list *list = NULL;
+    linked_list *deck = NULL;
     linked_list **columns = NULL;
     char *filepath = NULL;
     bool play_phase_active = false;
@@ -43,8 +43,8 @@ int main() {
                     filepath = get_argument();
                 }
 
-                if (list)
-                    free_linked_list(list, true);
+                if (deck)
+                    free_linked_list(deck, true);
                 if (columns) {
                     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
                         free_linked_list(columns[i], false);
@@ -53,15 +53,15 @@ int main() {
                 }
 
                 if (validate_file(filepath) == 0) {
-                    list = load_from_file(filepath);
+                    deck = load_from_file(filepath);
                     set_message("OK");
-                    columns = distribute_cards_into_columns_for_show(list, false);
+                    columns = distribute_cards_into_columns_for_show(deck, false);
 
                 }
                 break;
 
             case PLAY:
-                if (!list) {
+                if (!deck) {
                     set_message("No valid deck loaded");
                     break;
                 }
@@ -75,7 +75,7 @@ int main() {
                     free_linked_list(columns[i], false);
                 }
 
-                columns = distribute_cards_into_columns_for_game(list);
+                columns = distribute_cards_into_columns_for_game(deck);
                 play_phase_active = true;
                 set_message("OK");
                 break;
@@ -100,7 +100,7 @@ int main() {
                     break;
                 }
 
-                if (!list) {
+                if (!deck) {
                     set_message("No valid deck loaded");
                     break;
                 }
@@ -111,7 +111,7 @@ int main() {
                     }
                 }
 
-                columns = distribute_cards_into_columns_for_show(list, true);
+                columns = distribute_cards_into_columns_for_show(deck, true);
 
                 set_message("OK");
                 break;
@@ -122,7 +122,7 @@ int main() {
                     break;
                 }
 
-                if (!list) {
+                if (!deck) {
                     set_message("No valid deck loaded");
                     break;
                 }
@@ -133,8 +133,8 @@ int main() {
                     }
                 }
 
-                shuffle_deck(list, length(list));
-                columns = distribute_cards_into_columns_for_show(list, true);
+                shuffle_deck(deck, length(deck));
+                columns = distribute_cards_into_columns_for_show(deck, true);
                 set_message("OK");
                 break;
 
@@ -144,7 +144,7 @@ int main() {
                     break;
                 }
 
-                if (!list) {
+                if (!deck) {
                     set_message("No valid deck loaded");
                     break;
                 }
@@ -156,7 +156,7 @@ int main() {
                     filepath = get_argument();
                 }
 
-                save_deck_to_file(list, filepath);
+                save_deck_to_file(deck, filepath);
                 set_message("OK");
                 break;
 
@@ -171,11 +171,11 @@ int main() {
         }
     }
 
-    free_linked_list(list, false);
+    free_linked_list(deck, true);
 
     if (columns) {
         for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-            free_linked_list(columns[i], true);
+            free_linked_list(columns[i], false);
         }
     }
 

@@ -10,11 +10,11 @@ linked_list.o: linked_list.c linked_list.h
 gui.o: gui.c gui.h game.h
 	gcc -c gui.c
 
-io.o: io.c io.h game.h
+io.o: io.c io.h game.h gui.h
 	gcc -c io.c
 
 game.o: game.c game.h
 	gcc -c game.c
 	
 clean:
-	rm foo main.o linked_list.o gui.o io.o game.o
+	rm main.o linked_list.o gui.o io.o game.o

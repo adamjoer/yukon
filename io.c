@@ -218,7 +218,7 @@ int get_user_command() {
             // Load a deck from file
             // Here, a file might be specified (If there is something after the space)
             if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 3);
+                strncpy(argument, buffer + 3, command_length - 2);
 
             } else {
                 argument[0] = '\0';
@@ -230,7 +230,7 @@ int get_user_command() {
             // Save cards to a file
             // Here, a filename might be specified (If there is something after the space)
             if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 3);
+                strncpy(argument, buffer + 3, command_length - 2);
 
             } else {
                 argument[0] = '\0';
@@ -242,7 +242,7 @@ int get_user_command() {
             // Shuffle split
             // Here, split might be specified
             if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 3);
+                strncpy(argument, buffer + 3, command_length - 2);
 
             } else {
                 argument[0] = '\0';

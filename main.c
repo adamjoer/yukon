@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "linked_list.h"
 #include "gui.h"
@@ -36,7 +37,7 @@ int main() {
                     break;
                 }
 
-                if (get_argument()[0] == '\0') {
+                if (strlen(get_argument()) == 0) {
                     filepath = "decks/sorted_deck.txt";
 
                 } else {
@@ -150,7 +151,7 @@ int main() {
                     break;
                 }
 
-                if (get_argument()[0] == '\0') {
+                if (strlen(get_argument()) == 0) {
                     filepath = "cards.txt";
 
                 } else {

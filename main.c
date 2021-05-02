@@ -43,16 +43,17 @@ int main() {
                     filepath = get_argument();
                 }
 
-                if (deck)
-                    free_linked_list(deck, true);
-                if (columns) {
-                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                        free_linked_list(columns[i], false);
-                    }
-                    columns = NULL;
-                }
-
                 if (validate_file(filepath) == 0) {
+
+                    if (deck)
+                        free_linked_list(deck, true);
+                    if (columns) {
+                        for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                            free_linked_list(columns[i], false);
+                        }
+                        columns = NULL;
+                    }
+
                     deck = load_from_file(filepath);
                     set_message("OK");
                     columns = distribute_cards_into_columns_for_show(deck, false);

@@ -73,8 +73,10 @@ int main() {
                     break;
                 }
 
-                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                    free_linked_list(columns[i], false);
+                if (columns) {
+                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                        free_linked_list(columns[i], false);
+                    }
                 }
 
                 columns = distribute_cards_into_columns_for_game(deck);

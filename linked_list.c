@@ -291,8 +291,7 @@ linked_list *copy_linked_list(linked_list *list) {
     node *copy_cursor = list->head;
     node *cur_node;
     node *prev_node;
-    int i = 1, n = length(list);
-    while (copy_cursor != list->dummy) {
+    for (int i = 1, n = length(list); i <= n; ++i) {
         prev_node = cur_node;
 
         cur_node = malloc(sizeof(node));
@@ -314,7 +313,6 @@ linked_list *copy_linked_list(linked_list *list) {
         }
 
         copy_cursor = copy_cursor->next;
-        ++i;
     }
 
     return list_copy;

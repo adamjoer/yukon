@@ -294,10 +294,7 @@ void save_deck_to_file(linked_list *list, char *filepath) {
 
     node *cursor = list->head;
     while (cursor != list->dummy) {
-        fputc(cursor->card->name, file);
-        fputc(cursor->card->suit, file);
-        fputc('\n', file);
-
+        fprintf(file, "%c%c\n", cursor->card->name, cursor->card->suit);
         cursor = cursor->next;
     }
 

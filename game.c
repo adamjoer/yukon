@@ -35,8 +35,8 @@ void execute_user_command(int command) {
     char *destination_column;
     char *card;
     int source_column_index, destination_column_index;
-    node *moved_card;
-    node *destination_card;
+    node *moved_node;
+    node *destination_node;
 
     // TODO: These different command actions should probably be moved to helper functions
     switch (command) {
@@ -95,7 +95,7 @@ void execute_user_command(int command) {
 
             for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
                 foundations[i] = malloc(sizeof(linked_list));
-                foundations[i]->dummy = foundations[i]->dummy = NULL;
+                foundations[i]->head = foundations[i]->dummy = NULL;
             }
 
             set_message("OK");
@@ -198,7 +198,13 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (!is_valid_column(destination_column)) {
+            if (destination_column[0] == 'F') {
+                if (!is_valid_foundation(destination_column)) {
+                    set_message("Invalid foundation");
+                    break;
+                }
+
+            } else if (!is_valid_column(destination_column)) {
                 set_message("Invalid destination column");
                 break;
             }
@@ -211,8 +217,8 @@ void execute_user_command(int command) {
                     set_message("Invalid card");
                     break;
                 }
-                moved_card = find(card, columns[source_column_index]);
-                if (!moved_card) {
+                moved_node = find(card, columns[source_column_index]);
+                if (!moved_node || !moved_node->card->visible) {
                     set_message("Source column does not contain specified card");
                     break;
                 }
@@ -221,20 +227,32 @@ void execute_user_command(int command) {
                     set_message("Source column empty");
                     break;
                 }
-                moved_card = columns[source_column_index]->dummy->prev;
+                moved_node = columns[source_column_index]->dummy->prev;
             }
 
-            if (!columns[destination_column_index]->dummy)
-                destination_card = NULL;
-            else
-                destination_card = columns[destination_column_index]->dummy->prev;
+            if (destination_column[0] == 'F') {
 
-            if (!is_valid_move(moved_card, destination_card)) {
+                if (!foundations[destination_column_index]->dummy)
+                    destination_node = NULL;
+                else
+                    destination_node = foundations[destination_column_index]->dummy->prev;
+
+            } else {
+
+                if (!columns[destination_column_index]->dummy)
+                    destination_node = NULL;
+                else
+                    destination_node = columns[destination_column_index]->dummy->prev;
+            }
+
+            if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
                 set_message("Invalid move");
                 break;
             }
-
-            move_card_node(moved_card, columns[source_column_index], columns[destination_column_index]);
+            if (destination_column[0] == 'F')
+                move_card_node(moved_node, columns[source_column_index], foundations[destination_column_index]);
+            else
+                move_card_node(moved_node, columns[source_column_index], columns[destination_column_index]);
 
             set_message("OK");
 

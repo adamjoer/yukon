@@ -267,13 +267,24 @@ void free_columns() {
         free_linked_list(columns[i], false);
 }
 
-bool is_valid_move(node *moved_card, node *destination_node) {
-    // TODO: Add check for moving to column
+bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
+    if (!destination_node) {
+        if (is_to_foundation)
+            return moved_node->card->name == 'A';
 
-    if (!destination_node)
-        return true;
+        return moved_node->card->name == 'K';
+    }
 
-    return destination_node->card->value == moved_card->card->value + 1;
+    if (is_to_foundation) {
+        if (moved_node->next->card)
+            return false;
+
+        return destination_node->card->value == moved_node->card->value - 1 &&
+               destination_node->card->suit == moved_node->card->suit;
+    } else {
+        return destination_node->card->value == moved_node->card->value + 1 &&
+               destination_node->card->suit != moved_node->card->suit;;
+    }
 }
 
 void shuffle_deck(linked_list *list, int length) {

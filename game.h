@@ -12,7 +12,7 @@ void game_loop();
 
 void execute_user_command(int command);
 
-bool is_valid_move(node *moved_card, node *destination_node);
+bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation);
 
 void free_columns();
 

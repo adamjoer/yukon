@@ -37,6 +37,11 @@ void execute_user_command(int command) {
     char *source_column;
     char *destination_column;
     char *card;
+    int source_column_index, destination_column_index;
+    node *moved_card;
+    node *destination_card;
+
+    // TODO: These different command actions should probably be moved to helper functions
     switch (command) {
         case QUIT_PROGRAM:
             if (play_phase_active) {
@@ -182,6 +187,8 @@ void execute_user_command(int command) {
             break;
 
         case MOVE_CARD:
+            // TODO: Add functionality for moving cards to foundations
+
             if (!play_phase_active) {
                 set_message("No active game");
                 break;
@@ -208,15 +215,43 @@ void execute_user_command(int command) {
                 break;
             }
 
+            source_column_index = source_column[1] - '0' - 1;
+            destination_column_index = destination_column[1] - '0' - 1;
+
             if (strlen(card) != 0) {
                 if (!is_valid_card(card)) {
                     set_message("Invalid card");
                     break;
                 }
-                set_message("Moving card based on column+card");
-
+                moved_card = find(card, columns[source_column_index]);
+                if (!moved_card) {
+                    set_message("Source column does not contain specified card");
+                    break;
+                }
             } else {
-                set_message("Moving card based on column");
+                if (!columns[source_column_index]->dummy) {
+                    set_message("Source column empty");
+                    break;
+                }
+                moved_card = columns[source_column_index]->dummy->prev;
+            }
+
+            if (!columns[destination_column_index]->dummy)
+                destination_card = NULL;
+            else
+                destination_card = columns[destination_column_index]->dummy->prev;
+
+            if (!is_valid_move(moved_card, destination_card)) {
+                set_message("Invalid move");
+                break;
+            }
+
+            move_card_node(moved_card, columns[source_column_index], columns[destination_column_index]);
+
+            set_message("OK");
+
+            if (columns[source_column_index]->dummy) {
+                columns[source_column_index]->dummy->prev->card->visible = true;
             }
 
             break;

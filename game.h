@@ -8,6 +8,10 @@
 
 #include "linked_list.h"
 
+void game_loop();
+
+void execute_user_command(int command);
+
 void shuffle_deck(linked_list *list, int length);
 
 void shuffle_array(node **array, int length);

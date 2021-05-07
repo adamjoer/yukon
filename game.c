@@ -1,8 +1,198 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 #include "game.h"
+#include "gui.h"
+#include "io.h"
+
+linked_list *deck = NULL;
+linked_list **columns = NULL;
+char *filepath = NULL;
+bool play_phase_active = false;
+bool keep_playing = true;
+
+void game_loop() {
+    while (true) {
+        print_board(columns);
+        if (!keep_playing) {
+            printf("\n");
+            break;
+        }
+
+        execute_user_command(get_user_command());
+    }
+
+    free_linked_list(deck, true);
+
+    if (columns) {
+        for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
+            free_linked_list(columns[i], false);
+    }
+}
+
+void execute_user_command(int command) {
+    switch (command) {
+        case QUIT_PROGRAM:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            set_message("Goodbye!");
+            keep_playing = false;
+            break;
+
+        case LOAD_FILE:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            if (strlen(get_argument()) == 0) {
+                filepath = "decks/sorted_deck.txt";
+
+            } else {
+                filepath = get_argument();
+            }
+
+            if (validate_file(filepath) == 0) {
+
+                if (deck)
+                    free_linked_list(deck, true);
+                if (columns) {
+                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                        free_linked_list(columns[i], false);
+                    }
+                    columns = NULL;
+                }
+
+                deck = load_from_file(filepath);
+                set_message("OK");
+                columns = distribute_cards_into_columns_for_show(deck, false);
+
+            }
+            break;
+
+        case PLAY:
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            if (play_phase_active) {
+                set_message("Game already active");
+                break;
+            }
+
+            if (columns) {
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+            }
+
+            columns = distribute_cards_into_columns_for_game(deck);
+            play_phase_active = true;
+            set_message("OK");
+            break;
+
+        case QUIT_GAME:
+            if (!play_phase_active) {
+                set_message("No active game");
+                break;
+            }
+
+            play_phase_active = false;
+            for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                free_linked_list(columns[i], false);
+            }
+            columns = NULL;
+            set_message("OK");
+            break;
+
+        case SHOW_CARDS:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            if (columns) {
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+            }
+
+            columns = distribute_cards_into_columns_for_show(deck, true);
+
+            set_message("OK");
+            break;
+
+        case SHUFFLE_RANDOM:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            if (columns) {
+                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+                    free_linked_list(columns[i], false);
+                }
+            }
+
+            shuffle_deck(deck, length(deck));
+            columns = distribute_cards_into_columns_for_show(deck, true);
+            set_message("OK");
+            break;
+
+        case SAVE_DECK:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            if (strlen(get_argument()) == 0) {
+                filepath = "cards.txt";
+
+            } else {
+                filepath = get_argument();
+            }
+
+            save_deck_to_file(deck, filepath);
+            set_message("OK");
+            break;
+
+        case SHUFFLE_SPLIT:
+        case MOVE_CARD:
+            // TODO
+            set_message("Command not implemented");
+            break;
+
+        case WRONG_INPUT_FORMAT:
+            set_message("Unknown command");
+            break;
+
+        default:
+            set_message("Input parser failed");
+    }
+
+}
+
 
 void shuffle_deck(linked_list *list, int length) {
     node *node_pointers[length];
@@ -115,11 +305,10 @@ linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool vis
         cursor = list_copy->dummy->prev;
         counter = 0;
 
-        if (i < 3) {
+        if (i < 3)
             column_length = 8;
-        } else {
+        else
             column_length = 7;
-        }
 
         while (++counter < column_length) {
             cursor->card->visible = visible;

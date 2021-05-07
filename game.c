@@ -25,11 +25,7 @@ void game_loop() {
     }
 
     free_linked_list(deck, true);
-
-    if (columns) {
-        for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
-            free_linked_list(columns[i], false);
-    }
+    free_columns();
 }
 
 void execute_user_command(int command) {
@@ -68,14 +64,10 @@ void execute_user_command(int command) {
 
             if (validate_file(filepath) == 0) {
 
-                if (deck)
-                    free_linked_list(deck, true);
-                if (columns) {
-                    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                        free_linked_list(columns[i], false);
-                    }
-                    columns = NULL;
-                }
+                free_linked_list(deck, true);
+
+                free_columns();
+                columns = NULL;
 
                 deck = load_from_file(filepath);
                 set_message("OK");
@@ -95,11 +87,7 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (columns) {
-                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                    free_linked_list(columns[i], false);
-                }
-            }
+            free_columns();
 
             columns = distribute_cards_into_columns_for_game(deck);
             play_phase_active = true;
@@ -113,9 +101,7 @@ void execute_user_command(int command) {
             }
 
             play_phase_active = false;
-            for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                free_linked_list(columns[i], false);
-            }
+            free_columns();
             columns = NULL;
             set_message("OK");
             break;
@@ -131,11 +117,7 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (columns) {
-                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                    free_linked_list(columns[i], false);
-                }
-            }
+            free_columns();
 
             columns = distribute_cards_into_columns_for_show(deck, true);
 
@@ -153,11 +135,7 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (columns) {
-                for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
-                    free_linked_list(columns[i], false);
-                }
-            }
+            free_columns();
 
             shuffle_deck(deck, length(deck));
             columns = distribute_cards_into_columns_for_show(deck, true);
@@ -269,6 +247,14 @@ void execute_user_command(int command) {
             set_message("Input parser failed");
     }
 
+}
+
+void free_columns() {
+    if (!columns)
+        return;
+
+    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
+        free_linked_list(columns[i], false);
 }
 
 bool is_valid_move(node *moved_card, node *destination_node) {

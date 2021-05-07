@@ -7,11 +7,11 @@
 #include "game.h"
 #include "gui.h"
 
-char moved_card[2];
+char moved_card[3];
 
-char source_column[2];
+char source_column[3];
 
-char destination_column[2];
+char destination_column[3];
 
 char argument[64];
 
@@ -146,6 +146,8 @@ int validate_file(char *filepath) {
 }
 
 int get_user_command() {
+
+    source_column[2] = destination_column[2] = moved_card[2] = '\0';
 
     static char buffer[128];
 

@@ -4,8 +4,8 @@
 #include "gui.h"
 #include "game.h"
 
-char *last_command;
-char *message;
+char *last_command = "";
+char *message = "Hello, World!";
 
 void print_board(linked_list *columns[]) {
     node *cursors[NUMBER_OF_COLUMNS];
@@ -56,15 +56,10 @@ void print_board(linked_list *columns[]) {
         number_of_chars_written += sprintf(buffer + number_of_chars_written, "\n");
     }
 
-    if (last_command && message) {
-        number_of_chars_written += sprintf(buffer + number_of_chars_written, "\nLAST Command: %s\n", last_command);
-        number_of_chars_written += sprintf(buffer + number_of_chars_written, "Message: %s\n", message);
-        last_command = message = NULL;
+    number_of_chars_written += sprintf(buffer + number_of_chars_written, "\nLAST Command: %s\n", last_command);
+    number_of_chars_written += sprintf(buffer + number_of_chars_written, "Message: %s\n", message);
+    last_command = message = NULL;
 
-    } else {
-        number_of_chars_written += sprintf(buffer + number_of_chars_written, "\nLAST Command:\n");
-        number_of_chars_written += sprintf(buffer + number_of_chars_written, "Message:\n");
-    }
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "INPUT > ");
 
     clear_console();

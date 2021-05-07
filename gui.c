@@ -7,7 +7,7 @@
 char *last_command = "";
 char *message = "Hello, World!";
 
-void print_board(linked_list *columns[]) {
+void print_board(linked_list *columns[], linked_list *foundations[]) {
     node *cursors[NUMBER_OF_COLUMNS];
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;
@@ -31,7 +31,7 @@ void print_board(linked_list *columns[]) {
     }
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "\n\n");
 
-    int foundation_counter = 1;
+    int foundation_counter = 0;
     for (int i = 0; i < longest_column_length; ++i) {
 
         for (int j = 0; j < NUMBER_OF_COLUMNS; ++j) {
@@ -50,16 +50,24 @@ void print_board(linked_list *columns[]) {
             cursors[j] = cursors[j]->next;
         }
 
-        if (i % 2 == 0 && foundation_counter <= NUMBER_OF_FOUNDATIONS)
-            number_of_chars_written += sprintf(buffer + number_of_chars_written, "\t[]\tF%d", foundation_counter++);
+        if (i % 2 == 0 && foundation_counter < NUMBER_OF_FOUNDATIONS) {
+            if (foundations && foundations[foundation_counter]->dummy) {
+                number_of_chars_written += sprintf(buffer + number_of_chars_written, "\t%c%c\tF%d",
+                                                   last(foundations[foundation_counter])->name,
+                                                   last(foundations[foundation_counter])->suit,
+                                                   foundation_counter + 1);
+
+            } else {
+                number_of_chars_written += sprintf(buffer + number_of_chars_written, "\t[]\tF%d", foundation_counter + 1);
+            }
+            ++foundation_counter;
+        }
 
         number_of_chars_written += sprintf(buffer + number_of_chars_written, "\n");
     }
 
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "\nLAST Command: %s\n", last_command);
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "Message: %s\n", message);
-    last_command = message = NULL;
-
     number_of_chars_written += sprintf(buffer + number_of_chars_written, "INPUT > ");
 
     clear_console();

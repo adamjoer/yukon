@@ -9,13 +9,14 @@
 
 linked_list *deck = NULL;
 linked_list **columns = NULL;
+linked_list *foundations[NUMBER_OF_FOUNDATIONS];
 char *filepath = NULL;
 bool play_phase_active = false;
 bool keep_playing = true;
 
 void game_loop() {
     while (true) {
-        print_board(columns);
+        print_board(columns, play_phase_active ? foundations : NULL);
         if (!keep_playing) {
             printf("\n");
             break;
@@ -91,6 +92,12 @@ void execute_user_command(int command) {
 
             columns = distribute_cards_into_columns_for_game(deck);
             play_phase_active = true;
+
+            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+                foundations[i] = malloc(sizeof(linked_list));
+                foundations[i]->dummy = foundations[i]->dummy = NULL;
+            }
+
             set_message("OK");
             break;
 
@@ -103,6 +110,11 @@ void execute_user_command(int command) {
             play_phase_active = false;
             free_columns();
             columns = NULL;
+
+            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+                free_linked_list(foundations[i], false);
+            }
+
             set_message("OK");
             break;
 
@@ -180,8 +192,6 @@ void execute_user_command(int command) {
             source_column = get_source_column();
             destination_column = get_destination_column();
             card = get_moved_card();
-
-            printf("Source column: %s, destination column: %s, card: %s\n", source_column, destination_column, card);
 
             if (!is_valid_column(source_column)) {
                 set_message("Invalid source column");

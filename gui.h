@@ -5,7 +5,7 @@
 
 #define BUFFER_LENGTH 512
 
-void print_board(linked_list *columns[]);
+void print_board(linked_list *columns[], linked_list *foundations[]);
 
 void clear_console();
 

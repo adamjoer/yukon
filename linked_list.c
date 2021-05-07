@@ -222,6 +222,9 @@ void move_card_search(const char *card, linked_list *source, linked_list *destin
 // The cards will be added to the end of the destination list.
 void move_card_node(node *card, linked_list *source, linked_list *destination) {
 
+    if (source == destination)
+        return;
+
     // Pointers to make the code (a bit) less fugly
     node **source_head = &source->head;
     node **source_dummy = &source->dummy;

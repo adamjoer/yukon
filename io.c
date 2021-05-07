@@ -264,11 +264,17 @@ int get_user_command() {
                 if (buffer[2] != '-' || buffer[3] != '>') {
                     return WRONG_INPUT_FORMAT;
                 }
+                buffer[0] = toupper(buffer[0]);
+                buffer[1] = toupper(buffer[1]);
+
                 source_column[0] = buffer[0];
                 source_column[1] = buffer[1];
 
-                destination_column[0] = buffer[5];
-                destination_column[1] = buffer[6];
+                buffer[4] = toupper(buffer[4]);
+                buffer[5] = toupper(buffer[5]);
+
+                destination_column[0] = buffer[4];
+                destination_column[1] = buffer[5];
 
                 moved_card[0] = '\0';
 
@@ -277,11 +283,20 @@ int get_user_command() {
                 if (buffer[2] != ':' || buffer[5] != '-' || buffer[6] != '>') {
                     return WRONG_INPUT_FORMAT;
                 }
+                buffer[0] = toupper(buffer[0]);
+                buffer[1] = toupper(buffer[1]);
+
                 source_column[0] = buffer[0];
                 source_column[1] = buffer[1];
 
+                buffer[3] = toupper(buffer[3]);
+                buffer[4] = toupper(buffer[4]);
+
                 moved_card[0] = buffer[3];
                 moved_card[1] = buffer[4];
+
+                buffer[7] = toupper(buffer[7]);
+                buffer[8] = toupper(buffer[8]);
 
                 destination_column[0] = buffer[7];
                 destination_column[1] = buffer[8];

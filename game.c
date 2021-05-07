@@ -236,6 +236,14 @@ void execute_user_command(int command) {
 
 }
 
+bool is_valid_move(node *moved_card, node *destination_node) {
+    // TODO: Add check for moving to column
+
+    if (!destination_node)
+        return true;
+
+    return destination_node->card->value == moved_card->card->value + 1;
+}
 
 void shuffle_deck(linked_list *list, int length) {
     node *node_pointers[length];

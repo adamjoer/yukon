@@ -12,6 +12,8 @@ void game_loop();
 
 void execute_user_command(int command);
 
+bool is_valid_move(node *moved_card, node *destination_node);
+
 void shuffle_deck(linked_list *list, int length);
 
 void shuffle_array(node **array, int length);

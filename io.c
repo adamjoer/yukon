@@ -314,6 +314,10 @@ bool is_valid_column(char *string) {
     return string[0] == 'C' && isdigit(string[1]) && string[1] > '0' && string[1] < '8';
 }
 
+bool is_valid_foundation(char *string) {
+    return string[0] == 'F' && isdigit(string[1]) && string[1] > '0' && string[1] < '5';
+}
+
 bool is_valid_card(char *string) {
     return get_card_value(string[0]) != -1 &&
            (string[1] == 'C' || string[1] == 'D' || string[1] == 'H' || string[1] == 'S');

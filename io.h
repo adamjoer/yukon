@@ -29,6 +29,8 @@ int get_user_command();
 
 bool is_valid_column(char *string);
 
+bool is_valid_foundation(char *string);
+
 bool is_valid_card(char *string);
 
 void save_deck_to_file(linked_list *list, char *filepath);

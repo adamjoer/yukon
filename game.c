@@ -33,6 +33,10 @@ void game_loop() {
 }
 
 void execute_user_command(int command) {
+
+    char *source_column;
+    char *destination_column;
+    char *card;
     switch (command) {
         case QUIT_PROGRAM:
             if (play_phase_active) {
@@ -177,8 +181,47 @@ void execute_user_command(int command) {
             set_message("OK");
             break;
 
-        case SHUFFLE_SPLIT:
         case MOVE_CARD:
+            if (!play_phase_active) {
+                set_message("No active game");
+                break;
+            }
+
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            source_column = get_source_column();
+            destination_column = get_destination_column();
+            card = get_moved_card();
+
+            printf("Source column: %s, destination column: %s, card: %s\n", source_column, destination_column, card);
+
+            if (!is_valid_column(source_column)) {
+                set_message("Invalid source column");
+                break;
+            }
+
+            if (!is_valid_column(destination_column)) {
+                set_message("Invalid destination column");
+                break;
+            }
+
+            if (strlen(card) != 0) {
+                if (!is_valid_card(card)) {
+                    set_message("Invalid card");
+                    break;
+                }
+                set_message("Moving card based on column+card");
+
+            } else {
+                set_message("Moving card based on column");
+            }
+
+            break;
+
+        case SHUFFLE_SPLIT:
             // TODO
             set_message("Command not implemented");
             break;

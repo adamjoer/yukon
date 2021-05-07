@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "io.h"
 #include "game.h"
@@ -153,6 +154,9 @@ int get_user_command() {
     buffer[--command_length] = '\0';
 
     set_last_command(buffer);
+
+    buffer[0] = toupper(buffer[0]);
+    buffer[1] = toupper(buffer[1]);
 
     if (command_length == 1) {
 

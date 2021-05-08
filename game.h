@@ -14,6 +14,8 @@ void execute_user_command(int command);
 
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation);
 
+void quit_game();
+
 void free_columns();
 
 void shuffle_deck(linked_list *list, int length);

@@ -107,13 +107,7 @@ void execute_user_command(int command) {
                 break;
             }
 
-            play_phase_active = false;
-            free_columns();
-            columns = NULL;
-
-            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
-                free_linked_list(foundations[i], false);
-            }
+            quit_game();
 
             set_message("OK");
             break;
@@ -301,6 +295,16 @@ bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundati
     } else {
         return destination_node->card->value == moved_node->card->value + 1 &&
                destination_node->card->suit != moved_node->card->suit;;
+    }
+}
+
+void quit_game() {
+    play_phase_active = false;
+    free_columns();
+    columns = NULL;
+
+    for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+        free_linked_list(foundations[i], false);
     }
 }
 

@@ -15,6 +15,7 @@ bool play_phase_active = false;
 bool keep_playing = true;
 
 void game_loop() {
+
     while (true) {
         print_board(columns, play_phase_active ? foundations : NULL);
         if (!keep_playing) {
@@ -163,14 +164,8 @@ void execute_user_command(int command) {
             break;
 
         case MOVE_CARD:
-
             if (!play_phase_active) {
                 set_message("No active game");
-                break;
-            }
-
-            if (!deck) {
-                set_message("No valid deck loaded");
                 break;
             }
 
@@ -192,7 +187,6 @@ void execute_user_command(int command) {
             break;
 
         case SHUFFLE_SPLIT:
-            // TODO
             set_message("Command not implemented");
             break;
 
@@ -215,16 +209,9 @@ void free_columns() {
 }
 
 void move_card_action() {
-    char *source_column;
-    char *destination_column;
-    char *card;
-    int source_column_index, destination_column_index;
-    node *moved_node;
-    node *destination_node;
-
-    source_column = get_source_column();
-    destination_column = get_destination_column();
-    card = get_moved_card();
+    char *source_column = get_source_column();
+    char *destination_column = get_destination_column();
+    char *card = get_moved_card();
 
     if (!is_valid_column(source_column)) {
         set_message("Invalid source column");
@@ -242,8 +229,11 @@ void move_card_action() {
         return;
     }
 
-    source_column_index = source_column[1] - '0' - 1;
-    destination_column_index = destination_column[1] - '0' - 1;
+    int source_column_index = source_column[1] - '0' - 1;
+    int destination_column_index = destination_column[1] - '0' - 1;
+
+    node *moved_node;
+    node *destination_node;
 
     if (strlen(card) != 0) {
         if (!is_valid_card(card)) {

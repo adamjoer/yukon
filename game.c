@@ -287,9 +287,9 @@ void move_card_action() {
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
     if (!destination_node) {
         if (is_to_foundation)
-            return moved_node->card->name == 'A';
+            return moved_node->card->value == 1;
 
-        return moved_node->card->name == 'K';
+        return moved_node->card->value == 13;
     }
 
     if (is_to_foundation) {

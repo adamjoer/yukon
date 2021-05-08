@@ -177,7 +177,6 @@ void execute_user_command(int command) {
             break;
 
         case MOVE_CARD:
-            // TODO: Add functionality for moving cards to foundations
 
             if (!play_phase_active) {
                 set_message("No active game");

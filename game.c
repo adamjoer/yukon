@@ -31,14 +31,6 @@ void game_loop() {
 
 void execute_user_command(int command) {
 
-    char *source_column;
-    char *destination_column;
-    char *card;
-    int source_column_index, destination_column_index;
-    node *moved_node;
-    node *destination_node;
-
-    // TODO: These different command actions should probably be moved to helper functions
     switch (command) {
         case QUIT_PROGRAM:
             if (play_phase_active) {
@@ -182,75 +174,19 @@ void execute_user_command(int command) {
                 break;
             }
 
-            source_column = get_source_column();
-            destination_column = get_destination_column();
-            card = get_moved_card();
+            move_card_action();
 
-            if (!is_valid_column(source_column)) {
-                set_message("Invalid source column");
-                break;
-            }
-
-            if (destination_column[0] == 'F') {
-                if (!is_valid_foundation(destination_column)) {
-                    set_message("Invalid foundation");
+            bool game_won = true;
+            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+                if (!foundations[i]->dummy || last(foundations[i])->value != 13) {
+                    game_won = false;
                     break;
                 }
-
-            } else if (!is_valid_column(destination_column)) {
-                set_message("Invalid destination column");
-                break;
             }
 
-            source_column_index = source_column[1] - '0' - 1;
-            destination_column_index = destination_column[1] - '0' - 1;
-
-            if (strlen(card) != 0) {
-                if (!is_valid_card(card)) {
-                    set_message("Invalid card");
-                    break;
-                }
-                moved_node = find(card, columns[source_column_index]);
-                if (!moved_node || !moved_node->card->visible) {
-                    set_message("Source column does not contain specified card");
-                    break;
-                }
-            } else {
-                if (!columns[source_column_index]->dummy) {
-                    set_message("Source column empty");
-                    break;
-                }
-                moved_node = columns[source_column_index]->dummy->prev;
-            }
-
-            if (destination_column[0] == 'F') {
-
-                if (!foundations[destination_column_index]->dummy)
-                    destination_node = NULL;
-                else
-                    destination_node = foundations[destination_column_index]->dummy->prev;
-
-            } else {
-
-                if (!columns[destination_column_index]->dummy)
-                    destination_node = NULL;
-                else
-                    destination_node = columns[destination_column_index]->dummy->prev;
-            }
-
-            if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
-                set_message("Invalid move");
-                break;
-            }
-            if (destination_column[0] == 'F')
-                move_card_node(moved_node, columns[source_column_index], foundations[destination_column_index]);
-            else
-                move_card_node(moved_node, columns[source_column_index], columns[destination_column_index]);
-
-            set_message("OK");
-
-            if (columns[source_column_index]->dummy) {
-                columns[source_column_index]->dummy->prev->card->visible = true;
+            if (game_won) {
+                quit_game();
+                set_message("Congratulations! You won!");
             }
 
             break;
@@ -276,6 +212,86 @@ void free_columns() {
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
         free_linked_list(columns[i], false);
+}
+
+void move_card_action() {
+    char *source_column;
+    char *destination_column;
+    char *card;
+    int source_column_index, destination_column_index;
+    node *moved_node;
+    node *destination_node;
+
+    source_column = get_source_column();
+    destination_column = get_destination_column();
+    card = get_moved_card();
+
+    if (!is_valid_column(source_column)) {
+        set_message("Invalid source column");
+        return;
+    }
+
+    if (destination_column[0] == 'F') {
+        if (!is_valid_foundation(destination_column)) {
+            set_message("Invalid foundation");
+            return;
+        }
+
+    } else if (!is_valid_column(destination_column)) {
+        set_message("Invalid destination column");
+        return;
+    }
+
+    source_column_index = source_column[1] - '0' - 1;
+    destination_column_index = destination_column[1] - '0' - 1;
+
+    if (strlen(card) != 0) {
+        if (!is_valid_card(card)) {
+            set_message("Invalid card");
+            return;
+        }
+        moved_node = find(card, columns[source_column_index]);
+        if (!moved_node || !moved_node->card->visible) {
+            set_message("Source column does not contain specified card");
+            return;
+        }
+    } else {
+        if (!columns[source_column_index]->dummy) {
+            set_message("Source column empty");
+            return;
+        }
+        moved_node = columns[source_column_index]->dummy->prev;
+    }
+
+    if (destination_column[0] == 'F') {
+
+        if (!foundations[destination_column_index]->dummy)
+            destination_node = NULL;
+        else
+            destination_node = foundations[destination_column_index]->dummy->prev;
+
+    } else {
+
+        if (!columns[destination_column_index]->dummy)
+            destination_node = NULL;
+        else
+            destination_node = columns[destination_column_index]->dummy->prev;
+    }
+
+    if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
+        set_message("Invalid move");
+        return;
+    }
+    if (destination_column[0] == 'F')
+        move_card_node(moved_node, columns[source_column_index], foundations[destination_column_index]);
+    else
+        move_card_node(moved_node, columns[source_column_index], columns[destination_column_index]);
+
+    set_message("OK");
+
+    if (columns[source_column_index]->dummy) {
+        columns[source_column_index]->dummy->prev->card->visible = true;
+    }
 }
 
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {

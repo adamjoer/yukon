@@ -283,9 +283,9 @@ void move_card_action() {
         return;
     }
     if (destination_column[0] == 'F')
-        move_card_node(moved_node, columns[source_column_index], foundations[destination_column_index]);
+        move_card(moved_node, columns[source_column_index], foundations[destination_column_index]);
     else
-        move_card_node(moved_node, columns[source_column_index], columns[destination_column_index]);
+        move_card(moved_node, columns[source_column_index], columns[destination_column_index]);
 
     set_message("OK");
 
@@ -402,7 +402,7 @@ linked_list **distribute_cards_into_columns_for_game(linked_list *list) {
         }
         cursor->card->visible = false;
 
-        move_card_node(cursor, list_copy, columns[i - NEXT_SHORTEST_COLUMN_LENGTH + 1]);
+        move_card(cursor, list_copy, columns[i - NEXT_SHORTEST_COLUMN_LENGTH + 1]);
     }
 
     add_last(remove_last(list_copy), columns[0]);
@@ -446,7 +446,7 @@ linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool vis
         }
 
         cursor->card->visible = visible;
-        move_card_node(cursor, list_copy, columns[i]);
+        move_card(cursor, list_copy, columns[i]);
     }
 
     free(list_copy);

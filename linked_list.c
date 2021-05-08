@@ -204,23 +204,7 @@ node *find(const char *card, linked_list *list) {
 
 // Function for moving a given card, and any potential cards after it, from one linked list to another.
 // The cards will be added to the end of the destination list.
-void move_card_search(const char *card, linked_list *source, linked_list *destination) {
-
-    // Find the card to be moved in the source list
-    node *moved = find(card, source);
-
-    // If the card isn't in the list, don't continue
-    if (!moved) {
-        printf("Card %s not found\n", card);
-        return;
-    }
-
-    move_card_node(moved, source, destination);
-}
-
-// Function for moving a given card, and any potential cards after it, from one linked list to another.
-// The cards will be added to the end of the destination list.
-void move_card_node(node *card, linked_list *source, linked_list *destination) {
+void move_card(node *card, linked_list *source, linked_list *destination) {
 
     if (source == destination)
         return;

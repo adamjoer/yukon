@@ -310,7 +310,7 @@ bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundati
                destination_node->card->suit == moved_node->card->suit;
     } else {
         return destination_node->card->value == moved_node->card->value + 1 &&
-               destination_node->card->suit != moved_node->card->suit;;
+               destination_node->card->suit != moved_node->card->suit;
     }
 }
 
@@ -474,32 +474,6 @@ int get_card_value(char name) {
             return 12;
         case 'K':
             return 13;
-        default:
-            return -1;
-    }
-}
-
-char get_card_name(int value) {
-    switch (value) {
-        case 1:
-            return 'A';
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-            return '0' + value;
-        case 10:
-            return 'T';
-        case 11:
-            return 'J';
-        case 12:
-            return 'Q';
-        case 13:
-            return 'K';
         default:
             return -1;
     }

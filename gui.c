@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "gui.h"
-#include "game.h"
 
 char *last_command = "";
 char *message = "Hello, World!";
@@ -20,7 +19,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
         }
     }
 
-    char buffer[BUFFER_LENGTH];
+    char buffer[OUT_BUFFER_SIZE];
     int number_of_chars_written = 0;
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
@@ -74,9 +73,9 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
 
     printf("%s", buffer);
 
-    if (number_of_chars_written > BUFFER_LENGTH) {
+    if (number_of_chars_written > OUT_BUFFER_SIZE) {
         printf("\nWARNING: buffer is not long enough (length: %d, written: %d)\n",
-               BUFFER_LENGTH,
+               OUT_BUFFER_SIZE,
                number_of_chars_written);
     }
 }

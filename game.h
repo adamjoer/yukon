@@ -1,11 +1,6 @@
 #ifndef CARD_GAME_GAME_H
 #define CARD_GAME_GAME_H
 
-#define NUMBER_OF_COLUMNS 7
-#define NEXT_SHORTEST_COLUMN_LENGTH 6
-#define LONGEST_COLUMN_LENGTH 11
-#define NUMBER_OF_FOUNDATIONS 4
-
 #include "linked_list.h"
 
 void game_loop();

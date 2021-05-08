@@ -13,7 +13,7 @@ char source_column[3];
 
 char destination_column[3];
 
-char argument[64];
+char argument[IN_BUFFER_SIZE];
 
 linked_list *load_from_file(char *filepath) {
     FILE *file = fopen(filepath, "r");
@@ -41,7 +41,7 @@ linked_list *load_from_file(char *filepath) {
 
 int validate_file(char *filepath) {
 
-    static char output_buffer[512];
+    static char output_buffer[OUT_BUFFER_SIZE];
 
     FILE *file = fopen(filepath, "r");
     if (!file) {
@@ -50,8 +50,8 @@ int validate_file(char *filepath) {
         return FILE_NOT_FOUND;
     }
 
-    char buffer[128];
-    buffer[2] = '\0';
+    char line_buffer[IN_BUFFER_SIZE];
+    line_buffer[2] = '\0';
 
     int card_value;
     int line_number = 1;
@@ -64,26 +64,26 @@ int validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    while (fscanf(file, "%[^\r\n] ", buffer) != EOF) {
-        if (strlen(buffer) != 2) {
+    while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
+        if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
                     "Unknown card format '%s' on line %d: Valid format is [name-char][suit-char] e.g. TH for ten of hearts",
-                    buffer, line_number);
+                    line_buffer, line_number);
             set_message(output_buffer);
             fclose(file);
             return UNKNOWN_FORMAT;
         }
 
-        card_value = get_card_value(buffer[0]);
+        card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
-            sprintf(output_buffer, "Unknown card name '%c' on line %d: Valid names are A, 2-9, T, J, Q, K", buffer[0],
+            sprintf(output_buffer, "Unknown card name '%c' on line %d: Valid names are A, 2-9, T, J, Q, K", line_buffer[0],
                     line_number);
             set_message(output_buffer);
             fclose(file);
             return UNKNOWN_NAME;
         }
 
-        switch (buffer[1]) {
+        switch (line_buffer[1]) {
             case 'C':
                 ++suit_count[0];
                 break;
@@ -97,7 +97,7 @@ int validate_file(char *filepath) {
                 ++suit_count[3];
                 break;
             default:
-                sprintf(output_buffer, "Unknown card suit '%c' on line %d: Valid suits are C, D, H, S", buffer[1],
+                sprintf(output_buffer, "Unknown card suit '%c' on line %d: Valid suits are C, D, H, S", line_buffer[1],
                         line_number);
                 set_message(output_buffer);
                 fclose(file);
@@ -105,7 +105,7 @@ int validate_file(char *filepath) {
         }
 
         if (++card_count[card_value - 1] > 4) {
-            sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d", buffer[0], line_number);
+            sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d", line_buffer[0], line_number);
             set_message(output_buffer);
             fclose(file);
             return WRONG_NAME_CARD_COUNT;
@@ -149,24 +149,24 @@ int get_user_command() {
 
     source_column[2] = destination_column[2] = moved_card[2] = '\0';
 
-    static char buffer[128];
+    static char input_buffer[IN_BUFFER_SIZE];
 
-    fgets(buffer, 128, stdin);
-    size_t command_length = strlen(buffer);
-    buffer[--command_length] = '\0';
+    fgets(input_buffer, IN_BUFFER_SIZE, stdin);
+    size_t input_length = strlen(input_buffer);
+    input_buffer[--input_length] = '\0';
 
-    set_last_command(buffer);
+    set_last_command(input_buffer);
 
-    buffer[0] = toupper(buffer[0]);
-    buffer[1] = toupper(buffer[1]);
+    input_buffer[0] = toupper(input_buffer[0]);
+    input_buffer[1] = toupper(input_buffer[1]);
 
-    if (command_length == 1) {
+    if (input_length == 1) {
 
-        if (buffer[0] == 'Q') {
+        if (input_buffer[0] == 'Q') {
             // Quit current game
             return QUIT_GAME;
 
-        } else if (buffer[0] == 'P') {
+        } else if (input_buffer[0] == 'P') {
             // Start game with current deck
             return PLAY;
 
@@ -175,35 +175,35 @@ int get_user_command() {
             return WRONG_INPUT_FORMAT;
         }
 
-    } else if (command_length == 2) {
+    } else if (input_length == 2) {
 
-        if (buffer[0] == 'Q' && buffer[1] == 'Q') {
+        if (input_buffer[0] == 'Q' && input_buffer[1] == 'Q') {
             // Quit program
             return QUIT_PROGRAM;
 
-        } else if (buffer[0] == 'L' && buffer[1] == 'D') {
+        } else if (input_buffer[0] == 'L' && input_buffer[1] == 'D') {
             // Load a deck from file
             // Here, no file is specified, so a default deck should be loaded
             argument[0] = '\0';
             return LOAD_FILE;
 
-        } else if (buffer[0] == 'S') {
+        } else if (input_buffer[0] == 'S') {
 
-            if (buffer[1] == 'W') {
+            if (input_buffer[1] == 'W') {
                 // Show all cards
                 return SHOW_CARDS;
 
-            } else if (buffer[1] == 'I') {
+            } else if (input_buffer[1] == 'I') {
                 // Shuffle split
                 // Here, split is not specified, so a random number should be chosen
                 argument[0] = '\0';
                 return SHUFFLE_SPLIT;
 
-            } else if (buffer[1] == 'R') {
+            } else if (input_buffer[1] == 'R') {
                 // Shuffle random
                 return SHUFFLE_RANDOM;
 
-            } else if (buffer[1] == 'D') {
+            } else if (input_buffer[1] == 'D') {
                 // Save cards to a file
                 // Here, filename is not specified, so cards should be saved to default filename 'cards.txt'
                 argument[0] = '\0';
@@ -220,11 +220,11 @@ int get_user_command() {
 
     } else {
 
-        if (buffer[0] == 'L' && buffer[1] == 'D' && buffer[2] == ' ') {
+        if (input_buffer[0] == 'L' && input_buffer[1] == 'D' && input_buffer[2] == ' ') {
             // Load a deck from file
             // Here, a file might be specified (If there is something after the space)
-            if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 2);
+            if (input_length > 3) {
+                strncpy(argument, input_buffer + 3, input_length - 2);
 
             } else {
                 argument[0] = '\0';
@@ -232,11 +232,11 @@ int get_user_command() {
 
             return LOAD_FILE;
 
-        } else if (buffer[0] == 'S' && buffer[1] == 'D' && buffer[2] == ' ') {
+        } else if (input_buffer[0] == 'S' && input_buffer[1] == 'D' && input_buffer[2] == ' ') {
             // Save cards to a file
             // Here, a filename might be specified (If there is something after the space)
-            if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 2);
+            if (input_length > 3) {
+                strncpy(argument, input_buffer + 3, input_length - 2);
 
             } else {
                 argument[0] = '\0';
@@ -244,11 +244,11 @@ int get_user_command() {
 
             return SAVE_DECK;
 
-        } else if (buffer[0] == 'S' && buffer[1] == 'I' && buffer[2] == ' ') {
+        } else if (input_buffer[0] == 'S' && input_buffer[1] == 'I' && input_buffer[2] == ' ') {
             // Shuffle split
             // Here, split might be specified
-            if (command_length > 3) {
-                strncpy(argument, buffer + 3, command_length - 2);
+            if (input_length > 3) {
+                strncpy(argument, input_buffer + 3, input_length - 2);
 
             } else {
                 argument[0] = '\0';
@@ -260,46 +260,42 @@ int get_user_command() {
             // Game moves
             // REGEX string if we can use it: /^[\w]{2}(:[\w]{2})?->[\w]{2}$/gm
 
-            if (command_length == 6) {
-                if (buffer[2] != '-' || buffer[3] != '>') {
+            if (input_length == 6) {
+                if (input_buffer[2] != '-' || input_buffer[3] != '>') {
                     return WRONG_INPUT_FORMAT;
                 }
-                buffer[0] = toupper(buffer[0]);
-                buffer[1] = toupper(buffer[1]);
 
-                source_column[0] = buffer[0];
-                source_column[1] = buffer[1];
+                source_column[0] = input_buffer[0];
+                source_column[1] = input_buffer[1];
 
-                buffer[4] = toupper(buffer[4]);
-                buffer[5] = toupper(buffer[5]);
+                input_buffer[4] = toupper(input_buffer[4]);
+                input_buffer[5] = toupper(input_buffer[5]);
 
-                destination_column[0] = buffer[4];
-                destination_column[1] = buffer[5];
+                destination_column[0] = input_buffer[4];
+                destination_column[1] = input_buffer[5];
 
                 moved_card[0] = '\0';
 
                 return MOVE_CARD;
-            } else if (command_length == 9) {
-                if (buffer[2] != ':' || buffer[5] != '-' || buffer[6] != '>') {
+            } else if (input_length == 9) {
+                if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>') {
                     return WRONG_INPUT_FORMAT;
                 }
-                buffer[0] = toupper(buffer[0]);
-                buffer[1] = toupper(buffer[1]);
 
-                source_column[0] = buffer[0];
-                source_column[1] = buffer[1];
+                source_column[0] = input_buffer[0];
+                source_column[1] = input_buffer[1];
 
-                buffer[3] = toupper(buffer[3]);
-                buffer[4] = toupper(buffer[4]);
+                input_buffer[3] = toupper(input_buffer[3]);
+                input_buffer[4] = toupper(input_buffer[4]);
 
-                moved_card[0] = buffer[3];
-                moved_card[1] = buffer[4];
+                moved_card[0] = input_buffer[3];
+                moved_card[1] = input_buffer[4];
 
-                buffer[7] = toupper(buffer[7]);
-                buffer[8] = toupper(buffer[8]);
+                input_buffer[7] = toupper(input_buffer[7]);
+                input_buffer[8] = toupper(input_buffer[8]);
 
-                destination_column[0] = buffer[7];
-                destination_column[1] = buffer[8];
+                destination_column[0] = input_buffer[7];
+                destination_column[1] = input_buffer[8];
 
                 return MOVE_CARD;
 
@@ -311,11 +307,11 @@ int get_user_command() {
 }
 
 bool is_valid_column(char *string) {
-    return string[0] == 'C' && isdigit(string[1]) && string[1] > '0' && string[1] < '8';
+    return string[0] == 'C' && isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_COLUMNS + '0';
 }
 
 bool is_valid_foundation(char *string) {
-    return string[0] == 'F' && isdigit(string[1]) && string[1] > '0' && string[1] < '5';
+    return string[0] == 'F' && isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_FOUNDATIONS + '0';
 }
 
 bool is_valid_card(char *string) {

@@ -1,6 +1,8 @@
 #ifndef CARD_GAME_IO_H
 #define CARD_GAME_IO_H
 
+#define IN_BUFFER_SIZE 64
+
 #define FILE_NOT_FOUND 1
 #define UNKNOWN_FORMAT 2
 #define UNKNOWN_NAME 3

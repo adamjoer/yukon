@@ -287,21 +287,20 @@ void move_card_action() {
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
     if (!destination_node) {
         if (is_to_foundation)
-            return moved_node->card->value == 1;
+            return !moved_node->next->card && moved_node->card->value == 1;
 
         return moved_node->card->value == 13;
     }
 
     if (is_to_foundation) {
-        if (moved_node->next->card)
-            return false;
 
-        return destination_node->card->value == moved_node->card->value - 1 &&
+        return !moved_node->next->card &&
+               destination_node->card->value == moved_node->card->value - 1 &&
                destination_node->card->suit == moved_node->card->suit;
-    } else {
-        return destination_node->card->value == moved_node->card->value + 1 &&
-               destination_node->card->suit != moved_node->card->suit;
     }
+
+    return destination_node->card->value == moved_node->card->value + 1 &&
+           destination_node->card->suit != moved_node->card->suit;
 }
 
 void quit_game() {

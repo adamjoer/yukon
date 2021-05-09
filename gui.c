@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gui.h"
+#include "io.h"
 
-char *last_command = "";
-char *message = "Hello, World!";
+char last_command[IN_BUFFER_SIZE];
+char message[MESSAGE_BUFFER_SIZE];
 
 void print_board(linked_list *columns[], linked_list *foundations[]) {
     node *cursors[NUMBER_OF_COLUMNS];
@@ -89,9 +91,9 @@ void clear_console() {
 }
 
 void set_message(char *new_message) {
-    message = new_message;
+    strcpy(message, new_message);
 }
 
 void set_last_command(char *new_last_command) {
-    last_command = new_last_command;
+    strcpy(last_command, new_last_command);
 }

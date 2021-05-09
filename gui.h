@@ -4,6 +4,7 @@
 #include "linked_list.h"
 
 #define OUT_BUFFER_SIZE 512
+#define MESSAGE_BUFFER_SIZE 256
 
 #define NUMBER_OF_COLUMNS 7
 #define NEXT_SHORTEST_COLUMN_LENGTH 6

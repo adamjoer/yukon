@@ -41,7 +41,7 @@ linked_list *load_from_file(char *filepath) {
 
 int validate_file(char *filepath) {
 
-    static char output_buffer[OUT_BUFFER_SIZE];
+    char output_buffer[MESSAGE_BUFFER_SIZE];
 
     FILE *file = fopen(filepath, "r");
     if (!file) {
@@ -149,7 +149,7 @@ int get_user_command() {
 
     source_column[2] = destination_column[2] = moved_card[2] = '\0';
 
-    static char input_buffer[IN_BUFFER_SIZE];
+    char input_buffer[IN_BUFFER_SIZE];
 
     fgets(input_buffer, IN_BUFFER_SIZE, stdin);
     size_t input_length = strlen(input_buffer);

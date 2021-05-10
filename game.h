@@ -15,10 +15,6 @@ void quit_game();
 
 void free_columns();
 
-void shuffle_deck(linked_list *list, int length);
-
-void shuffle_array(node **array, int length);
-
 linked_list **distribute_cards_into_columns_for_game(linked_list *list_copy);
 
 linked_list **distribute_cards_into_columns_for_show(linked_list *list_copy, bool visible);

@@ -39,6 +39,10 @@ void move_card(node *card, linked_list *source, linked_list *destination);
 
 linked_list *copy_linked_list(linked_list *list);
 
+void shuffle_linked_list(linked_list *list);
+
+void shuffle_array(node *array[], int length);
+
 void print_linked_list(linked_list *list);
 
 void free_linked_list(linked_list *list, bool free_cards);

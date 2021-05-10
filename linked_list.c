@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "linked_list.h"
 
@@ -304,6 +305,54 @@ linked_list *copy_linked_list(linked_list *list) {
 
     return list_copy;
 }
+
+void shuffle_linked_list(linked_list *list) {
+    int len = length(list);
+
+    node *node_pointers[len];
+
+    node *cursor = list->head;
+    for (int i = 0; i < len; ++i) {
+        node_pointers[i] = cursor;
+        cursor = cursor->next;
+    }
+
+    shuffle_array(node_pointers, len);
+
+    for (int i = 0; i < len; ++i) {
+        if (i == 0) {
+            list->head = node_pointers[i];
+            node_pointers[i]->prev = list->dummy;
+            node_pointers[i]->next = node_pointers[i + 1];
+
+            list->dummy->next = node_pointers[i];
+
+        } else if (i == len - 1) {
+            node_pointers[i]->prev = node_pointers[i - 1];
+            node_pointers[i]->next = list->dummy;
+
+            list->dummy->prev = node_pointers[i];
+
+        } else {
+            node_pointers[i]->prev = node_pointers[i - 1];
+            node_pointers[i]->next = node_pointers[i + 1];
+        }
+    }
+}
+
+void shuffle_array(node *array[], int length) {
+    srand(time(NULL));
+
+    node *temp;
+    size_t random_index;
+    for (int i = 0; i < length - 1; ++i) {
+        random_index = i + rand() / (RAND_MAX / (length - i) + 1);
+        temp = array[random_index];
+        array[random_index] = array[i];
+        array[i] = temp;
+    }
+}
+
 
 void print_linked_list(linked_list *list) {
 

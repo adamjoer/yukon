@@ -4,13 +4,13 @@
 #define IN_BUFFER_SIZE 64
 
 #define FILE_NOT_FOUND 1
-#define UNKNOWN_FORMAT 2
-#define UNKNOWN_RANK 3
-#define UNKNOWN_SUIT 4
-#define WRONG_SUIT_CARD_COUNT 5
-#define WRONG_RANK_CARD_COUNT 6
+#define INVALID_FORMAT 2
+#define INVALID_RANK 3
+#define INVALID_SUIT 4
+#define INVALID_SUIT_CARD_COUNT 5
+#define INVALID_RANK_CARD_COUNT 6
 
-#define WRONG_INPUT_FORMAT 1
+#define INVALID_INPUT_FORMAT 1
 #define PLAY 2
 #define QUIT_GAME 3
 #define QUIT_PROGRAM 4
@@ -36,8 +36,6 @@ bool is_valid_foundation(char *string);
 bool is_valid_card(char *string);
 
 void save_deck_to_file(linked_list *list, char *filepath);
-
-char *get_command();
 
 char *get_moved_card();
 

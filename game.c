@@ -191,7 +191,7 @@ void execute_user_command(int command) {
             set_message("Command not implemented");
             break;
 
-        case WRONG_INPUT_FORMAT:
+        case INVALID_INPUT_FORMAT:
             set_message("Unknown command");
             break;
 

@@ -76,7 +76,7 @@ int validate_file(char *filepath) {
                     line_buffer, line_number);
             set_message(output_buffer);
             fclose(file);
-            return UNKNOWN_FORMAT;
+            return INVALID_FORMAT;
         }
 
         card_value = get_card_value(line_buffer[0]);
@@ -85,7 +85,7 @@ int validate_file(char *filepath) {
                     line_number);
             set_message(output_buffer);
             fclose(file);
-            return UNKNOWN_RANK;
+            return INVALID_RANK;
         }
 
         switch (line_buffer[1]) {
@@ -106,14 +106,14 @@ int validate_file(char *filepath) {
                         line_number);
                 set_message(output_buffer);
                 fclose(file);
-                return UNKNOWN_SUIT;
+                return INVALID_SUIT;
         }
 
         if (++card_count[card_value - 1] > 4) {
             sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d", line_buffer[0], line_number);
             set_message(output_buffer);
             fclose(file);
-            return WRONG_RANK_CARD_COUNT;
+            return INVALID_RANK_CARD_COUNT;
         }
 
         ++line_number;
@@ -142,7 +142,7 @@ int validate_file(char *filepath) {
             sprintf(output_buffer, "Wrong number of %s cards: Should be 13 not %d", suit, suit_count[i]);
             set_message(output_buffer);
             fclose(file);
-            return WRONG_SUIT_CARD_COUNT;
+            return INVALID_SUIT_CARD_COUNT;
         }
     }
 
@@ -177,7 +177,7 @@ int get_user_command() {
 
         } else {
             // Unknown input
-            return WRONG_INPUT_FORMAT;
+            return INVALID_INPUT_FORMAT;
         }
 
     } else if (input_length == 2) {
@@ -216,11 +216,11 @@ int get_user_command() {
                 return SAVE_DECK;
 
             } else {
-                return WRONG_INPUT_FORMAT;
+                return INVALID_INPUT_FORMAT;
             }
         } else {
             // Unknown input
-            return WRONG_INPUT_FORMAT;
+            return INVALID_INPUT_FORMAT;
         }
 
     } else {
@@ -267,7 +267,7 @@ int get_user_command() {
 
             if (input_length == 6) {
                 if (input_buffer[2] != '-' || input_buffer[3] != '>') {
-                    return WRONG_INPUT_FORMAT;
+                    return INVALID_INPUT_FORMAT;
                 }
 
                 source_column[0] = input_buffer[0];
@@ -284,7 +284,7 @@ int get_user_command() {
                 return MOVE_CARD;
             } else if (input_length == 9) {
                 if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>') {
-                    return WRONG_INPUT_FORMAT;
+                    return INVALID_INPUT_FORMAT;
                 }
 
                 source_column[0] = input_buffer[0];
@@ -305,7 +305,7 @@ int get_user_command() {
                 return MOVE_CARD;
 
             } else {
-                return WRONG_INPUT_FORMAT;
+                return INVALID_INPUT_FORMAT;
             }
         }
     }

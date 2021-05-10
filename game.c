@@ -15,6 +15,8 @@ bool keep_playing = true;
 
 void game_loop() {
 
+    set_message("Welcome to Yukon");
+
     while (true) {
         print_board(columns, play_phase_active ? foundations : NULL);
         if (!keep_playing) {

@@ -64,7 +64,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
         printf("\n");
     }
 
-    printf("LAST Command: %s\nMessage: %s\nINPUT> ", last_command, message);
+    printf("LAST Command: %s\nMessage: %s\nINPUT > ", last_command, message);
 }
 
 void clear_console() {

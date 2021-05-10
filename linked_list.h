@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 typedef struct card {
-    char name;
+    char rank;
     char suit;
     int value;
     bool visible;

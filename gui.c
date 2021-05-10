@@ -41,7 +41,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
             }
 
             if (cursors[j]->card->visible)
-                printf("%c%c\t", cursors[j]->card->name, cursors[j]->card->suit);
+                printf("%c%c\t", cursors[j]->card->rank, cursors[j]->card->suit);
             else
                 printf("[]\t");
 
@@ -51,7 +51,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
         if (i % 2 == 0 && foundation_counter < NUMBER_OF_FOUNDATIONS) {
             if (foundations && foundations[foundation_counter]->dummy) {
                 printf("\t%c%c\tF%d",
-                       last(foundations[foundation_counter])->name,
+                       last(foundations[foundation_counter])->rank,
                        last(foundations[foundation_counter])->suit,
                        foundation_counter + 1);
 

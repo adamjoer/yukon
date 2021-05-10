@@ -192,7 +192,7 @@ node *find(const char *card, linked_list *list) {
     while (cursor != list->dummy) {
 
         // If the node's card matches the card being search for, return it
-        if (cursor->card->name == card[0] && cursor->card->suit == card[1])
+        if (cursor->card->rank == card[0] && cursor->card->suit == card[1])
             return cursor;
 
         // Set cursor to next node
@@ -371,7 +371,7 @@ void print_linked_list(linked_list *list) {
         temp = cursor->card;
 
         printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-        printf("    card: name=%c, suit=%c, value=%d, visible=%d\n", temp->name, temp->suit, temp->value, temp->visible);
+        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value, temp->visible);
 
         cursor = cursor->next;
 

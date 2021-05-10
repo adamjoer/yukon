@@ -26,14 +26,14 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     linked_list *list = malloc(sizeof(linked_list));
     list->head = list->dummy = NULL;
 
-    char name, suit;
+    char rank, suit;
 
     card *new_card;
-    while (fscanf(file, "%c%c\n", &name, &suit) != EOF) {
+    while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(card));
-        new_card->name = name;
+        new_card->rank = rank;
         new_card->suit = suit;
-        new_card->value = get_card_value(name);
+        new_card->value = get_card_value(rank);
         new_card->visible = false;
 
         add_last(new_card, list);
@@ -72,7 +72,7 @@ int validate_file(char *filepath) {
     while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
-                    "Unknown card format '%s' on line %d: Valid format is [name-char][suit-char] e.g. TH for ten of hearts",
+                    "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
             set_message(output_buffer);
             fclose(file);
@@ -81,11 +81,11 @@ int validate_file(char *filepath) {
 
         card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
-            sprintf(output_buffer, "Unknown card name '%c' on line %d: Valid names are A, 2-9, T, J, Q, K", line_buffer[0],
+            sprintf(output_buffer, "Unknown card rank '%c' on line %d: Valid ranks are A, 2-9, T, J, Q, K", line_buffer[0],
                     line_number);
             set_message(output_buffer);
             fclose(file);
-            return UNKNOWN_NAME;
+            return UNKNOWN_RANK;
         }
 
         switch (line_buffer[1]) {
@@ -113,7 +113,7 @@ int validate_file(char *filepath) {
             sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d", line_buffer[0], line_number);
             set_message(output_buffer);
             fclose(file);
-            return WRONG_NAME_CARD_COUNT;
+            return WRONG_RANK_CARD_COUNT;
         }
 
         ++line_number;
@@ -330,7 +330,7 @@ void save_deck_to_file(linked_list *list, char *filepath) {
 
     node *cursor = list->head;
     while (cursor != list->dummy) {
-        fprintf(file, "%c%c\n", cursor->card->name, cursor->card->suit);
+        fprintf(file, "%c%c\n", cursor->card->rank, cursor->card->suit);
         cursor = cursor->next;
     }
 

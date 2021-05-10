@@ -398,8 +398,8 @@ linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool vis
     return columns;
 }
 
-int get_card_value(char name) {
-    switch (name) {
+int get_card_value(char rank) {
+    switch (rank) {
         case 'A':
             return 1;
         case '2':
@@ -410,7 +410,7 @@ int get_card_value(char name) {
         case '7':
         case '8':
         case '9':
-            return name - '0';
+            return rank - '0';
         case 'T':
             return 10;
         case 'J':

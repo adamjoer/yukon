@@ -170,7 +170,8 @@ void execute_user_command(int command) {
                 break;
             }
 
-            move_card_action();
+            if (!move_card_action())
+                break;
 
             bool game_won = true;
             for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
@@ -209,29 +210,33 @@ void free_columns() {
         free_linked_list(columns[i], false);
 }
 
-void move_card_action() {
+bool move_card_action() {
     char *source_column = get_source_column();
     char *destination_column = get_destination_column();
     char *card = get_moved_card();
 
     if (!is_valid_column(source_column)) {
         set_message("Invalid source column");
-        return;
+        return false;
     }
 
     if (destination_column[0] == 'F') {
         if (!is_valid_foundation(destination_column)) {
             set_message("Invalid foundation");
-            return;
+            return false;
         }
 
     } else if (!is_valid_column(destination_column)) {
         set_message("Invalid destination column");
-        return;
+        return false;
     }
 
     int source_column_index = source_column[1] - '0' - 1;
     int destination_column_index = destination_column[1] - '0' - 1;
+    if (source_column_index == destination_column_index && destination_column[0] != 'F') {
+        set_message("Destination column cannot be the same as source column");
+        return false;
+    }
 
     node *moved_node;
     node *destination_node;
@@ -239,17 +244,17 @@ void move_card_action() {
     if (strlen(card) != 0) {
         if (!is_valid_card(card)) {
             set_message("Invalid card");
-            return;
+            return false;
         }
         moved_node = find(card, columns[source_column_index]);
         if (!moved_node || !moved_node->card->visible) {
             set_message("Source column does not contain specified card");
-            return;
+            return false;
         }
     } else {
         if (!columns[source_column_index]->dummy) {
             set_message("Source column empty");
-            return;
+            return false;
         }
         moved_node = columns[source_column_index]->dummy->prev;
     }
@@ -271,7 +276,7 @@ void move_card_action() {
 
     if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
         set_message("Invalid move");
-        return;
+        return false;
     }
     if (destination_column[0] == 'F')
         move_card(moved_node, columns[source_column_index], foundations[destination_column_index]);
@@ -283,6 +288,8 @@ void move_card_action() {
     if (columns[source_column_index]->dummy) {
         columns[source_column_index]->dummy->prev->card->visible = true;
     }
+
+    return true;
 }
 
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {

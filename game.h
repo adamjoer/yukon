@@ -7,7 +7,7 @@ void game_loop();
 
 void execute_user_command(int command);
 
-void move_card_action();
+bool move_card_action();
 
 bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation);
 

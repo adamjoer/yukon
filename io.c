@@ -15,7 +15,12 @@ char destination_column[3];
 
 char argument[IN_BUFFER_SIZE];
 
-linked_list *load_from_file(char *filepath) {
+linked_list *load_from_file(char *filepath, bool check_file) {
+    if (check_file) {
+        if (validate_file(filepath) != 0)
+            return NULL;
+    }
+
     FILE *file = fopen(filepath, "r");
 
     linked_list *list = malloc(sizeof(linked_list));

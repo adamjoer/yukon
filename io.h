@@ -23,7 +23,7 @@
 
 #include "linked_list.h"
 
-linked_list *load_from_file(char *filepath);
+linked_list *load_from_file(char *filepath, bool check_file);
 
 int validate_file(char *filepath);
 

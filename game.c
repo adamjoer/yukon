@@ -64,7 +64,7 @@ void execute_user_command(int command) {
                 free_columns();
                 columns = NULL;
 
-                deck = load_from_file(filepath);
+                deck = load_from_file(filepath, false);
                 set_message("OK");
                 columns = distribute_cards_into_columns_for_show(deck, false);
 

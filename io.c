@@ -328,6 +328,13 @@ bool is_valid_card(char *string) {
 void save_deck_to_file(linked_list *list, char *filepath) {
     FILE *file = fopen(filepath, "w");
 
+    if (!file) {
+        char output_buffer[MESSAGE_BUFFER_SIZE];
+        sprintf(output_buffer, "File name '%s' is invalid", filepath);
+        set_message(output_buffer);
+        return;
+    }
+
     node *cursor = list->head;
     while (cursor != list->dummy) {
         fprintf(file, "%c%c\n", cursor->card->rank, cursor->card->suit);
@@ -335,6 +342,7 @@ void save_deck_to_file(linked_list *list, char *filepath) {
     }
 
     fclose(file);
+    set_message("OK");
 }
 
 char *get_moved_card() {

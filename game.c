@@ -290,7 +290,7 @@ bool move_card_action() {
     set_message("OK");
 
     if (columns[source_column_index]->dummy) {
-        columns[source_column_index]->dummy->prev->card->visible = true;
+        last(columns[source_column_index])->visible = true;
     }
 
     return true;

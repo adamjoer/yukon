@@ -79,7 +79,9 @@ int validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
+    char format_string[13];
+    sprintf(format_string, "%%%d[^\r\n] ", IN_BUFFER_SIZE - 1);
+    while (fscanf(file, format_string, line_buffer) != EOF) {
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
                     "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",

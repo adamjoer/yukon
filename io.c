@@ -24,6 +24,11 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     FILE *file = fopen(filepath, "r");
 
     linked_list *list = malloc(sizeof(linked_list));
+    if (!list) {
+        perror("load_from_file");
+        exit(1);
+    }
+
     list->head = list->dummy = NULL;
 
     char rank, suit;
@@ -31,6 +36,11 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     card *new_card;
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(card));
+        if (!new_card) {
+            perror("load_from_file");
+            exit(1);
+        }
+
         new_card->rank = rank;
         new_card->suit = suit;
         new_card->value = get_card_value(rank);

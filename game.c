@@ -89,6 +89,11 @@ void execute_user_command(int command) {
 
             for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
                 foundations[i] = malloc(sizeof(linked_list));
+                if (!foundations[i]) {
+                    perror("execute_user_command");
+                    exit(1);
+                }
+
                 foundations[i]->head = foundations[i]->dummy = NULL;
             }
 
@@ -161,7 +166,6 @@ void execute_user_command(int command) {
             }
 
             save_deck_to_file(deck, filepath);
-            set_message("OK");
             break;
 
         case MOVE_CARD:
@@ -332,9 +336,10 @@ linked_list **distribute_cards_into_columns_for_game(linked_list *list) {
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
         if (!columns[i]) {
-            printf("ERROR: malloc failed on column #%d\n", i + 1);
-            return columns;
+            perror("distribute_cards_into_columns_for_game");
+            exit(1);
         }
+
         columns[i]->head = columns[i]->dummy = NULL;
     }
 
@@ -375,9 +380,10 @@ linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool vis
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
         if (!columns[i]) {
-            printf("ERROR: malloc failed on column #%d\n", i + 1);
-            return columns;
+            perror("distribute_cards_into_columns_for_show");
+            exit(1);
         }
+
         columns[i]->head = columns[i]->dummy = NULL;
     }
 

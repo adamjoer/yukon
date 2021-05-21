@@ -30,7 +30,7 @@ void add_first(card *x, linked_list *list) {
     if (!insert) {
 
         // If malloc returned NULL it couldn't allocate any space, stop the program
-        printf("Could not add card: malloc failed\n");
+        perror("add_first");
         exit(1);
     }
 
@@ -52,7 +52,7 @@ void add_first(card *x, linked_list *list) {
         if (!*dummy) {
 
             // Again check if malloc failed
-            printf("Could not add dummy card: malloc failed\n");
+            perror("add_first");
             exit(1);
         }
         (*dummy)->card = NULL;
@@ -81,7 +81,7 @@ void add_last(card *x, linked_list *list) {
     if (!insert) {
 
         // If malloc returned NULL it couldn't allocate any space, stop the program
-        printf("Could not add card: malloc failed\n");
+        perror("add_last");
         exit(1);
     }
     insert->card = x;
@@ -95,7 +95,7 @@ void add_last(card *x, linked_list *list) {
         if (!*dummy) {
 
             // Again check if malloc failed
-            printf("Could not add dummy card: malloc failed\n");
+            perror("add_last");
             exit(1);
         }
         (*dummy)->card = NULL;
@@ -227,7 +227,7 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
         // If the destination list is empty, a new dummy needs to be made
         *destination_dummy = malloc(sizeof(node));
         if (!*destination_dummy) {
-            printf("Could not make a new dummy: malloc failed");
+            perror("move_card");
             exit(1);
         }
 
@@ -273,8 +273,18 @@ linked_list *copy_linked_list(linked_list *list) {
         return NULL;
 
     linked_list *list_copy = malloc(sizeof(linked_list));
+    if (!list_copy) {
+        perror("copy_linked_list");
+        exit(1);
+    }
+
     list_copy->dummy = malloc(sizeof(node));
-    list_copy->dummy->card = NULL;
+    if (!list_copy->dummy) {
+        perror("copy_linked_list");
+        exit(1);
+    }
+
+   list_copy->dummy->card = NULL;
 
     node *copy_cursor = list->head;
     node *cur_node;
@@ -283,6 +293,11 @@ linked_list *copy_linked_list(linked_list *list) {
         prev_node = cur_node;
 
         cur_node = malloc(sizeof(node));
+        if (!cur_node) {
+            perror("copy_linked_list");
+            exit(1);
+        }
+
         cur_node->card = copy_cursor->card;
 
         if (i == 1) {

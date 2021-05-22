@@ -18,17 +18,15 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
             len = length(columns[i]);
             if (len > longest_column_length)
                 longest_column_length = len;
+
+            cursors[i] = columns[i]->head;
         }
     }
 
     clear_console();
 
-    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
         printf("C%d\t", i + 1);
-
-        if (columns)
-            cursors[i] = columns[i]->head;
-    }
     printf("\n\n");
 
     int foundation_counter = 0;

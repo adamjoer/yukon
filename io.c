@@ -79,10 +79,13 @@ int validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    char format_string[13];
-    sprintf(format_string, "%%%d[^\r\n] ", IN_BUFFER_SIZE - 1);
-    while (fscanf(file, format_string, line_buffer) != EOF) {
-        if (strlen(line_buffer) != 2) {
+    while (fgets(line_buffer, IN_BUFFER_SIZE, file)) {
+        if (strlen(line_buffer) != 3) {
+            size_t length = strlen(line_buffer);
+
+            if (line_buffer[length - 1] == '\n')
+                line_buffer[length - 1] = '\0';
+
             sprintf(output_buffer,
                     "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
@@ -170,7 +173,8 @@ int get_user_command() {
 
     fgets(input_buffer, IN_BUFFER_SIZE, stdin);
     size_t input_length = strlen(input_buffer);
-    input_buffer[--input_length] = '\0';
+    if (input_buffer[input_length - 1] == '\n')
+        input_buffer[--input_length] = '\0';
 
     set_last_command(input_buffer);
 
@@ -285,11 +289,8 @@ int get_user_command() {
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
 
-                input_buffer[4] = toupper(input_buffer[4]);
-                input_buffer[5] = toupper(input_buffer[5]);
-
-                destination_column[0] = input_buffer[4];
-                destination_column[1] = input_buffer[5];
+                destination_column[0] = toupper(input_buffer[4]);
+                destination_column[1] = toupper(input_buffer[5]);
 
                 moved_card[0] = '\0';
 
@@ -302,17 +303,11 @@ int get_user_command() {
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
 
-                input_buffer[3] = toupper(input_buffer[3]);
-                input_buffer[4] = toupper(input_buffer[4]);
+                moved_card[0] = toupper(input_buffer[3]);
+                moved_card[1] = toupper(input_buffer[4]);
 
-                moved_card[0] = input_buffer[3];
-                moved_card[1] = input_buffer[4];
-
-                input_buffer[7] = toupper(input_buffer[7]);
-                input_buffer[8] = toupper(input_buffer[8]);
-
-                destination_column[0] = input_buffer[7];
-                destination_column[1] = input_buffer[8];
+                destination_column[0] = toupper(input_buffer[7]);
+                destination_column[1] = toupper(input_buffer[8]);
 
                 return MOVE_CARD;
 

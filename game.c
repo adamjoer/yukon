@@ -7,18 +7,17 @@
 #include "io.h"
 
 linked_list *deck = NULL;
-linked_list **columns = NULL;
+linked_list *columns[NUMBER_OF_COLUMNS];
 linked_list *foundations[NUMBER_OF_FOUNDATIONS];
 char *filepath = NULL;
-bool play_phase_active = false;
-bool keep_playing = true;
+bool play_phase_active = false, keep_playing = true, show_columns = false;
 
 void game_loop() {
 
     set_message("Welcome to Yukon");
 
     while (true) {
-        print_board(columns, play_phase_active ? foundations : NULL);
+        print_board(show_columns ? columns : NULL, play_phase_active ? foundations : NULL);
         if (!keep_playing) {
             printf("\n");
             break;
@@ -62,12 +61,11 @@ void execute_user_command(int command) {
                 free_linked_list(deck, true);
 
                 free_columns();
-                columns = NULL;
 
                 deck = load_from_file(filepath, false);
-                set_message("OK");
-                columns = distribute_cards_into_columns_for_show(deck, false);
+                distribute_cards_into_columns_for_show(deck, false);
 
+                set_message("OK");
             }
             break;
 
@@ -84,7 +82,7 @@ void execute_user_command(int command) {
 
             free_columns();
 
-            columns = distribute_cards_into_columns_for_game(deck);
+            distribute_cards_into_columns_for_game(deck);
             play_phase_active = true;
 
             for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
@@ -124,7 +122,7 @@ void execute_user_command(int command) {
 
             free_columns();
 
-            columns = distribute_cards_into_columns_for_show(deck, true);
+            distribute_cards_into_columns_for_show(deck, true);
 
             set_message("OK");
             break;
@@ -143,7 +141,7 @@ void execute_user_command(int command) {
             free_columns();
 
             shuffle_linked_list(deck);
-            columns = distribute_cards_into_columns_for_show(deck, true);
+            distribute_cards_into_columns_for_show(deck, true);
             set_message("OK");
             break;
 
@@ -178,11 +176,9 @@ void execute_user_command(int command) {
                 break;
 
             bool game_won = true;
-            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
-                if (!foundations[i]->dummy || last(foundations[i])->value != 13) {
+            for (int i = 0; i < NUMBER_OF_FOUNDATIONS && game_won; ++i) {
+                if (!foundations[i]->dummy || last(foundations[i])->value != 13)
                     game_won = false;
-                    break;
-                }
             }
 
             if (game_won) {
@@ -203,15 +199,16 @@ void execute_user_command(int command) {
         default:
             set_message("Input parser failed");
     }
-
 }
 
 void free_columns() {
-    if (!columns)
+    if (!show_columns)
         return;
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
         free_linked_list(columns[i], false);
+
+    show_columns = false;
 }
 
 bool move_card_action() {
@@ -318,20 +315,17 @@ bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundati
 void quit_game() {
     play_phase_active = false;
     free_columns();
-    columns = NULL;
 
     for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
         free_linked_list(foundations[i], false);
     }
 }
 
-linked_list **distribute_cards_into_columns_for_game(linked_list *list) {
+void distribute_cards_into_columns_for_game(linked_list *list) {
     if (!list)
-        return NULL;
+        return;
 
     linked_list *list_copy = copy_linked_list(list);
-
-    static linked_list *columns[NUMBER_OF_COLUMNS];
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
@@ -366,16 +360,15 @@ linked_list **distribute_cards_into_columns_for_game(linked_list *list) {
     columns[0]->head->card->visible = true;
 
     free(list_copy);
-    return columns;
+
+    show_columns = true;
 }
 
-linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
+void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
     if (!list)
-        return NULL;
+        return;
 
     linked_list *list_copy = copy_linked_list(list);
-
-    static linked_list *columns[NUMBER_OF_COLUMNS];
 
     for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
@@ -408,7 +401,8 @@ linked_list **distribute_cards_into_columns_for_show(linked_list *list, bool vis
     }
 
     free(list_copy);
-    return columns;
+
+    show_columns = true;
 }
 
 int get_card_value(char rank) {

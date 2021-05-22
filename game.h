@@ -15,9 +15,9 @@ void quit_game();
 
 void free_columns();
 
-linked_list **distribute_cards_into_columns_for_game(linked_list *list_copy);
+void distribute_cards_into_columns_for_game(linked_list *list);
 
-linked_list **distribute_cards_into_columns_for_show(linked_list *list_copy, bool visible);
+void distribute_cards_into_columns_for_show(linked_list *list, bool visible);
 
 int get_card_value(char rank);
 

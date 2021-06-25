@@ -319,12 +319,12 @@ int get_user_command() {
 
 bool is_valid_column(char *string) {
     return strlen(string) == 2 && string[0] == 'C' && 
-           isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_COLUMNS + '0';
+           isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_COLUMNS + '0';
 }
 
 bool is_valid_foundation(char *string) {
     return strlen(string) == 2 && string[0] == 'F' && 
-           isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_FOUNDATIONS + '0';
+           isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_FOUNDATIONS + '0';
 }
 
 bool is_valid_card(char *string) {

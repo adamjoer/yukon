@@ -6,8 +6,8 @@
 #include "gui.h"
 
 linked_list *deck = NULL;
-linked_list *columns[NUMBER_OF_COLUMNS];
-linked_list *foundations[NUMBER_OF_FOUNDATIONS];
+linked_list *columns[NO_COLUMNS];
+linked_list *foundations[NO_FOUNDATIONS];
 char *filepath = NULL;
 
 bool play_phase_active = false;
@@ -88,7 +88,7 @@ void execute_user_command(int command) {
             distribute_cards_into_columns_for_game(deck);
             play_phase_active = true;
 
-            for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+            for (int i = 0; i < NO_FOUNDATIONS; ++i) {
                 foundations[i] = malloc(sizeof(linked_list));
                 if (!foundations[i]) {
                     perror("execute_user_command");
@@ -180,7 +180,7 @@ void execute_user_command(int command) {
                 break;
 
             bool game_won = true;
-            for (int i = 0; i < NUMBER_OF_FOUNDATIONS && game_won; ++i) {
+            for (int i = 0; i < NO_FOUNDATIONS && game_won; ++i) {
                 if (!foundations[i]->dummy || last(foundations[i])->value != 13)
                     game_won = false;
             }
@@ -209,7 +209,7 @@ void free_columns() {
     if (!show_columns)
         return;
 
-    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i)
+    for (int i = 0; i < NO_COLUMNS; ++i)
         free_linked_list(columns[i], false);
 
     show_columns = false;
@@ -316,7 +316,7 @@ void quit_game() {
     play_phase_active = false;
     free_columns();
 
-    for (int i = 0; i < NUMBER_OF_FOUNDATIONS; ++i) {
+    for (int i = 0; i < NO_FOUNDATIONS; ++i) {
         free_linked_list(foundations[i], false);
     }
 }
@@ -327,7 +327,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
 
     linked_list *list_copy = copy_linked_list(list);
 
-    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+    for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
         if (!columns[i]) {
             perror("distribute_cards_into_columns_for_game");
@@ -340,7 +340,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
 
     node *cursor;
     int counter;
-    for (int i = LONGEST_COLUMN_LENGTH, n = LONGEST_COLUMN_LENGTH - (NUMBER_OF_COLUMNS - 2); i >= n; --i) {
+    for (int i = LONGEST_COLUMN_LENGTH, n = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2); i >= n; --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 
@@ -371,7 +371,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
 
     linked_list *list_copy = copy_linked_list(list);
 
-    for (int i = 0; i < NUMBER_OF_COLUMNS; ++i) {
+    for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
         if (!columns[i]) {
             perror("distribute_cards_into_columns_for_show");
@@ -384,7 +384,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
 
     node *cursor;
     int counter, column_length;
-    for (int i = NUMBER_OF_COLUMNS - 1; i >= 0; --i) {
+    for (int i = NO_COLUMNS - 1; i >= 0; --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 

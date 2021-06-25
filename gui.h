@@ -6,9 +6,9 @@
 
 #define MESSAGE_BUFFER_SIZE 256
 
-#define NUMBER_OF_COLUMNS 7
+#define NO_COLUMNS 7
 #define LONGEST_COLUMN_LENGTH 11
-#define NUMBER_OF_FOUNDATIONS 4
+#define NO_FOUNDATIONS 4
 
 extern char last_command[];
 extern char message[];

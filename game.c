@@ -8,7 +8,6 @@
 linked_list *deck = NULL;
 linked_list *columns[NO_COLUMNS];
 linked_list *foundations[NO_FOUNDATIONS];
-char *filepath = NULL;
 
 bool play_phase_active = false;
 bool show_columns = false;
@@ -34,6 +33,8 @@ void game_loop() {
 }
 
 void execute_user_command(int command) {
+
+    char *filepath;
 
     switch (command) {
         case QUIT_PROGRAM:
@@ -445,6 +446,8 @@ void load_default_deck() {
         perror("load_default_deck");
         exit(1);
     }
+    deck->head = deck->dummy = NULL;
+    deck->length = 0;
 
     int ranks_index = 0;
     card *insert_card;

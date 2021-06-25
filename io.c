@@ -318,22 +318,23 @@ int get_user_command() {
 }
 
 bool is_valid_column(char *string) {
-    return string[0] == 'C' && isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_COLUMNS + '0';
+    return strlen(string) == 2 && string[0] == 'C' && 
+           isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_COLUMNS + '0';
 }
 
 bool is_valid_foundation(char *string) {
-    return string[0] == 'F' && isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_FOUNDATIONS + '0';
+    return strlen(string) == 2 && string[0] == 'F' && 
+           isdigit(string[1]) && string[1] >= '1' && string[1] <= NUMBER_OF_FOUNDATIONS + '0';
 }
 
 bool is_valid_card(char *string) {
-    return get_card_value(string[0]) != -1 &&
+    return strlen(string) == 2 && get_card_value(string[0]) != -1 &&
            (string[1] == 'C' || string[1] == 'D' || string[1] == 'H' || string[1] == 'S');
 }
 
 
 void save_deck_to_file(linked_list *list, char *filepath) {
     FILE *file = fopen(filepath, "w");
-
     if (!file) {
         char output_buffer[MESSAGE_BUFFER_SIZE];
         sprintf(output_buffer, "File name '%s' is invalid", filepath);

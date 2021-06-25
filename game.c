@@ -302,7 +302,6 @@ bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundati
     }
 
     if (is_to_foundation) {
-
         return !moved_node->next->card &&
                destination_node->card->value == moved_node->card->value - 1 &&
                destination_node->card->suit == moved_node->card->suit;
@@ -339,7 +338,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
 
     node *cursor;
     int counter;
-    for (int i = LONGEST_COLUMN_LENGTH; i >= NEXT_SHORTEST_COLUMN_LENGTH; --i) {
+    for (int i = LONGEST_COLUMN_LENGTH, n = LONGEST_COLUMN_LENGTH - (NUMBER_OF_COLUMNS - 2); i >= n; --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 
@@ -353,7 +352,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
         }
         cursor->card->visible = false;
 
-        move_card(cursor, list_copy, columns[i - NEXT_SHORTEST_COLUMN_LENGTH + 1]);
+        move_card(cursor, list_copy, columns[i - n + 1]);
     }
 
     add_last(remove_last(list_copy), columns[0]);

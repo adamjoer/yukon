@@ -4,20 +4,23 @@
 
 #include "game.h"
 #include "gui.h"
-#include "io.h"
 
 linked_list *deck = NULL;
 linked_list *columns[NUMBER_OF_COLUMNS];
 linked_list *foundations[NUMBER_OF_FOUNDATIONS];
 char *filepath = NULL;
-bool play_phase_active = false, keep_playing = true, show_columns = false;
+
+bool play_phase_active = false;
+bool show_columns = false;
+
+bool keep_playing = true;
 
 void game_loop() {
 
     set_message("Welcome to Yukon");
 
     while (true) {
-        print_board(show_columns ? columns : NULL, play_phase_active ? foundations : NULL);
+        print_board(columns, foundations);
         if (!keep_playing) {
             printf("\n");
             break;
@@ -49,11 +52,11 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (strlen(get_argument()) == 0) {
+            if (strlen(argument) == 0) {
                 filepath = "decks/00.txt";
 
             } else {
-                filepath = get_argument();
+                filepath = argument;
             }
 
             if (validate_file(filepath) == 0) {
@@ -157,11 +160,11 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (strlen(get_argument()) == 0) {
+            if (strlen(argument) == 0) {
                 filepath = "cards.txt";
 
             } else {
-                filepath = get_argument();
+                filepath = argument;
             }
 
             save_deck_to_file(deck, filepath);
@@ -213,9 +216,6 @@ void free_columns() {
 }
 
 bool move_card_action() {
-    char *source_column = get_source_column();
-    char *destination_column = get_destination_column();
-    char *card = get_moved_card();
 
     if (!is_valid_column(source_column)) {
         set_message("Invalid source column");
@@ -243,12 +243,12 @@ bool move_card_action() {
     node *moved_node;
     node *destination_node;
 
-    if (strlen(card) != 0) {
-        if (!is_valid_card(card)) {
+    if (strlen(moved_card) != 0) {
+        if (!is_valid_card(moved_card)) {
             set_message("Invalid card");
             return false;
         }
-        moved_node = find(card, columns[source_column_index]);
+        moved_node = find(moved_card, columns[source_column_index]);
         if (!moved_node || !moved_node->card->visible) {
             set_message("Source column does not contain specified card");
             return false;

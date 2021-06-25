@@ -3,6 +3,9 @@
 
 #include "linked_list.h"
 
+extern bool play_phase_active;
+extern bool show_columns;
+
 void game_loop();
 
 void execute_user_command(int command);

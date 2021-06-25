@@ -352,18 +352,11 @@ void save_deck_to_file(linked_list *list, char *filepath) {
     set_message("OK");
 }
 
-char *get_moved_card() {
-    return moved_card;
+
+void set_message(char *new_message) {
+    strcpy(message, new_message);
 }
 
-char *get_source_column() {
-    return source_column;
-}
-
-char *get_destination_column() {
-    return destination_column;
-}
-
-char *get_argument() {
-    return argument;
+void set_last_command(char *new_last_command) {
+    strcpy(last_command, new_last_command);
 }

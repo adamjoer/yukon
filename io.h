@@ -23,6 +23,14 @@
 
 #include "linked_list.h"
 
+extern char moved_card[];
+
+extern char source_column[];
+
+extern char destination_column[];
+
+extern char argument[];
+
 linked_list *load_from_file(char *filepath, bool check_file);
 
 int validate_file(char *filepath);
@@ -37,12 +45,8 @@ bool is_valid_card(char *string);
 
 void save_deck_to_file(linked_list *list, char *filepath);
 
-char *get_moved_card();
+void set_message(char *new_message);
 
-char *get_source_column();
-
-char *get_destination_column();
-
-char *get_argument();
+void set_last_command(char *new_last_command);
 
 #endif //CARD_GAME_IO_H

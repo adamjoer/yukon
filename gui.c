@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "gui.h"
-#include "io.h"
+#include "game.h"
 
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
@@ -13,7 +12,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;
 
-    if (columns) {
+    if (show_columns) {
         for (int i = 0, len; i < NUMBER_OF_COLUMNS; ++i) {
             len = length(columns[i]);
             if (len > longest_column_length)
@@ -33,7 +32,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
     for (int i = 0; i < longest_column_length; ++i) {
 
         for (int j = 0; j < NUMBER_OF_COLUMNS; ++j) {
-            if (!columns || cursors[j] == columns[j]->dummy) {
+            if (!show_columns || cursors[j] == columns[j]->dummy) {
                 printf("\t");
                 continue;
             }
@@ -47,7 +46,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
         }
 
         if (i % 2 == 0 && foundation_counter < NUMBER_OF_FOUNDATIONS) {
-            if (foundations && foundations[foundation_counter]->dummy) {
+            if (play_phase_active && foundations[foundation_counter]->dummy) {
                 printf("\t%c%c\tF%d",
                        last(foundations[foundation_counter])->rank,
                        last(foundations[foundation_counter])->suit,
@@ -71,12 +70,4 @@ void clear_console() {
 #else
     printf("\e[1;1H\e[2J");
 #endif
-}
-
-void set_message(char *new_message) {
-    strcpy(message, new_message);
-}
-
-void set_last_command(char *new_last_command) {
-    strcpy(last_command, new_last_command);
 }

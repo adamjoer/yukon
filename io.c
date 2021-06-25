@@ -30,10 +30,11 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     }
 
     list->head = list->dummy = NULL;
+    list->length = -1;
 
     char rank, suit;
-
     card *new_card;
+
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(card));
         if (!new_card) {

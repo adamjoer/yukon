@@ -19,6 +19,7 @@ typedef struct node {
 typedef struct linked_list {
     node *head;
     node *dummy;
+    int length;
 } linked_list;
 
 int length(linked_list *list);

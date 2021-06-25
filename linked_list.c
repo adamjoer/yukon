@@ -8,14 +8,18 @@ int length(linked_list *list) {
     if (!list || !list->head)
         return 0;
 
+    if (list->length >= 0)
+        return list->length;
+
     node *cursor = list->head;
 
     int length = 0;
     while (cursor != list->dummy) {
-        length++;
+        ++length;
         cursor = cursor->next;
     }
 
+    list->length = length;
     return length;
 }
 
@@ -68,6 +72,9 @@ void add_first(card *x, linked_list *list) {
 
     // The first element's prev should point at dummy;
     insert->prev = *dummy;
+
+    if (list->length >= 0)
+        ++list->length;
 }
 
 // Function for adding a card to the end of a linked list
@@ -112,6 +119,9 @@ void add_last(card *x, linked_list *list) {
         ((*dummy)->prev)->next = insert;
         (*dummy)->prev = insert;
     }
+
+    if (list->length >= 0)
+        ++list->length;
 }
 
 // Function for removing the first node in a linked list and returning its card
@@ -146,6 +156,9 @@ card *remove_first(linked_list *list) {
         *head = *dummy = NULL;
     }
 
+    if (list->length > 0)
+        --list->length;
+
     // Return the card
     return card;
 }
@@ -173,6 +186,9 @@ card *remove_last(linked_list *list) {
     card *card = delete->card;
 
     free(delete);
+
+    if (list->length > 0)
+        --list->length;
 
     return card;
 }
@@ -263,6 +279,8 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
         free(*source_dummy);
         *source_head = *source_dummy = NULL;
     }
+
+    source->length = destination->length = -1;
 }
 
 // Function for copying a linked list, without altering it in any way
@@ -318,6 +336,7 @@ linked_list *copy_linked_list(linked_list *list) {
         copy_cursor = copy_cursor->next;
     }
 
+    list_copy->length = list->length;
     return list_copy;
 }
 

@@ -93,6 +93,7 @@ void execute_user_command(int command) {
                 }
 
                 foundations[i]->head = foundations[i]->dummy = NULL;
+                foundations[i]->length = -1;
             }
 
             set_message("OK");
@@ -334,6 +335,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
         }
 
         columns[i]->head = columns[i]->dummy = NULL;
+        columns[i]->length = -1;
     }
 
     node *cursor;
@@ -377,6 +379,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
         }
 
         columns[i]->head = columns[i]->dummy = NULL;
+        columns[i]->length = -1;
     }
 
     node *cursor;

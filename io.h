@@ -24,11 +24,8 @@
 #include "linked_list.h"
 
 extern char moved_card[];
-
 extern char source_column[];
-
 extern char destination_column[];
-
 extern char argument[];
 
 linked_list *load_from_file(char *filepath, bool check_file);

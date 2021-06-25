@@ -8,11 +8,8 @@
 #include "gui.h"
 
 char moved_card[3];
-
 char source_column[3];
-
 char destination_column[3];
-
 char argument[IN_BUFFER_SIZE];
 
 linked_list *load_from_file(char *filepath, bool check_file) {
@@ -95,7 +92,8 @@ int validate_file(char *filepath) {
 
         card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
-            sprintf(output_buffer, "Unknown card rank '%c' on line %d: Valid ranks are A, 2-9, T, J, Q, K", line_buffer[0],
+            sprintf(output_buffer, "Unknown card rank '%c' on line %d: Valid ranks are A, 2-9, T, J, Q, K",
+                    line_buffer[0],
                     line_number);
             set_message(output_buffer);
             fclose(file);
@@ -318,12 +316,12 @@ int get_user_command() {
 }
 
 bool is_valid_column(char *string) {
-    return strlen(string) == 2 && string[0] == 'C' && 
+    return strlen(string) == 2 && string[0] == 'C' &&
            isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_COLUMNS + '0';
 }
 
 bool is_valid_foundation(char *string) {
-    return strlen(string) == 2 && string[0] == 'F' && 
+    return strlen(string) == 2 && string[0] == 'F' &&
            isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_FOUNDATIONS + '0';
 }
 

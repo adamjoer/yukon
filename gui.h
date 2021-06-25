@@ -17,4 +17,8 @@ void print_board(linked_list *columns[], linked_list *foundations[]);
 
 void clear_console();
 
+void set_message(char *new_message);
+
+void set_last_command(char *new_last_command);
+
 #endif //CARD_GAME_GUI_H

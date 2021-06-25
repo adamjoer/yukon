@@ -42,8 +42,4 @@ bool is_valid_card(char *string);
 
 void save_deck_to_file(linked_list *list, char *filepath);
 
-void set_message(char *new_message);
-
-void set_last_command(char *new_last_command);
-
 #endif //CARD_GAME_IO_H

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gui.h"
 #include "game.h"
@@ -70,4 +71,12 @@ void clear_console() {
 #else
     printf("\e[1;1H\e[2J");
 #endif
+}
+
+void set_message(char *new_message) {
+    strcpy(message, new_message);
+}
+
+void set_last_command(char *new_last_command) {
+    strcpy(last_command, new_last_command);
 }

@@ -349,12 +349,3 @@ void save_deck_to_file(linked_list *list, char *filepath) {
     fclose(file);
     set_message("OK");
 }
-
-
-void set_message(char *new_message) {
-    strcpy(message, new_message);
-}
-
-void set_last_command(char *new_last_command) {
-    strcpy(last_command, new_last_command);
-}

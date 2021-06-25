@@ -24,4 +24,6 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible);
 
 int get_card_value(char rank);
 
+void load_default_deck();
+
 #endif //CARD_GAME_GAME_H

@@ -52,24 +52,22 @@ void execute_user_command(int command) {
                 break;
             }
 
-            if (strlen(argument) == 0) {
-                filepath = "decks/00.txt";
-
-            } else {
-                filepath = argument;
+            if (strlen(argument) > 0) {
+                if (validate_file(argument) != 0)
+                    break;
             }
 
-            if (validate_file(filepath) == 0) {
+            free_linked_list(deck, true);
+            free_columns();
 
-                free_linked_list(deck, true);
-
-                free_columns();
-
+            if (strlen(argument) != 0)
                 deck = load_from_file(filepath, false);
-                distribute_cards_into_columns_for_show(deck, false);
+            else
+                load_default_deck();
 
-                set_message("OK");
-            }
+            distribute_cards_into_columns_for_show(deck, false);
+
+            set_message("OK");
             break;
 
         case PLAY:
@@ -431,4 +429,38 @@ int get_card_value(char rank) {
         default:
             return -1;
     }
+}
+
+void load_default_deck() {
+    const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
+    const char suits[] = {'C', 'D', 'S', 'H'};
+
+    deck = malloc(sizeof(linked_list));
+    if (!deck) {
+        perror("load_default_deck");
+        exit(1);
+    }
+
+    int ranks_index = 0;
+    card *insert_card;
+    for (int i = 0; i < 52; ++i) {
+
+        insert_card = malloc(sizeof(card));
+        if (!insert_card) {
+            perror("load_default_deck");
+            exit(1);
+        }
+        insert_card->rank = ranks[ranks_index];
+        insert_card->suit = suits[i / 13];
+        insert_card->value = get_card_value(ranks[ranks_index]);
+        insert_card->visible = false;
+
+//        printf("load_default_deck: Adding card %c%c (value=%d)\n", insert_card->rank, insert_card->suit, insert_card->value);
+
+        add_last(insert_card, deck);
+
+        ranks_index = (ranks_index + 1) % 13;
+    }
+
+//     print_linked_list(list);
 }

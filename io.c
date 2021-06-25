@@ -80,12 +80,10 @@ int validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    while (fgets(line_buffer, IN_BUFFER_SIZE, file)) {
-        if (strlen(line_buffer) != 3) {
-            size_t length = strlen(line_buffer);
-
-            if (line_buffer[length - 1] == '\n')
-                line_buffer[length - 1] = '\0';
+    char format_string[16];
+    sprintf(format_string, "%%%d[^\r\n] ", IN_BUFFER_SIZE - 1);
+    while (fscanf(file, format_string, line_buffer) != EOF) {
+        if (strlen(line_buffer) != 2) {
 
             sprintf(output_buffer,
                     "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",

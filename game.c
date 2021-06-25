@@ -60,8 +60,8 @@ void execute_user_command(int command) {
             free_linked_list(deck, true);
             free_columns();
 
-            if (strlen(argument) != 0)
-                deck = load_from_file(filepath, false);
+            if (strlen(argument) > 0)
+                deck = load_from_file(argument, false);
             else
                 load_default_deck();
 
@@ -226,9 +226,11 @@ bool move_card_action() {
             return false;
         }
 
-    } else if (!is_valid_column(destination_column)) {
-        set_message("Invalid destination column");
-        return false;
+    } else {
+        if (!is_valid_column(destination_column)) {
+            set_message("Invalid destination column");
+            return false;
+        }
     }
 
     int source_column_index = source_column[1] - '0' - 1;
@@ -241,16 +243,18 @@ bool move_card_action() {
     node *moved_node;
     node *destination_node;
 
-    if (strlen(moved_card) != 0) {
+    if (strlen(moved_card) > 0) {
         if (!is_valid_card(moved_card)) {
             set_message("Invalid card");
             return false;
         }
+
         moved_node = find(moved_card, columns[source_column_index]);
         if (!moved_node || !moved_node->card->visible) {
             set_message("Source column does not contain specified card");
             return false;
         }
+
     } else {
         if (!columns[source_column_index]->dummy) {
             set_message("Source column empty");
@@ -260,14 +264,12 @@ bool move_card_action() {
     }
 
     if (destination_column[0] == 'F') {
-
         if (!foundations[destination_column_index]->dummy)
             destination_node = NULL;
         else
             destination_node = foundations[destination_column_index]->dummy->prev;
 
     } else {
-
         if (!columns[destination_column_index]->dummy)
             destination_node = NULL;
         else
@@ -288,9 +290,8 @@ bool move_card_action() {
 
     set_message("OK");
 
-    if (columns[source_column_index]->dummy) {
+    if (columns[source_column_index]->dummy)
         last(columns[source_column_index])->visible = true;
-    }
 
     return true;
 }
@@ -341,7 +342,8 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
 
     node *cursor;
     int counter;
-    for (int i = LONGEST_COLUMN_LENGTH, n = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2); i >= n; --i) {
+    for (int i = LONGEST_COLUMN_LENGTH, next_shortest_column_length = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2);
+         i >= next_shortest_column_length; --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 
@@ -355,7 +357,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
         }
         cursor->card->visible = false;
 
-        move_card(cursor, list_copy, columns[i - n + 1]);
+        move_card(cursor, list_copy, columns[i - next_shortest_column_length + 1]);
     }
 
     add_last(remove_last(list_copy), columns[0]);
@@ -458,12 +460,8 @@ void load_default_deck() {
         insert_card->value = get_card_value(ranks[ranks_index]);
         insert_card->visible = false;
 
-//        printf("load_default_deck: Adding card %c%c (value=%d)\n", insert_card->rank, insert_card->suit, insert_card->value);
-
         add_last(insert_card, deck);
 
         ranks_index = (ranks_index + 1) % 13;
     }
-
-//     print_linked_list(list);
 }

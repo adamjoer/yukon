@@ -194,11 +194,11 @@ card *remove_last(linked_list *list) {
 }
 
 // Function to get the last card in a linked list
-card *last(linked_list *list){
+card *last(linked_list *list) {
     return list->dummy->prev->card;
 }
 
-// Function for searching a list linked for a specific card, returns null if it isn't in it
+// Function for searching a linked list for a specific card, returns null if it isn't in it
 node *find(const char *card, linked_list *list) {
 
     // Pointer for going over the list
@@ -302,7 +302,7 @@ linked_list *copy_linked_list(linked_list *list) {
         exit(1);
     }
 
-   list_copy->dummy->card = NULL;
+    list_copy->dummy->card = NULL;
 
     node *copy_cursor = list->head;
     node *cur_node;
@@ -328,6 +328,7 @@ linked_list *copy_linked_list(linked_list *list) {
             cur_node->prev = prev_node;
             cur_node->next = list_copy->dummy;
             list_copy->dummy->prev = cur_node;
+
         } else {
             cur_node->prev = prev_node;
             prev_node->next = cur_node;
@@ -387,39 +388,6 @@ void shuffle_array(node *array[], int length) {
     }
 }
 
-
-void print_linked_list(linked_list *list) {
-
-    if (!list->head) {
-        printf("EMPTY\n");
-        return;
-    }
-
-    int length = 0;
-    node *cursor = list->head;
-    card *temp;
-    printf("{\n");
-    printf("  head=%p\n", list->head);
-    while (cursor != list->dummy) {
-
-        temp = cursor->card;
-
-        printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value, temp->visible);
-
-        cursor = cursor->next;
-
-        if (++length > 52) {
-            printf("...\n");
-            break;
-        }
-    }
-
-    printf("  dummy: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-    printf("  length=%d\n", length);
-    printf("}\n");
-}
-
 // Function for freeing a linked list to prevent memory leak
 void free_linked_list(linked_list *list, bool free_cards) {
     if (!list)
@@ -450,3 +418,35 @@ void free_linked_list(linked_list *list, bool free_cards) {
     free(list->dummy);
     free(list);
 }
+
+void print_linked_list(linked_list *list) {
+    if (!list->head) {
+        printf("{\n  EMPTY\n}\n");
+        return;
+    }
+
+    int length = 0;
+    node *cursor = list->head;
+    card *temp;
+    printf("{\n");
+    printf("  head=%p\n", list->head);
+    while (cursor != list->dummy) {
+
+        temp = cursor->card;
+
+        printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
+        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value, temp->visible);
+
+        cursor = cursor->next;
+
+        if (++length > 100) {
+            printf("  ...\n");
+            break;
+        }
+    }
+
+    printf("  dummy: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
+    printf("  length=%d, (saved length=%d)\n", length, list->length);
+    printf("}\n");
+}
+

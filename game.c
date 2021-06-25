@@ -50,7 +50,7 @@ void execute_user_command(int command) {
             }
 
             if (strlen(get_argument()) == 0) {
-                filepath = "decks/sorted_deck.txt";
+                filepath = "decks/00.txt";
 
             } else {
                 filepath = get_argument();

@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "linked_list.h"
 
+/*
+ * Function for getting the length of a linked list.
+ * If the length value stored in the linked list is not valid,
+ * its length will be calculated and stored in the 'length' variable.
+ */
 int length(linked_list *list) {
     if (!list || !list->head)
         return 0;
@@ -23,7 +29,7 @@ int length(linked_list *list) {
     return length;
 }
 
-// Function for adding a card to the beginning of a linked list
+/* Function for adding a card to the beginning of a linked list */
 void add_first(card *x, linked_list *list) {
 
     node **head = &list->head;
@@ -77,7 +83,7 @@ void add_first(card *x, linked_list *list) {
         ++list->length;
 }
 
-// Function for adding a card to the end of a linked list
+/* Function for adding a card to the end of a linked list */
 void add_last(card *x, linked_list *list) {
 
     node **head = &list->head;
@@ -124,7 +130,7 @@ void add_last(card *x, linked_list *list) {
         ++list->length;
 }
 
-// Function for removing the first node in a linked list and returning its card
+/* Function for removing the first node in a linked list and returning its card */
 card *remove_first(linked_list *list) {
     node **head = &list->head;
     node **dummy = &list->dummy;
@@ -163,7 +169,7 @@ card *remove_first(linked_list *list) {
     return card;
 }
 
-// Function for removing the last (not dummy) node in a linked list and returning its card
+/* Function for removing the last (not dummy) node in a linked list and returning its card */
 card *remove_last(linked_list *list) {
     node **head = &list->head;
     node **dummy = &list->dummy;
@@ -193,13 +199,18 @@ card *remove_last(linked_list *list) {
     return card;
 }
 
-// Function to get the last card in a linked list
+/* Function for getting the last card in a linked list */
 card *last(linked_list *list) {
     return list->dummy->prev->card;
 }
 
-// Function for searching a linked list for a specific card, returns null if it isn't in it
+/*
+ * Function for linearly searching a linked list for a specific card.
+ * Returns null if the list doesn't contain it.
+ */
 node *find(const char *card, linked_list *list) {
+    if (strlen(card) != 2)
+        return NULL;
 
     // Pointer for going over the list
     node *cursor = list->head;
@@ -219,8 +230,10 @@ node *find(const char *card, linked_list *list) {
     return NULL;
 }
 
-// Function for moving a given card, and any potential cards after it, from one linked list to another.
-// The cards will be added to the end of the destination list.
+/*
+ * Function for moving a given card, and any potential cards after it, from one linked list to another.
+ * The cards will be added to the end of the destination list.
+ */
 void move_card(node *card, linked_list *source, linked_list *destination) {
 
     if (source == destination)
@@ -283,11 +296,13 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
     source->length = destination->length = -1;
 }
 
-// Function for copying a linked list, without altering it in any way
-// This does not copy the cards in that linked list,
-// so the copy's nodes will point at the same cards as the original
+/*
+ * Function for copying a linked list, without altering it in any way
+ * This does not copy the cards in that linked list,
+ * so the copy's nodes will point at the same cards as the original.
+ */
 linked_list *copy_linked_list(linked_list *list) {
-    if(!list)
+    if (!list)
         return NULL;
 
     linked_list *list_copy = malloc(sizeof(linked_list));
@@ -341,6 +356,11 @@ linked_list *copy_linked_list(linked_list *list) {
     return list_copy;
 }
 
+/*
+ * Function for randomly shuffling the order of a linked list.
+ * After shuffling, the list will have the same length,
+ * and contain the same cards as it did before.
+ */
 void shuffle_linked_list(linked_list *list) {
     int len = length(list);
 
@@ -388,7 +408,7 @@ void shuffle_array(node *array[], int length) {
     }
 }
 
-// Function for freeing a linked list to prevent memory leak
+/* Function for freeing a linked list to prevent memory leak */
 void free_linked_list(linked_list *list, bool free_cards) {
     if (!list)
         return;
@@ -435,7 +455,8 @@ void print_linked_list(linked_list *list) {
         temp = cursor->card;
 
         printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value, temp->visible);
+        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value,
+               temp->visible);
 
         cursor = cursor->next;
 

@@ -278,10 +278,13 @@ bool move_card_action() {
         set_message("Invalid move");
         return false;
     }
-    if (destination_column[0] == 'F')
-        move_card(moved_node, columns[source_column_index], foundations[destination_column_index]);
-    else
+
+    if (destination_column[0] == 'F') {
+        add_last(remove_last(columns[source_column_index]), foundations[destination_column_index]);
+
+    } else {
         move_card(moved_node, columns[source_column_index], columns[destination_column_index]);
+    }
 
     set_message("OK");
 

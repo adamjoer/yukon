@@ -201,6 +201,9 @@ card *remove_last(linked_list *list) {
 
 /* Function for getting the last card in a linked list */
 card *last(linked_list *list) {
+    if (!list || !list->dummy)
+        return NULL;
+
     return list->dummy->prev->card;
 }
 
@@ -481,6 +484,11 @@ void free_linked_list(linked_list *list, bool free_cards) {
 }
 
 void print_linked_list(linked_list *list) {
+    if (!list) {
+        printf("{\n  NULL\n}\n");
+        return;
+    }
+
     if (!list->head) {
         printf("{\n  EMPTY\n}\n");
         return;
@@ -488,16 +496,16 @@ void print_linked_list(linked_list *list) {
 
     int length = 0;
     node *cursor = list->head;
-    card *temp;
+    card *card;
     printf("{\n");
     printf("  head=%p\n", list->head);
     while (cursor != list->dummy) {
 
-        temp = cursor->card;
+        card = cursor->card;
 
         printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", temp->rank, temp->suit, temp->value,
-               temp->visible);
+        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", card->rank, card->suit, card->value,
+               card->visible);
 
         cursor = cursor->next;
 

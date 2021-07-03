@@ -331,11 +331,11 @@ bool is_valid_card(char *string) {
            (string[1] == 'C' || string[1] == 'D' || string[1] == 'H' || string[1] == 'S');
 }
 
-
 void save_deck_to_file(linked_list *list, char *filepath) {
+    char output_buffer[MESSAGE_BUFFER_SIZE];
+
     FILE *file = fopen(filepath, "w");
     if (!file) {
-        char output_buffer[MESSAGE_BUFFER_SIZE];
         sprintf(output_buffer, "File name '%s' is invalid", filepath);
         set_message(output_buffer);
         return;
@@ -348,5 +348,6 @@ void save_deck_to_file(linked_list *list, char *filepath) {
     }
 
     fclose(file);
-    set_message("OK");
+    sprintf(output_buffer, "Deck saved to file '%s'", filepath);
+    set_message(output_buffer);
 }

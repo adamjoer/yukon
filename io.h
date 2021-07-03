@@ -1,5 +1,4 @@
-#ifndef CARD_GAME_IO_H
-#define CARD_GAME_IO_H
+#pragma once
 
 #define IN_BUFFER_SIZE 64
 
@@ -41,5 +40,3 @@ bool is_valid_foundation(char *string);
 bool is_valid_card(char *string);
 
 void save_deck_to_file(linked_list *list, char *filepath);
-
-#endif //CARD_GAME_IO_H

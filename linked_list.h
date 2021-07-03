@@ -1,5 +1,4 @@
-#ifndef CARD_GAME_LINKED_LIST_H
-#define CARD_GAME_LINKED_LIST_H
+#pragma once
 
 #include <stdbool.h>
 
@@ -47,5 +46,3 @@ void shuffle_array(node *array[], int length);
 void free_linked_list(linked_list *list, bool free_cards);
 
 void print_linked_list(linked_list *list);
-
-#endif //CARD_GAME_LINKED_LIST_H

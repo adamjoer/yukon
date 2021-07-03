@@ -231,17 +231,19 @@ node *find(const char *card, linked_list *list) {
 }
 
 /*
- * Function for moving a given card, and any potential cards after it, from one linked list to another.
- * The cards will be added to the end of the destination list.
+ * Function for moving a given node, and any potential nodes after it, from one linked list to another.
+ * The nodes will be added to the end of the destination list.
  */
-void move_card(node *card, linked_list *source, linked_list *destination) {
+void move_node(node *card, linked_list *origin, linked_list *destination) {
+    if (origin == destination)
+        return;
 
-    if (source == destination)
+    if (!contains_node(card, origin))
         return;
 
     // Pointers to make the code (a bit) less fugly
-    node **source_head = &source->head;
-    node **source_dummy = &source->dummy;
+    node **source_head = &origin->head;
+    node **source_dummy = &origin->dummy;
 
     node **destination_head = &destination->head;
     node **destination_dummy = &destination->dummy;
@@ -256,28 +258,26 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
         // If the destination list is empty, a new dummy needs to be made
         *destination_dummy = malloc(sizeof(node));
         if (!*destination_dummy) {
-            perror("move_card");
+            perror("move_node");
             exit(1);
         }
 
         // Initialize dummy values
         (*destination_dummy)->card = NULL;
 
-        // The destination list's head is the card being moved
+        // The destination list's head is the node being moved
         (*destination_dummy)->next = card;
         *destination_head = card;
         card->prev = *destination_dummy;
 
     } else { // The destination list is not empty
 
-        // The destination list's last node will point at the card being moved
+        // The destination list's last node will point at the node being moved and the moved node will point back at that
         ((*destination_dummy)->prev)->next = card;
-
-        // And the moved card will point back at that
         card->prev = (*destination_dummy)->prev;
     }
 
-    // Update the pointers of the source list's dummy and new last node
+    // Update the pointers of the origin list's dummy and new last node
     (*source_dummy)->prev = source_new_last;
     source_new_last->next = *source_dummy;
 
@@ -285,7 +285,7 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
     (*destination_dummy)->prev = destination_new_last;
     destination_new_last->next = *destination_dummy;
 
-    // If the card being moved was the first card in the source list, it is now empty
+    // If the node being moved was the first node in the origin list, it is now empty
     if (*source_head == card) {
 
         // Free dummy and set the head and dummy to null
@@ -293,7 +293,7 @@ void move_card(node *card, linked_list *source, linked_list *destination) {
         *source_head = *source_dummy = NULL;
     }
 
-    source->length = destination->length = -1;
+    origin->length = destination->length = -1;
 }
 
 /*

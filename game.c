@@ -250,7 +250,7 @@ bool move_card_action() {
             return false;
         }
 
-        moved_node = find(moved_card, columns[source_column_index]);
+        moved_node = find_string(moved_card, columns[source_column_index]);
         if (!moved_node || !moved_node->card->visible) {
             set_message("Source column does not contain specified card");
             return false;
@@ -261,6 +261,7 @@ bool move_card_action() {
             set_message("Source column empty");
             return false;
         }
+
         moved_node = columns[source_column_index]->dummy->prev;
     }
 
@@ -282,18 +283,15 @@ bool move_card_action() {
         return false;
     }
 
-    if (destination_column[0] == 'F') {
+    if (destination_column[0] == 'F')
         add_last(remove_last(columns[source_column_index]), foundations[destination_column_index]);
-
-    } else {
-        move_card(moved_node, columns[source_column_index], columns[destination_column_index]);
-    }
-
-    set_message("OK");
+    else
+        move_node(moved_node, columns[source_column_index], columns[destination_column_index]);
 
     if (columns[source_column_index]->dummy)
         last(columns[source_column_index])->visible = true;
 
+    set_message("OK");
     return true;
 }
 
@@ -319,16 +317,15 @@ void quit_game() {
     play_phase_active = false;
     free_columns();
 
-    for (int i = 0; i < NO_FOUNDATIONS; ++i) {
+    for (int i = 0; i < NO_FOUNDATIONS; ++i)
         free_linked_list(foundations[i], false);
-    }
 }
 
 void distribute_cards_into_columns_for_game(linked_list *list) {
     if (!list)
         return;
 
-    linked_list *list_copy = copy_linked_list(list);
+    linked_list *list_copy = copy(list);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
@@ -358,7 +355,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
         }
         cursor->card->visible = false;
 
-        move_card(cursor, list_copy, columns[i - next_shortest_column_length + 1]);
+        move_node(cursor, list_copy, columns[i - next_shortest_column_length + 1]);
     }
 
     add_last(remove_last(list_copy), columns[0]);
@@ -373,7 +370,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
     if (!list)
         return;
 
-    linked_list *list_copy = copy_linked_list(list);
+    linked_list *list_copy = copy(list);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = malloc(sizeof(linked_list));
@@ -403,7 +400,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
         }
 
         cursor->card->visible = visible;
-        move_card(cursor, list_copy, columns[i]);
+        move_node(cursor, list_copy, columns[i]);
     }
 
     free(list_copy);

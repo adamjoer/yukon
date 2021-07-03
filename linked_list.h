@@ -33,11 +33,15 @@ card *remove_last(linked_list *list);
 
 card *last(linked_list *list);
 
-node *find(const char *card, linked_list *list);
+node *find_string(const char *search, linked_list *list);
+
+bool contains_card(card *search, linked_list *list);
+
+bool contains_node(node *search, linked_list *list);
 
 void move_node(node *card, linked_list *origin, linked_list *destination);
 
-linked_list *copy_linked_list(linked_list *list);
+linked_list *copy(linked_list *list);
 
 void shuffle_linked_list(linked_list *list);
 

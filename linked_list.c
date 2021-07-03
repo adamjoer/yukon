@@ -208,8 +208,8 @@ card *last(linked_list *list) {
  * Function for linearly searching a linked list for a specific card.
  * Returns null if the list doesn't contain it.
  */
-node *find(const char *card, linked_list *list) {
-    if (strlen(card) != 2)
+node *find_string(const char *search, linked_list *list) {
+    if (strlen(search) != 2)
         return NULL;
 
     // Pointer for going over the list
@@ -218,8 +218,8 @@ node *find(const char *card, linked_list *list) {
     // Go over each node in the list
     while (cursor != list->dummy) {
 
-        // If the node's card matches the card being search for, return it
-        if (cursor->card->rank == card[0] && cursor->card->suit == card[1])
+        // If the node's card matches the card being searched for, return its node
+        if (cursor->card->rank == search[0] && cursor->card->suit == search[1])
             return cursor;
 
         // Set cursor to next node
@@ -228,6 +228,47 @@ node *find(const char *card, linked_list *list) {
 
     // The card wasn't found; return null
     return NULL;
+}
+
+bool contains_card(card *search, linked_list *list) {
+
+    // Pointer for going over the list
+    node *cursor = list->head;
+
+    // Go over each node in the list
+    while (cursor != list->dummy) {
+
+        // If the node's card matches the card being searched for, return its node
+        if (cursor->card == search)
+            return true;
+
+        // Set cursor to next node
+        cursor = cursor->next;
+    }
+
+    // The card wasn't found; return null
+    return false;
+}
+
+bool contains_node(node *search, linked_list *list) {
+
+    // Pointer for going over the list
+    node *cursor = list->head;
+
+    // Go over each node in the list
+    while (cursor != list->dummy) {
+
+        // If the node's card matches the card being search for, return its node
+        if (cursor == search)
+            return true;
+
+        // Set cursor to next node
+        cursor = cursor->next;
+    }
+
+    // The node wasn't found; return null
+    return false;
+
 }
 
 /*
@@ -301,19 +342,19 @@ void move_node(node *card, linked_list *origin, linked_list *destination) {
  * This does not copy the cards in that linked list,
  * so the copy's nodes will point at the same cards as the original.
  */
-linked_list *copy_linked_list(linked_list *list) {
+linked_list *copy(linked_list *list) {
     if (!list)
         return NULL;
 
     linked_list *list_copy = malloc(sizeof(linked_list));
     if (!list_copy) {
-        perror("copy_linked_list");
+        perror("copy");
         exit(1);
     }
 
     list_copy->dummy = malloc(sizeof(node));
     if (!list_copy->dummy) {
-        perror("copy_linked_list");
+        perror("copy");
         exit(1);
     }
 
@@ -327,7 +368,7 @@ linked_list *copy_linked_list(linked_list *list) {
 
         cur_node = malloc(sizeof(node));
         if (!cur_node) {
-            perror("copy_linked_list");
+            perror("copy");
             exit(1);
         }
 

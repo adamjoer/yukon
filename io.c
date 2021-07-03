@@ -80,8 +80,8 @@ int validate_file(char *filepath) {
     char format_string[16];
     sprintf(format_string, "%%%d[^\r\n] ", IN_BUFFER_SIZE - 1);
     while (fscanf(file, format_string, line_buffer) != EOF) {
-        if (strlen(line_buffer) != 2) {
 
+        if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
                     "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
@@ -292,6 +292,7 @@ int get_user_command() {
                 moved_card[0] = '\0';
 
                 return MOVE_CARD;
+
             } else if (input_length == 9) {
                 if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>') {
                     return INVALID_INPUT_FORMAT;
@@ -316,13 +317,13 @@ int get_user_command() {
 }
 
 bool is_valid_column(char *string) {
-    return strlen(string) == 2 && string[0] == 'C' &&
-           isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_COLUMNS + '0';
+    return strlen(string) == 2 && string[0] == 'C' && isdigit(string[1]) &&
+           string[1] >= '1' && string[1] <= NO_COLUMNS + '0';
 }
 
 bool is_valid_foundation(char *string) {
-    return strlen(string) == 2 && string[0] == 'F' &&
-           isdigit(string[1]) && string[1] >= '1' && string[1] <= NO_FOUNDATIONS + '0';
+    return strlen(string) == 2 && string[0] == 'F' && isdigit(string[1]) &&
+           string[1] >= '1' && string[1] <= NO_FOUNDATIONS + '0';
 }
 
 bool is_valid_card(char *string) {

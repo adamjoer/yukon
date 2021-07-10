@@ -364,7 +364,7 @@ linked_list *copy(linked_list *list) {
     list_copy->dummy->card = NULL;
 
     node *copy_cursor = list->head;
-    node *cur_node;
+    node *cur_node = NULL;
     node *prev_node;
     for (int i = 1, n = length(list); i <= n; ++i) {
         prev_node = cur_node;
@@ -407,8 +407,14 @@ linked_list *copy(linked_list *list) {
  */
 void shuffle_linked_list(linked_list *list) {
     int len = length(list);
+    if (len <= 1)
+        return;
 
-    node *node_pointers[len];
+    node **node_pointers = malloc(sizeof(node *) * len);
+    if (!node_pointers) {
+        perror("shuffle_linked_list");
+        exit(1);
+    }
 
     node *cursor = list->head;
     for (int i = 0; i < len; ++i) {
@@ -437,13 +443,15 @@ void shuffle_linked_list(linked_list *list) {
             node_pointers[i]->next = node_pointers[i + 1];
         }
     }
+
+    free(node_pointers);
 }
 
 void shuffle_array(node *array[], int length) {
     srand(time(NULL));
 
     node *temp;
-    size_t random_index;
+    int random_index;
     for (int i = 0; i < length - 1; ++i) {
         random_index = i + rand() / (RAND_MAX / (length - i) + 1);
         temp = array[random_index];
@@ -519,4 +527,3 @@ void print_linked_list(linked_list *list) {
     printf("  length=%d, (saved length=%d)\n", length, list->length);
     printf("}\n");
 }
-

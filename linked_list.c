@@ -512,7 +512,7 @@ void print_linked_list(linked_list *list) {
         card = cursor->card;
 
         printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
-        printf("    card: rank=%c, suit=%c, value=%d, visible=%d\n", card->rank, card->suit, card->value,
+        printf("    card: addr=%p rank=%c, suit=%c, value=%d, visible=%d\n", card, card->rank, card->suit, card->value,
                card->visible);
 
         cursor = cursor->next;

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "linked_list.h"
+#include "io.h"
 
 extern bool play_phase_active;
 extern bool show_columns;
 
 void game_loop();
 
-void execute_user_command(int command);
+void execute_user_command(enum command command);
 
 bool move_card_action();
 

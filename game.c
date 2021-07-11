@@ -32,7 +32,7 @@ void game_loop() {
     free_columns();
 }
 
-void execute_user_command(int command) {
+void execute_user_command(enum command command) {
 
     char *filepath;
 
@@ -54,7 +54,7 @@ void execute_user_command(int command) {
             }
 
             if (strlen(argument) > 0) {
-                if (validate_file(argument) != 0)
+                if (validate_file(argument) != OK)
                     break;
             }
 
@@ -199,6 +199,7 @@ void execute_user_command(int command) {
             set_message("Unknown command");
             break;
 
+        case ERROR:
         default:
             set_message("Input parser failed");
     }

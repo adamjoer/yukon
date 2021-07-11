@@ -1,26 +1,32 @@
 #pragma once
 
+#include "linked_list.h"
+
 #define IN_BUFFER_SIZE 64
 
-#define FILE_NOT_FOUND 1
-#define INVALID_FORMAT 2
-#define INVALID_RANK 3
-#define INVALID_SUIT 4
-#define INVALID_SUIT_CARD_COUNT 5
-#define INVALID_RANK_CARD_COUNT 6
+enum validation_status {
+    OK,
+    FILE_NOT_FOUND,
+    INVALID_FORMAT,
+    INVALID_RANK,
+    INVALID_SUIT,
+    INVALID_SUIT_CARD_COUNT,
+    INVALID_RANK_CARD_COUNT
+};
 
-#define INVALID_INPUT_FORMAT 1
-#define PLAY 2
-#define QUIT_GAME 3
-#define QUIT_PROGRAM 4
-#define LOAD_FILE 5
-#define SHOW_CARDS 6
-#define SHUFFLE_SPLIT 7
-#define SHUFFLE_RANDOM 8
-#define SAVE_DECK 9
-#define MOVE_CARD 10
-
-#include "linked_list.h"
+enum command {
+    INVALID_INPUT_FORMAT,
+    ERROR,
+    PLAY,
+    QUIT_GAME,
+    QUIT_PROGRAM,
+    LOAD_FILE,
+    SHOW_CARDS,
+    SHUFFLE_SPLIT,
+    SHUFFLE_RANDOM,
+    SAVE_DECK,
+    MOVE_CARD
+};
 
 extern char moved_card[];
 extern char source_column[];
@@ -29,9 +35,9 @@ extern char argument[];
 
 linked_list *load_from_file(char *filepath, bool check_file);
 
-int validate_file(char *filepath);
+enum validation_status validate_file(char *filepath);
 
-int get_user_command();
+enum command get_user_command();
 
 bool is_valid_column(char *string);
 

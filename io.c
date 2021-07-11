@@ -14,7 +14,7 @@ char argument[IN_BUFFER_SIZE];
 
 linked_list *load_from_file(char *filepath, bool check_file) {
     if (check_file) {
-        if (validate_file(filepath) != 0)
+        if (validate_file(filepath) != OK)
             return NULL;
     }
 
@@ -52,7 +52,7 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     return list;
 }
 
-int validate_file(char *filepath) {
+enum validation_status validate_file(char *filepath) {
 
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
@@ -159,16 +159,18 @@ int validate_file(char *filepath) {
     }
 
     fclose(file);
-    return 0;
+    return OK;
 }
 
-int get_user_command() {
+enum command get_user_command() {
 
     source_column[2] = destination_column[2] = moved_card[2] = '\0';
 
     char input_buffer[IN_BUFFER_SIZE];
 
-    fgets(input_buffer, IN_BUFFER_SIZE, stdin);
+    if (!fgets(input_buffer, IN_BUFFER_SIZE, stdin))
+        return ERROR;
+
     size_t input_length = strlen(input_buffer);
     if (input_buffer[input_length - 1] == '\n')
         input_buffer[--input_length] = '\0';

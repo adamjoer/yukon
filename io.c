@@ -343,11 +343,8 @@ void save_deck_to_file(linked_list *list, char *filepath) {
         return;
     }
 
-    node *cursor = list->head;
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next;) 
         fprintf(file, "%c%c\n", cursor->card->rank, cursor->card->suit);
-        cursor = cursor->next;
-    }
 
     fclose(file);
     sprintf(output_buffer, "Deck saved to file '%s'", filepath);

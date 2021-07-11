@@ -17,13 +17,9 @@ int length(linked_list *list) {
     if (list->length >= 0)
         return list->length;
 
-    node *cursor = list->head;
-
     int length = 0;
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         ++length;
-        cursor = cursor->next;
-    }
 
     list->length = length;
     return length;
@@ -215,18 +211,12 @@ node *find_string(const char *search, linked_list *list) {
     if (strlen(search) != 2)
         return NULL;
 
-    // Pointer for going over the list
-    node *cursor = list->head;
-
     // Go over each node in the list
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being searched for, return its node
         if (cursor->card->rank == search[0] && cursor->card->suit == search[1])
             return cursor;
-
-        // Set cursor to next node
-        cursor = cursor->next;
     }
 
     // The card wasn't found; return null
@@ -235,18 +225,12 @@ node *find_string(const char *search, linked_list *list) {
 
 bool contains_card(card *search, linked_list *list) {
 
-    // Pointer for going over the list
-    node *cursor = list->head;
-
     // Go over each node in the list
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being searched for, return its node
         if (cursor->card == search)
             return true;
-
-        // Set cursor to next node
-        cursor = cursor->next;
     }
 
     // The card wasn't found; return null
@@ -255,18 +239,12 @@ bool contains_card(card *search, linked_list *list) {
 
 bool contains_node(node *search, linked_list *list) {
 
-    // Pointer for going over the list
-    node *cursor = list->head;
-
     // Go over each node in the list
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being search for, return its node
         if (cursor == search)
             return true;
-
-        // Set cursor to next node
-        cursor = cursor->next;
     }
 
     // The node wasn't found; return null
@@ -465,14 +443,11 @@ void free_linked_list(linked_list *list, bool free_cards) {
     if (!list)
         return;
 
-    // Pointer for going over the list
-    node *cursor = list->head;
-
     // Temporary pointer so a node being freed doesn't get lost
     node *temp;
 
     // Go over each node in the linked list
-    while (cursor != list->dummy) {
+    for (node *cursor = list->head; cursor != list->dummy;) {
 
         // Save node in temporary pointer
         temp = cursor;
@@ -503,19 +478,16 @@ void print_linked_list(linked_list *list) {
     }
 
     int length = 0;
-    node *cursor = list->head;
+    node *cursor;
     card *card;
     printf("{\n");
     printf("  head=%p\n", list->head);
-    while (cursor != list->dummy) {
-
+    for (cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
         card = cursor->card;
 
         printf("  node: prev=%p, addr=%p, next=%p\n", cursor->prev, cursor, cursor->next);
         printf("    card: addr=%p rank=%c, suit=%c, value=%d, visible=%d\n", card, card->rank, card->suit, card->value,
                card->visible);
-
-        cursor = cursor->next;
 
         if (++length > 100) {
             printf("  ...\n");

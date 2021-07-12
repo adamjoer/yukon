@@ -58,7 +58,7 @@ enum validation_status validate_file(char *filepath) {
 
     FILE *file = fopen(filepath, "r");
     if (!file) {
-        sprintf(output_buffer, "File '%s' not found", filepath);
+        sprintf(output_buffer, "File '%s' couldn't be opened: %s", filepath, strerror(errno));
         set_message(output_buffer);
         return FILE_NOT_FOUND;
     }
@@ -338,12 +338,12 @@ void save_deck_to_file(linked_list *list, char *filepath) {
 
     FILE *file = fopen(filepath, "w");
     if (!file) {
-        sprintf(output_buffer, "File name '%s' is invalid", filepath);
+        sprintf(output_buffer, "File '%s' not created: %s", filepath, strerror(errno));
         set_message(output_buffer);
         return;
     }
 
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next;) 
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         fprintf(file, "%c%c\n", cursor->card->rank, cursor->card->suit);
 
     fclose(file);

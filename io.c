@@ -177,8 +177,8 @@ enum command get_user_command() {
 
     set_last_command(input_buffer);
 
-    input_buffer[0] = toupper(input_buffer[0]);
-    input_buffer[1] = toupper(input_buffer[1]);
+    input_buffer[0] = (char) toupper(input_buffer[0]);
+    input_buffer[1] = (char) toupper(input_buffer[1]);
 
     if (input_length == 1) {
 
@@ -288,8 +288,8 @@ enum command get_user_command() {
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
 
-                destination_column[0] = toupper(input_buffer[4]);
-                destination_column[1] = toupper(input_buffer[5]);
+                destination_column[0] = (char) toupper(input_buffer[4]);
+                destination_column[1] = (char) toupper(input_buffer[5]);
 
                 moved_card[0] = '\0';
 
@@ -303,11 +303,11 @@ enum command get_user_command() {
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
 
-                moved_card[0] = toupper(input_buffer[3]);
-                moved_card[1] = toupper(input_buffer[4]);
+                moved_card[0] = (char) toupper(input_buffer[3]);
+                moved_card[1] = (char) toupper(input_buffer[4]);
 
-                destination_column[0] = toupper(input_buffer[7]);
-                destination_column[1] = toupper(input_buffer[8]);
+                destination_column[0] = (char) toupper(input_buffer[7]);
+                destination_column[1] = (char) toupper(input_buffer[8]);
 
                 return MOVE_CARD;
 

@@ -26,14 +26,11 @@ int length(linked_list *list) {
 }
 
 /* Function for adding a card to the beginning of a linked list */
-void add_first(card *x, linked_list *list) {
-
-    node **head = &list->head;
-    node **dummy = &list->dummy;
+void add_first(card *insert, linked_list *list) {
 
     // Allocate memory for the new list element
-    node *insert = malloc(sizeof(node));
-    if (!insert) {
+    node *new_node = malloc(sizeof(node));
+    if (!new_node) {
 
         // If malloc returned NULL it couldn't allocate any space, stop the program
         perror("add_first");
@@ -41,85 +38,82 @@ void add_first(card *x, linked_list *list) {
     }
 
     // Initialize values in the node
-    insert->card = x;
-    insert->next = *head;
+    new_node->card = insert;
+    new_node->next = list->head;
 
     // If the list isn't empty, the first element's prev needs to point at the insert
-    if (*head)
-        (*head)->prev = insert;
+    if (list->head)
+        list->head->prev = new_node;
 
     // Change head so it points at the new node
-    *head = insert;
+    list->head = new_node;
 
-    if (!*dummy) {
+    if (!list->dummy) {
 
         // If dummy is NULL, it needs to be initialized
-        *dummy = malloc(sizeof(node));
-        if (!*dummy) {
+        list->dummy = malloc(sizeof(node));
+        if (!list->dummy) {
 
             // Again check if malloc failed
             perror("add_first");
             exit(1);
         }
-        (*dummy)->card = NULL;
-        (*dummy)->prev = *head;
+        list->dummy->card = NULL;
+        list->dummy->prev = list->head;
 
         // The last element in the list should point at dummy.
         // Since there is only one element in it right now, the first element should point at dummy
-        insert->next = *dummy;
+        new_node->next = list->dummy;
     }
 
     // Change dummy's pointers so that it points that he new start
-    (*dummy)->next = *head;
+    list->dummy->next = list->head;
 
     // The first element's prev should point at dummy;
-    insert->prev = *dummy;
+    new_node->prev = list->dummy;
 
     if (list->length >= 0)
         ++list->length;
 }
 
 /* Function for adding a card to the end of a linked list */
-void add_last(card *x, linked_list *list) {
-
-    node **head = &list->head;
-    node **dummy = &list->dummy;
+void add_last(card *insert, linked_list *list) {
 
     // Allocate memory for the new list element
-    node *insert = malloc(sizeof(node));
-    if (!insert) {
+    node *new_node = malloc(sizeof(node));
+    if (!new_node) {
 
         // If malloc returned NULL it couldn't allocate any space, stop the program
         perror("add_last");
         exit(1);
     }
-    insert->card = x;
+    new_node->card = insert;
 
-    if (!*dummy) {
+    if (!list->dummy) {
 
-        *head = insert;
+        list->head = new_node;
 
         // If dummy is NULL, it needs to be initialized
-        *dummy = malloc(sizeof(node));
-        if (!*dummy) {
+        list->dummy = malloc(sizeof(node));
+        if (!list->dummy) {
 
             // Again check if malloc failed
             perror("add_last");
             exit(1);
         }
-        (*dummy)->card = NULL;
-        (*dummy)->next = (*dummy)->prev = *head;
+        list->dummy->card = NULL;
+        list->dummy->next = list->dummy->prev = list->head;
 
         // The last element in the list should point at dummy.
         // Since there is only one element in it right now, the first element should point at dummy
-        insert->next = insert->prev = *dummy;
+        new_node->next = new_node->prev = list->dummy;
 
     } else {
-        insert->prev = (*dummy)->prev;
-        insert->next = *dummy;
+        new_node->prev = list->dummy->prev;
+        new_node->next = list->dummy;
 
-        ((*dummy)->prev)->next = insert;
-        (*dummy)->prev = insert;
+        list->dummy->prev->next = new_node;
+        list->dummy->prev = new_node;
     }
 
     if (list->length >= 0)
@@ -128,34 +122,31 @@ void add_last(card *x, linked_list *list) {
 
 /* Function for removing the first node in a linked list and returning its card */
 card *remove_first(linked_list *list) {
-    node **head = &list->head;
-    node **dummy = &list->dummy;
-
-    if (!*head) {
+    if (!list->head) {
         printf("Cannot remove node from empty list\n");
         exit(1);
     }
 
     // Pointer to the node to remove
-    node *delete = *head;
+    node *delete = list->head;
 
     // Set the new head, to be the value of the next element
-    *head = (*head)->next;
+    list->head = list->head->next;
 
     // Set the new head's prev pointer to the dummy
-    (*head)->prev = *dummy;
+    list->head->prev = list->dummy;
 
     // Correct the pointer in the dummy
-    (*dummy)->next = *head;
+    list->dummy->next = list->head;
 
     // Save the card of the node before freeing it
     card *card = delete->card;
     free(delete);
 
     // If the list is now empty, dummy should also be freed
-    if (*head == *dummy) {
-        free(*dummy);
-        *head = *dummy = NULL;
+    if (list->head == list->dummy) {
+        free(list->dummy);
+        list->head = list->dummy = NULL;
     }
 
     if (list->length > 0)
@@ -167,23 +158,21 @@ card *remove_first(linked_list *list) {
 
 /* Function for removing the last (not dummy) node in a linked list and returning its card */
 card *remove_last(linked_list *list) {
-    node **head = &list->head;
-    node **dummy = &list->dummy;
 
-    if (!*head) {
+    if (!list->head) {
         printf("Cannot remove node from empty list\n");
         exit(1);
     }
 
-    node *delete = (*dummy)->prev;
+    node *delete = list->dummy->prev;
 
-    if (delete == *head) {
-        free(*dummy);
-        *head = *dummy = NULL;
+    if (delete == list->head) {
+        free(list->dummy);
+        list->head = list->dummy = NULL;
 
     } else {
-        (delete->prev)->next = *dummy;
-        (*dummy)->prev = delete->prev;
+        (delete->prev)->next = list->dummy;
+        list->dummy->prev = delete->prev;
     }
     card *card = delete->card;
 
@@ -315,6 +304,7 @@ void move_node(node *card, linked_list *origin, linked_list *destination) {
         *source_head = *source_dummy = NULL;
     }
 
+    // Invalidate the stored length of both lists
     origin->length = destination->length = -1;
 }
 

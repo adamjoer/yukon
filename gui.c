@@ -47,7 +47,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
         }
 
         if (i % 2 == 0 && foundation_counter < NO_FOUNDATIONS) {
-            if (play_phase_active && foundations[foundation_counter]->dummy) {
+            if (play_phase_active && !is_empty(foundations[foundation_counter])) {
                 printf("\t%c%c\tF%d",
                        last(foundations[foundation_counter])->rank,
                        last(foundations[foundation_counter])->suit,

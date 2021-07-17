@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include "io.h"
 #include "game.h"
@@ -20,14 +21,7 @@ linked_list *load_from_file(char *filepath, bool check_file) {
 
     FILE *file = fopen(filepath, "r");
 
-    linked_list *list = malloc(sizeof(linked_list));
-    if (!list) {
-        perror("load_from_file");
-        exit(1);
-    }
-
-    list->head = list->dummy = NULL;
-    list->length = -1;
+    linked_list *list = init_linked_list();
 
     char rank, suit;
     card *new_card;

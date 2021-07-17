@@ -88,14 +88,7 @@ void execute_user_command(enum command command) {
             play_phase_active = true;
 
             for (int i = 0; i < NO_FOUNDATIONS; ++i) {
-                foundations[i] = malloc(sizeof(linked_list));
-                if (!foundations[i]) {
-                    perror("execute_user_command");
-                    exit(1);
-                }
-
-                foundations[i]->head = foundations[i]->dummy = NULL;
-                foundations[i]->length = -1;
+                foundations[i] = init_linked_list();
             }
 
             set_message("OK");
@@ -180,7 +173,7 @@ void execute_user_command(enum command command) {
 
             bool game_won = true;
             for (int i = 0; i < NO_FOUNDATIONS && game_won; ++i) {
-                if (!foundations[i]->dummy || last(foundations[i])->value != 13)
+                if (is_empty(foundations[i]) || last(foundations[i])->value != 13)
                     game_won = false;
             }
 
@@ -258,7 +251,7 @@ bool move_card_action() {
         }
 
     } else {
-        if (!columns[source_column_index]->dummy) {
+        if (is_empty(columns[source_column_index])) {
             set_message("Source column empty");
             return false;
         }
@@ -267,13 +260,13 @@ bool move_card_action() {
     }
 
     if (destination_column[0] == 'F') {
-        if (!foundations[destination_column_index]->dummy)
+        if (is_empty(foundations[destination_column_index]))
             destination_node = NULL;
         else
             destination_node = foundations[destination_column_index]->dummy->prev;
 
     } else {
-        if (!columns[destination_column_index]->dummy)
+        if (is_empty(columns[destination_column_index]))
             destination_node = NULL;
         else
             destination_node = columns[destination_column_index]->dummy->prev;
@@ -289,7 +282,7 @@ bool move_card_action() {
     else
         move_node(moved_node, columns[source_column_index], columns[destination_column_index]);
 
-    if (columns[source_column_index]->dummy)
+    if (!is_empty(columns[source_column_index]))
         last(columns[source_column_index])->visible = true;
 
     set_message("OK");
@@ -329,20 +322,14 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
     linked_list *list_copy = copy(list);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
-        columns[i] = malloc(sizeof(linked_list));
-        if (!columns[i]) {
-            perror("distribute_cards_into_columns_for_game");
-            exit(1);
-        }
-
-        columns[i]->head = columns[i]->dummy = NULL;
-        columns[i]->length = -1;
+        columns[i] = init_linked_list();
     }
 
     node *cursor;
     int counter;
     for (int i = LONGEST_COLUMN_LENGTH, next_shortest_column_length = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2);
-         i >= next_shortest_column_length; --i) {
+         i >= next_shortest_column_length;
+         --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 
@@ -362,7 +349,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
     add_last(remove_last(list_copy), columns[0]);
     columns[0]->head->card->visible = true;
 
-    free(list_copy);
+    free_linked_list(list_copy, false);
 
     show_columns = true;
 }
@@ -374,19 +361,11 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
     linked_list *list_copy = copy(list);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
-        columns[i] = malloc(sizeof(linked_list));
-        if (!columns[i]) {
-            perror("distribute_cards_into_columns_for_show");
-            exit(1);
-        }
-
-        columns[i]->head = columns[i]->dummy = NULL;
-        columns[i]->length = -1;
+        columns[i] = init_linked_list();
     }
 
     node *cursor;
-    int counter, column_length;
-    for (int i = NO_COLUMNS - 1; i >= 0; --i) {
+    for (int i = NO_COLUMNS - 1, counter, column_length; i >= 0; --i) {
         cursor = list_copy->dummy->prev;
         counter = 0;
 
@@ -404,7 +383,7 @@ void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
         move_node(cursor, list_copy, columns[i]);
     }
 
-    free(list_copy);
+    free_linked_list(list_copy, false);
 
     show_columns = true;
 }
@@ -439,13 +418,7 @@ void load_default_deck() {
     const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
     const char suits[] = {'C', 'D', 'S', 'H'};
 
-    deck = malloc(sizeof(linked_list));
-    if (!deck) {
-        perror("load_default_deck");
-        exit(1);
-    }
-    deck->head = deck->dummy = NULL;
-    deck->length = 0;
+    deck = init_linked_list();
 
     int ranks_index = 0;
     card *insert_card;

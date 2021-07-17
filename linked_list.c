@@ -117,7 +117,9 @@ void add_last(card *insert, linked_list *list) {
         ++list->length;
 }
 
-/* Function for removing the first node in a linked list and returning its card */
+/* Function for removing the first node in a linked list
+ * and returning its card
+ */
 card *remove_first(linked_list *list) {
     if (is_empty(list)) {
         printf("Cannot remove node from empty list\n");
@@ -147,7 +149,9 @@ card *remove_first(linked_list *list) {
     return card;
 }
 
-/* Function for removing the last (not dummy) node in a linked list and returning its card */
+/* Function for removing the last (not dummy) node in a linked list
+ * and returning its card.
+ */
 card *remove_last(linked_list *list) {
     if (is_empty(list)) {
         printf("Cannot remove node from empty list\n");
@@ -180,8 +184,9 @@ card *last(linked_list *list) {
 }
 
 /*
- * Function for linearly searching a linked list for a specific card.
- * Returns null if the list doesn't contain it.
+ * Function for linearly searching a linked list for a specific card
+ * specified by a string. Returns null if the list doesn't contain it,
+ * otherwise returns the node containing the card.
  */
 node *find_string(const char *search, linked_list *list) {
     if (strlen(search) != 2)
@@ -199,6 +204,11 @@ node *find_string(const char *search, linked_list *list) {
     return NULL;
 }
 
+/*
+ * Function for linearly searching a linked list for a specific card
+ * specified by a pointer. Returns false if the list doesn't contain it,
+ * true otherwise.
+ */
 bool contains_card(card *search, linked_list *list) {
 
     // Go over each node in the list
@@ -213,6 +223,11 @@ bool contains_card(card *search, linked_list *list) {
     return false;
 }
 
+/*
+ * Function for linearly searching a linked list for a specific node
+ * specified by a string. Returns null if the list doesn't contain it,
+ * true otherwise.
+ */
 bool contains_node(node *search, linked_list *list) {
 
     // Go over each node in the list
@@ -229,7 +244,8 @@ bool contains_node(node *search, linked_list *list) {
 }
 
 /*
- * Function for moving a given node, and any potential nodes after it, from one linked list to another.
+ * Function for moving a specific node, and any potential kids of
+ * the it, from one linked list to another.
  * The nodes will be added to the end of the destination list.
  */
 void move_node(node *moving_node, linked_list *origin, linked_list *destination) {

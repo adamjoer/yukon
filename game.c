@@ -198,6 +198,32 @@ void execute_user_command(enum command command) {
     }
 }
 
+void load_default_deck() {
+    const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
+    const char suits[] = {'C', 'D', 'S', 'H'};
+
+    deck = init_linked_list();
+
+    int ranks_index = 0;
+    card *insert_card;
+    for (int i = 0; i < 52; ++i) {
+
+        insert_card = malloc(sizeof(card));
+        if (!insert_card) {
+            perror("load_default_deck");
+            exit(1);
+        }
+        insert_card->rank = ranks[ranks_index];
+        insert_card->suit = suits[i / 13];
+        insert_card->value = get_card_value(ranks[ranks_index]);
+        insert_card->visible = false;
+
+        add_last(insert_card, deck);
+
+        ranks_index = (ranks_index + 1) % 13;
+    }
+}
+
 void free_columns() {
     if (!show_columns)
         return;
@@ -411,31 +437,5 @@ int get_card_value(char rank) {
             return 13;
         default:
             return -1;
-    }
-}
-
-void load_default_deck() {
-    const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
-    const char suits[] = {'C', 'D', 'S', 'H'};
-
-    deck = init_linked_list();
-
-    int ranks_index = 0;
-    card *insert_card;
-    for (int i = 0; i < 52; ++i) {
-
-        insert_card = malloc(sizeof(card));
-        if (!insert_card) {
-            perror("load_default_deck");
-            exit(1);
-        }
-        insert_card->rank = ranks[ranks_index];
-        insert_card->suit = suits[i / 13];
-        insert_card->value = get_card_value(ranks[ranks_index]);
-        insert_card->visible = false;
-
-        add_last(insert_card, deck);
-
-        ranks_index = (ranks_index + 1) % 13;
     }
 }

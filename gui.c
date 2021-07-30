@@ -65,7 +65,7 @@ void print_board(linked_list *columns[], linked_list *foundations[]) {
     printf("LAST Command: %s\nMessage: %s\nINPUT> ", last_command, message);
 }
 
-void clear_console() {
+static void clear_console() {
 #ifdef _WIN32
     system("cls");
 #else

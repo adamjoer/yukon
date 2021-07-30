@@ -389,7 +389,7 @@ void shuffle_linked_list(linked_list *list) {
     free(node_pointers);
 }
 
-void shuffle_array(node *array[], int length) {
+static void shuffle_array(node *array[], int length) {
     srand(time(NULL));
 
     node *temp;

@@ -32,7 +32,7 @@ void game_loop() {
     free_columns();
 }
 
-void execute_user_command(enum command command) {
+static void execute_user_command(enum command command) {
 
     char *filepath;
 
@@ -198,7 +198,7 @@ void execute_user_command(enum command command) {
     }
 }
 
-void load_default_deck() {
+static void load_default_deck() {
     const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
     const char suits[] = {'C', 'D', 'S', 'H'};
 
@@ -224,7 +224,7 @@ void load_default_deck() {
     }
 }
 
-void free_columns() {
+static void free_columns() {
     if (!show_columns)
         return;
 
@@ -234,7 +234,7 @@ void free_columns() {
     show_columns = false;
 }
 
-bool move_card_action() {
+static bool move_card_action() {
 
     if (!is_valid_column(source_column)) {
         set_message("Invalid source column");
@@ -315,7 +315,7 @@ bool move_card_action() {
     return true;
 }
 
-bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
+static bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
     if (!destination_node) {
         if (is_to_foundation)
             return !moved_node->next->card && moved_node->card->value == 1;
@@ -333,7 +333,7 @@ bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundati
            destination_node->card->suit != moved_node->card->suit;
 }
 
-void quit_game() {
+static void quit_game() {
     play_phase_active = false;
     free_columns();
 
@@ -341,7 +341,7 @@ void quit_game() {
         free_linked_list(foundations[i], false);
 }
 
-void distribute_cards_into_columns_for_game(linked_list *list) {
+static void distribute_cards_into_columns_for_game(linked_list *list) {
     if (!list)
         return;
 
@@ -380,7 +380,7 @@ void distribute_cards_into_columns_for_game(linked_list *list) {
     show_columns = true;
 }
 
-void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
+static void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
     if (!list)
         return;
 

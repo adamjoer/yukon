@@ -14,7 +14,7 @@ extern char message[];
 
 void print_board(linked_list *columns[], linked_list *foundations[]);
 
-void clear_console();
+static void clear_console();
 
 void set_message(char *new_message);
 

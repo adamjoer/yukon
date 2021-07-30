@@ -3,9 +3,6 @@
 #include "linked_list.h"
 #include "io.h"
 
-extern bool play_phase_active;
-extern bool show_columns;
-
 void game_loop();
 
 static void execute_user_command(enum command command);

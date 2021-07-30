@@ -19,7 +19,7 @@ void game_loop() {
     set_message("Welcome to Yukon");
 
     while (true) {
-        print_board(columns, foundations);
+        print_board(columns, foundations, show_columns, play_phase_active);
         if (!keep_playing) {
             printf("\n");
             break;

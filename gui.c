@@ -3,12 +3,12 @@
 #include <string.h>
 
 #include "gui.h"
-#include "game.h"
+#include "io.h"
 
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
-void print_board(linked_list *columns[], linked_list *foundations[]) {
+void print_board(linked_list *columns[], linked_list *foundations[], bool show_columns, bool play_phase_active) {
     node *cursors[NO_COLUMNS];
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;

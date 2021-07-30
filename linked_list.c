@@ -112,7 +112,8 @@ void add_last(card *insert, linked_list *list) {
         ++list->length;
 }
 
-/* Function for removing the first node in a linked list
+/*
+ * Function for removing the first node in a linked list
  * and returning its card
  */
 card *remove_first(linked_list *list) {
@@ -142,7 +143,8 @@ card *remove_first(linked_list *list) {
     return card;
 }
 
-/* Function for removing the last (not dummy) node in a linked list
+/*
+ * Function for removing the last (not dummy) node in a linked list
  * and returning its card.
  */
 card *remove_last(linked_list *list) {
@@ -205,12 +207,12 @@ bool contains_card(card *search, linked_list *list) {
     // Go over each node in the list
     for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
-        // If the node's card matches the card being searched for, return its node
+        // If the node's card matches the card being searched for, return true
         if (cursor->card == search)
             return true;
     }
 
-    // The card wasn't found; return null
+    // The card wasn't found; return false
     return false;
 }
 
@@ -224,20 +226,20 @@ bool contains_node(node *search, linked_list *list) {
     // Go over each node in the list
     for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
-        // If the node's card matches the card being search for, return its node
+        // If the node's card matches the card being search for, return true
         if (cursor == search)
             return true;
     }
 
-    // The node wasn't found; return null
+    // The node wasn't found; return false
     return false;
 
 }
 
 /*
  * Function for moving a specific node, and any potential kids of
- * the it, from one linked list to another.
- * The nodes will be added to the end of the destination list.
+ * it, from one linked list to another. The nodes will be added
+ * to the end of the destination list.
  */
 void move_node(node *moving_node, linked_list *origin, linked_list *destination) {
     if (origin == destination)
@@ -421,6 +423,11 @@ void free_linked_list(linked_list *list, bool free_cards) {
     free(list);
 }
 
+/*
+ * Function for printing a linked list to console.
+ * This is provides extensive information about a linked list,
+ * and is meant to be used for debugging purposes only.
+ */
 void print_linked_list(linked_list *list) {
     if (!list) {
         printf("linked list: addr=NULL\n");

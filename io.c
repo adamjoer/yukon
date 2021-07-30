@@ -5,7 +5,6 @@
 #include <errno.h>
 
 #include "io.h"
-#include "game.h"
 #include "gui.h"
 
 char moved_card[3];
@@ -29,8 +28,8 @@ linked_list *load_from_file(char *filepath, bool check_file) {
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(card));
         if (!new_card) {
-            perror("load_from_file");
-            exit(1);
+            free_linked_list(list, false);
+            return NULL;
         }
 
         new_card->rank = rank;
@@ -309,6 +308,32 @@ enum command get_user_command() {
                 return INVALID_INPUT_FORMAT;
             }
         }
+    }
+}
+
+int get_card_value(char rank) {
+    switch (rank) {
+        case 'A':
+            return 1;
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return rank - '0';
+        case 'T':
+            return 10;
+        case 'J':
+            return 11;
+        case 'Q':
+            return 12;
+        case 'K':
+            return 13;
+        default:
+            return -1;
     }
 }
 

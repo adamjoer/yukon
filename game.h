@@ -23,5 +23,3 @@ static void quit_game();
 static void distribute_cards_into_columns_for_game(linked_list *list);
 
 static void distribute_cards_into_columns_for_show(linked_list *list, bool visible);
-
-int get_card_value(char rank);

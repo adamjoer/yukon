@@ -414,28 +414,3 @@ static void distribute_cards_into_columns_for_show(linked_list *list, bool visib
     show_columns = true;
 }
 
-int get_card_value(char rank) {
-    switch (rank) {
-        case 'A':
-            return 1;
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-            return rank - '0';
-        case 'T':
-            return 10;
-        case 'J':
-            return 11;
-        case 'Q':
-            return 12;
-        case 'K':
-            return 13;
-        default:
-            return -1;
-    }
-}

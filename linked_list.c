@@ -11,15 +11,13 @@
 linked_list *init_linked_list() {
     linked_list *list = malloc(sizeof(linked_list));
     if (!list) {
-        perror("init_linked_list");
-        exit(1);
+        return NULL;
     }
 
     node *dummy = malloc(sizeof(node));
     if (!dummy) {
-        perror("init_linked_list");
         free(list);
-        exit(1);
+        return NULL;
     }
 
     dummy->card = NULL;
@@ -44,7 +42,7 @@ bool is_empty(linked_list *list) {
  * its length will be calculated and stored in the 'length' variable.
  */
 int length(linked_list *list) {
-    if (!list || !list->head)
+    if (!list)
         return 0;
 
     if (list->length >= 0)
@@ -63,12 +61,10 @@ void add_first(card *insert, linked_list *list) {
 
     // Allocate memory for the new list element
     node *new_node = malloc(sizeof(node));
-    if (!new_node) {
 
-        // If malloc returned NULL it couldn't allocate any space, stop the program
-        perror("add_first");
-        exit(1);
-    }
+    // If malloc returned NULL it couldn't allocate any memory; don't go further
+    if (!new_node)
+        return;
 
     // Initialize values in the node
     new_node->card = insert;
@@ -88,12 +84,11 @@ void add_last(card *insert, linked_list *list) {
 
     // Allocate memory for the new list element
     node *new_node = malloc(sizeof(node));
-    if (!new_node) {
 
-        // If malloc returned NULL it couldn't allocate any space, stop the program
-        perror("add_last");
-        exit(1);
-    }
+    // If malloc returned NULL it couldn't allocate any memory; don't go further
+    if (!new_node)
+        return;
+
     new_node->card = insert;
 
     if (is_empty(list)) {
@@ -121,10 +116,8 @@ void add_last(card *insert, linked_list *list) {
  * and returning its card
  */
 card *remove_first(linked_list *list) {
-    if (is_empty(list)) {
-        printf("Cannot remove node from empty list\n");
-        exit(1);
-    }
+    if (is_empty(list))
+        return NULL;
 
     // Pointer to the node to remove
     node *delete = list->head;
@@ -153,10 +146,8 @@ card *remove_first(linked_list *list) {
  * and returning its card.
  */
 card *remove_last(linked_list *list) {
-    if (is_empty(list)) {
-        printf("Cannot remove node from empty list\n");
-        exit(1);
-    }
+    if (is_empty(list))
+        return NULL;
 
     node *delete = list->dummy->prev;
 
@@ -304,6 +295,8 @@ linked_list *copy(linked_list *list) {
         return NULL;
 
     linked_list *list_copy = init_linked_list();
+    if (!list_copy)
+        return NULL;
 
     node *copy_cursor = list->head;
     node *cur_node = NULL;
@@ -313,8 +306,8 @@ linked_list *copy(linked_list *list) {
 
         cur_node = malloc(sizeof(node));
         if (!cur_node) {
-            perror("copy");
-            exit(1);
+            free_linked_list(list_copy, false);
+            return NULL;
         }
 
         cur_node->card = copy_cursor->card;
@@ -353,10 +346,8 @@ void shuffle_linked_list(linked_list *list) {
         return;
 
     node **node_pointers = malloc(sizeof(node *) * len);
-    if (!node_pointers) {
-        perror("shuffle_linked_list");
-        exit(1);
-    }
+    if (!node_pointers)
+        return;
 
     node *cursor = list->head;
     for (int i = 0; i < len; ++i) {

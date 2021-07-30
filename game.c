@@ -177,11 +177,8 @@ static void execute_user_command(enum command command) {
                     game_won = false;
             }
 
-            if (game_won) {
-                quit_game();
-                set_message("Congratulations! You won!");
-            }
-
+            if (game_won)
+                set_message("Congratulations, you won!");
             break;
 
         case SHUFFLE_SPLIT:
@@ -360,11 +357,7 @@ static void distribute_cards_into_columns_for_game(linked_list *list) {
         counter = 0;
 
         while (++counter < i) {
-            if (counter <= 5)
-                cursor->card->visible = true;
-            else
-                cursor->card->visible = false;
-
+            cursor->card->visible = counter <= 5;
             cursor = cursor->prev;
         }
         cursor->card->visible = false;
@@ -395,11 +388,7 @@ static void distribute_cards_into_columns_for_show(linked_list *list, bool visib
         cursor = list_copy->dummy->prev;
         counter = 0;
 
-        if (i < 3)
-            column_length = 8;
-        else
-            column_length = 7;
-
+        column_length = i < 3 ? 8 : 7;
         while (++counter < column_length) {
             cursor->card->visible = visible;
             cursor = cursor->prev;

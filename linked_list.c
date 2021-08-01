@@ -300,40 +300,9 @@ linked_list *copy(linked_list *list) {
     if (!list_copy)
         return NULL;
 
-    node *copy_cursor = list->head;
-    node *cur_node = NULL;
-    node *prev_node;
-    for (int i = 1, n = length(list); i <= n; ++i) {
-        prev_node = cur_node;
+    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
+        add_last(cursor->card, list_copy);
 
-        cur_node = malloc(sizeof(node));
-        if (!cur_node) {
-            free_linked_list(list_copy, false);
-            return NULL;
-        }
-
-        cur_node->card = copy_cursor->card;
-
-        if (i == 1) {
-            list_copy->head = cur_node;
-            list_copy->dummy->next = cur_node;
-            cur_node->prev = list_copy->dummy;
-
-        } else if (i == n) {
-            prev_node->next = cur_node;
-            cur_node->prev = prev_node;
-            cur_node->next = list_copy->dummy;
-            list_copy->dummy->prev = cur_node;
-
-        } else {
-            cur_node->prev = prev_node;
-            prev_node->next = cur_node;
-        }
-
-        copy_cursor = copy_cursor->next;
-    }
-
-    list_copy->length = list->length;
     return list_copy;
 }
 

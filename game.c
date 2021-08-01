@@ -66,7 +66,7 @@ static void execute_user_command(enum command command) {
             else
                 load_default_deck();
 
-            distribute_cards_into_columns_for_show(deck, false);
+            generate_columns_show(false);
 
             set_message("OK");
             break;
@@ -84,7 +84,7 @@ static void execute_user_command(enum command command) {
 
             free_columns();
 
-            distribute_cards_into_columns_for_game(deck);
+            generate_columns_game();
             play_phase_active = true;
 
             for (int i = 0; i < NO_FOUNDATIONS; ++i) {
@@ -118,7 +118,7 @@ static void execute_user_command(enum command command) {
 
             free_columns();
 
-            distribute_cards_into_columns_for_show(deck, true);
+            generate_columns_show(true);
 
             set_message("OK");
             break;
@@ -137,7 +137,7 @@ static void execute_user_command(enum command command) {
             free_columns();
 
             shuffle_linked_list(deck);
-            distribute_cards_into_columns_for_show(deck, true);
+            generate_columns_show(true);
             set_message("OK");
             break;
 
@@ -333,11 +333,11 @@ static void quit_game() {
         free_linked_list(foundations[i], false);
 }
 
-static void distribute_cards_into_columns_for_game(linked_list *list) {
-    if (!list)
+static void generate_columns_game() {
+    if (!deck)
         return;
 
-    linked_list *list_copy = copy(list);
+    linked_list *deck_copy = copy(deck);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = init_linked_list();
@@ -348,7 +348,7 @@ static void distribute_cards_into_columns_for_game(linked_list *list) {
     for (int i = LONGEST_COLUMN_LENGTH, next_shortest_column_length = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2);
          i >= next_shortest_column_length;
          --i) {
-        cursor = list_copy->dummy->prev;
+        cursor = deck_copy->dummy->prev;
         counter = 0;
 
         while (++counter < i) {
@@ -357,22 +357,22 @@ static void distribute_cards_into_columns_for_game(linked_list *list) {
         }
         cursor->card->visible = false;
 
-        move_node(cursor, list_copy, columns[i - next_shortest_column_length + 1]);
+        move_node(cursor, deck_copy, columns[i - next_shortest_column_length + 1]);
     }
 
-    add_last(remove_last(list_copy), columns[0]);
+    add_last(remove_last(deck_copy), columns[0]);
     columns[0]->head->card->visible = true;
 
-    free_linked_list(list_copy, false);
+    free_linked_list(deck_copy, false);
 
     show_columns = true;
 }
 
-static void distribute_cards_into_columns_for_show(linked_list *list, bool visible) {
-    if (!list)
+static void generate_columns_show(bool visible) {
+    if (!deck)
         return;
 
-    linked_list *list_copy = copy(list);
+    linked_list *deck_copy = copy(deck);
 
     for (int i = 0; i < NO_COLUMNS; ++i) {
         columns[i] = init_linked_list();
@@ -380,7 +380,7 @@ static void distribute_cards_into_columns_for_show(linked_list *list, bool visib
 
     node *cursor;
     for (int i = NO_COLUMNS - 1, counter, column_length; i >= 0; --i) {
-        cursor = list_copy->dummy->prev;
+        cursor = deck_copy->dummy->prev;
         counter = 0;
 
         column_length = i < 3 ? 8 : 7;
@@ -390,10 +390,10 @@ static void distribute_cards_into_columns_for_show(linked_list *list, bool visib
         }
 
         cursor->card->visible = visible;
-        move_node(cursor, list_copy, columns[i]);
+        move_node(cursor, deck_copy, columns[i]);
     }
 
-    free_linked_list(list_copy, false);
+    free_linked_list(deck_copy, false);
 
     show_columns = true;
 }

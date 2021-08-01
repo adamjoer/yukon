@@ -17,6 +17,6 @@ static bool is_valid_move(node *moved_node, node *destination_node, bool is_to_f
 
 static void quit_game();
 
-static void distribute_cards_into_columns_for_game(linked_list *list);
+static void generate_columns_game();
 
-static void distribute_cards_into_columns_for_show(linked_list *list, bool visible);
+static void generate_columns_show(bool visible);

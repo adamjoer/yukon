@@ -56,11 +56,7 @@ enum validation_status validate_file(char *filepath) {
         return FILE_NOT_FOUND;
     }
 
-    char line_buffer[IN_BUFFER_SIZE];
-    line_buffer[2] = '\0';
-
     int card_value;
-    int line_number = 1;
 
     int suit_count[4];
     for (int i = 0; i < 4; ++i)
@@ -70,13 +66,20 @@ enum validation_status validate_file(char *filepath) {
     for (int i = 0; i < 13; ++i)
         card_count[i] = 0;
 
-    char format_string[16];
-    sprintf(format_string, "%%%d[^\r\n] ", IN_BUFFER_SIZE - 1);
-    while (fscanf(file, format_string, line_buffer) != EOF) {
+    int line_number = 1;
+    char line_buffer[IN_BUFFER_SIZE];
+
+    /*
+     * NOTE: The number in the format string (63) is IN_BUFFER_SIZE - 1.
+     *       This prevents that lines that are longer than the line buffer
+     *       causes buffer overflow.
+     */
+    while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
 
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
-                    "Unknown card format '%s' on line %d: Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
+                    "Unknown card format '%s' on line %d: "
+                    "Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
             set_message(output_buffer);
             fclose(file);

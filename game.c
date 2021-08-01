@@ -152,12 +152,7 @@ static void execute_user_command(enum command command) {
                 break;
             }
 
-            if (strlen(argument) == 0) {
-                filepath = "cards.txt";
-
-            } else {
-                filepath = argument;
-            }
+            filepath = (strlen(argument) > 0) ? argument : "cards.txt";
 
             save_deck_to_file(deck, filepath);
             break;

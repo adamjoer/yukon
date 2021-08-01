@@ -5,30 +5,45 @@
 
 #include "linked_list.h"
 
-/*
- * Function for initialising an empty linked list with a dummy and returning a pointer to it.
- */
+/* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
 linked_list *init_linked_list() {
-    linked_list *list = malloc(sizeof(linked_list));
-    if (!list) {
-        return NULL;
-    }
 
+    // Allocate space on heap for linked_list struct
+    linked_list *list = malloc(sizeof(linked_list));
+
+    // Check for error and don't go any further if no memory was allocated
+    if (!list)
+        return NULL;
+
+    // Allocate space on heap for dummy node
     node *dummy = malloc(sizeof(node));
+
+    // Again, check for error
     if (!dummy) {
         free(list);
         return NULL;
     }
 
+    // The dummy doesn't contain any card
     dummy->card = NULL;
+
+    // When the list is empty, the dummy's prev and next both point back at the dummy
     dummy->prev = dummy->next = dummy;
 
+    // Set the list's head and dummy to point at the dummy node
     list->head = list->dummy = dummy;
+
+    // Set the list's length to 0
     list->length = 0;
 
+    // Return a pointer to the list
     return list;
 }
 
+/*
+ * Function for telling if a given linked list is empty,
+ * i.e. doesn't contain any nodes other than dummy.
+ */
 bool is_empty(linked_list *list) {
     if (!list)
         return true;
@@ -62,19 +77,29 @@ void add_first(card *insert, linked_list *list) {
     // Allocate memory for the new list element
     node *new_node = malloc(sizeof(node));
 
-    // If malloc returned NULL it couldn't allocate any memory; don't go further
+    // If malloc returned NULL it couldn't allocate any memory; don't go any further
     if (!new_node)
         return;
 
-    // Initialize values in the node
+    // Set the new node's card to point at the card being inserted
     new_node->card = insert;
+
+    // Set the new node's next to point at the first element in the list
     new_node->next = list->head;
+
+    // Set the new node's prev to point at the dummy
     new_node->prev = list->dummy;
 
+    // Set the prev of the first element in the list to point back at the new element
     list->head->prev = new_node;
+
+    // Set the list's head to point at the new node
     list->head = new_node;
+
+    // Set the dummy's prev to point back at the new node
     list->dummy->next = new_node;
 
+    // If the list's length variable is valid, increment it
     if (list->length >= 0)
         ++list->length;
 }
@@ -82,10 +107,7 @@ void add_first(card *insert, linked_list *list) {
 /* Function for adding a card to the end of a linked list */
 void add_last(card *insert, linked_list *list) {
 
-    // Allocate memory for the new list element
     node *new_node = malloc(sizeof(node));
-
-    // If malloc returned NULL it couldn't allocate any memory; don't go further
     if (!new_node)
         return;
 
@@ -108,6 +130,7 @@ void add_last(card *insert, linked_list *list) {
         list->dummy->prev = new_node;
     }
 
+    // If the list's length variable is valid, increment it
     if (list->length >= 0)
         ++list->length;
 }
@@ -136,6 +159,7 @@ card *remove_first(linked_list *list) {
     card *card = delete->card;
     free(delete);
 
+    // If the list's length variable is valid, decrement it
     if (list->length > 0)
         --list->length;
 
@@ -162,10 +186,19 @@ card *remove_last(linked_list *list) {
 
     free(delete);
 
+    // If the list's length variable is valid, decrement it
     if (list->length > 0)
         --list->length;
 
     return card;
+}
+
+/* Function for getting the first card in a linked list */
+card *first(linked_list *list) {
+    if (!list || is_empty(list))
+        return NULL;
+
+    return list->head->card;
 }
 
 /* Function for getting the last card in a linked list */

@@ -87,9 +87,8 @@ static void execute_user_command(enum command command) {
             generate_columns_game();
             play_phase_active = true;
 
-            for (int i = 0; i < NO_FOUNDATIONS; ++i) {
+            for (int i = 0; i < NO_FOUNDATIONS; ++i)
                 foundations[i] = init_linked_list();
-            }
 
             set_message("OK");
             break;
@@ -201,10 +200,9 @@ static void load_default_deck() {
     for (int i = 0; i < 52; ++i) {
 
         insert_card = malloc(sizeof(card));
-        if (!insert_card) {
-            perror("load_default_deck");
-            exit(1);
-        }
+        if (!insert_card)
+            return;
+
         insert_card->rank = ranks[ranks_index];
         insert_card->suit = suits[i / 13];
         insert_card->value = get_card_value(ranks[ranks_index]);
@@ -278,16 +276,15 @@ static bool move_card_action() {
     }
 
     if (destination_column[0] == 'F') {
-        if (is_empty(foundations[destination_column_index]))
-            destination_node = NULL;
-        else
-            destination_node = foundations[destination_column_index]->dummy->prev;
+        destination_node = !is_empty(foundations[destination_column_index])
+                           ? foundations[destination_column_index]->dummy->prev
+                           : NULL;
+
 
     } else {
-        if (is_empty(columns[destination_column_index]))
-            destination_node = NULL;
-        else
-            destination_node = columns[destination_column_index]->dummy->prev;
+        destination_node = !is_empty(columns[destination_column_index])
+                           ? columns[destination_column_index]->dummy->prev
+                           : NULL;
     }
 
     if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
@@ -339,9 +336,8 @@ static void generate_columns_game() {
 
     linked_list *deck_copy = copy(deck);
 
-    for (int i = 0; i < NO_COLUMNS; ++i) {
+    for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
-    }
 
     node *cursor;
     int counter;
@@ -374,9 +370,8 @@ static void generate_columns_show(bool visible) {
 
     linked_list *deck_copy = copy(deck);
 
-    for (int i = 0; i < NO_COLUMNS; ++i) {
+    for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
-    }
 
     node *cursor;
     for (int i = NO_COLUMNS - 1, counter, column_length; i >= 0; --i) {

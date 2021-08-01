@@ -35,6 +35,8 @@ card *remove_first(linked_list *list);
 
 card *remove_last(linked_list *list);
 
+card *first(linked_list *list);
+
 card *last(linked_list *list);
 
 node *find_string(const char *search, linked_list *list);

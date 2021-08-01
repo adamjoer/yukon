@@ -280,7 +280,6 @@ static bool move_card_action() {
                            ? foundations[destination_column_index]->dummy->prev
                            : NULL;
 
-
     } else {
         destination_node = !is_empty(columns[destination_column_index])
                            ? columns[destination_column_index]->dummy->prev

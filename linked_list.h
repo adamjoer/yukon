@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-typedef struct {
+typedef struct card {
     char rank;
     char suit;
     int value;
@@ -15,7 +15,7 @@ typedef struct node {
     struct node *next;
 } node;
 
-typedef struct {
+typedef struct linked_list {
     node *head;
     node *dummy;
     int length;

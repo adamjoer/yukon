@@ -83,8 +83,8 @@ static void execute_user_command(enum command command) {
             }
 
             free_columns();
-
             generate_columns_game();
+
             play_phase_active = true;
 
             for (int i = 0; i < NO_FOUNDATIONS; ++i)
@@ -231,7 +231,9 @@ static bool move_card_action() {
         return false;
     }
 
-    if (destination_column[0] == 'F') {
+    bool is_to_foundation = destination_column[0] == 'F';
+
+    if (is_to_foundation) {
         if (!is_valid_foundation(destination_column)) {
             set_message("Invalid foundation");
             return false;
@@ -246,12 +248,12 @@ static bool move_card_action() {
 
     int source_column_index = source_column[1] - '0' - 1;
     int destination_column_index = destination_column[1] - '0' - 1;
-    if (source_column_index == destination_column_index && destination_column[0] != 'F') {
+    if (source_column_index == destination_column_index && !is_to_foundation) {
         set_message("Destination column cannot be the same as source column");
         return false;
     }
 
-    node *moved_node;
+    node *moving_node;
     node *destination_node;
 
     if (strlen(moved_card) > 0) {
@@ -260,8 +262,8 @@ static bool move_card_action() {
             return false;
         }
 
-        moved_node = find_string(moved_card, columns[source_column_index]);
-        if (!moved_node || !moved_node->card->visible) {
+        moving_node = find_string(moved_card, columns[source_column_index]);
+        if (!moving_node || !moving_node->card->visible) {
             set_message("Source column does not contain specified card");
             return false;
         }
@@ -272,10 +274,10 @@ static bool move_card_action() {
             return false;
         }
 
-        moved_node = columns[source_column_index]->dummy->prev;
+        moving_node = columns[source_column_index]->dummy->prev;
     }
 
-    if (destination_column[0] == 'F') {
+    if (is_to_foundation) {
         destination_node = !is_empty(foundations[destination_column_index])
                            ? foundations[destination_column_index]->dummy->prev
                            : NULL;
@@ -286,15 +288,15 @@ static bool move_card_action() {
                            : NULL;
     }
 
-    if (!is_valid_move(moved_node, destination_node, destination_column[0] == 'F')) {
+    if (!is_valid_move(moving_node, destination_node, is_to_foundation)) {
         set_message("Invalid move");
         return false;
     }
 
-    if (destination_column[0] == 'F')
+    if (is_to_foundation)
         add_last(remove_last(columns[source_column_index]), foundations[destination_column_index]);
     else
-        move_node(moved_node, columns[source_column_index], columns[destination_column_index]);
+        move_node(moving_node, columns[source_column_index], columns[destination_column_index]);
 
     if (!is_empty(columns[source_column_index]))
         last(columns[source_column_index])->visible = true;
@@ -303,25 +305,28 @@ static bool move_card_action() {
     return true;
 }
 
-static bool is_valid_move(node *moved_node, node *destination_node, bool is_to_foundation) {
+static bool is_valid_move(node *moving_node, node *destination_node, bool is_to_foundation) {
     if (!destination_node) {
         if (is_to_foundation)
-            return !moved_node->next->card && moved_node->card->value == 1;
+            return !moving_node->next->card && moving_node->card->value == 1;
 
-        return moved_node->card->value == 13;
+        return moving_node->card->value == 13;
     }
 
     if (is_to_foundation) {
-        return !moved_node->next->card &&
-               destination_node->card->value == moved_node->card->value - 1 &&
-               destination_node->card->suit == moved_node->card->suit;
+        return !moving_node->next->card &&
+               destination_node->card->value == moving_node->card->value - 1 &&
+               destination_node->card->suit == moving_node->card->suit;
     }
 
-    return destination_node->card->value == moved_node->card->value + 1 &&
-           destination_node->card->suit != moved_node->card->suit;
+    return destination_node->card->value == moving_node->card->value + 1 &&
+           destination_node->card->suit != moving_node->card->suit;
 }
 
 static void quit_game() {
+    if (!play_phase_active)
+        return;
+
     play_phase_active = false;
     free_columns();
 

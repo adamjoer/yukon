@@ -338,25 +338,28 @@ static void generate_columns_game() {
     for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
 
-    node *cursor;
-    int counter;
-    for (int i = LONGEST_COLUMN_LENGTH, next_shortest_column_length = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - 2);
-         i >= next_shortest_column_length;
-         --i) {
-        cursor = deck_copy->dummy->prev;
-        counter = 0;
+    int column_lengths[NO_COLUMNS];
 
-        while (++counter < i) {
-            cursor->card->visible = counter <= 5;
-            cursor = cursor->prev;
-        }
-        cursor->card->visible = false;
-
-        move_node(cursor, deck_copy, columns[i - next_shortest_column_length + 1]);
+    int remaining_cards = 52;
+    for (int i = NO_COLUMNS - 1; i > 0; --i) {
+        column_lengths[i] = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - (i + 1));
+        remaining_cards -= column_lengths[i];
     }
 
-    add_last(remove_last(deck_copy), columns[0]);
-    columns[0]->head->card->visible = true;
+    if (remaining_cards < 0)
+        remaining_cards = 0;
+    column_lengths[0] = remaining_cards;
+
+    card *moving_card;
+    for (int column_index = 0; !is_empty(deck_copy); column_index = (column_index + 1) % NO_COLUMNS) {
+        if (length(columns[column_index]) >= column_lengths[column_index])
+            continue;
+
+        moving_card = remove_first(deck_copy);
+        moving_card->visible = length(columns[column_index]) >= column_index;
+
+        add_last(moving_card, columns[column_index]);
+    }
 
     free_linked_list(deck_copy, false);
 
@@ -372,19 +375,17 @@ static void generate_columns_show(bool visible) {
     for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
 
-    node *cursor;
-    for (int i = NO_COLUMNS - 1, counter, column_length; i >= 0; --i) {
-        cursor = deck_copy->dummy->prev;
-        counter = 0;
+    int column_index = 0;
 
-        column_length = i < 3 ? 8 : 7;
-        while (++counter < column_length) {
-            cursor->card->visible = visible;
-            cursor = cursor->prev;
-        }
+    card *moving_card;
+    while (!is_empty(deck_copy)) {
 
-        cursor->card->visible = visible;
-        move_node(cursor, deck_copy, columns[i]);
+        moving_card = remove_first(deck_copy);
+        moving_card->visible = visible;
+
+        add_last(moving_card, columns[column_index]);
+
+        column_index = (column_index + 1) % NO_COLUMNS;
     }
 
     free_linked_list(deck_copy, false);

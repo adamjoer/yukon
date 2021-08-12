@@ -66,7 +66,8 @@ static void execute_user_command(enum command command) {
             else
                 load_default_deck();
 
-            generate_columns_show(false);
+            generate_columns_show(deck, columns, false);
+            show_columns = true;
 
             set_message("OK");
             break;
@@ -83,7 +84,8 @@ static void execute_user_command(enum command command) {
             }
 
             free_columns();
-            generate_columns_game();
+            generate_columns_game(deck, columns);
+            show_columns = true;
 
             play_phase_active = true;
 
@@ -116,8 +118,8 @@ static void execute_user_command(enum command command) {
             }
 
             free_columns();
-
-            generate_columns_show(true);
+            generate_columns_show(deck, columns, true);
+            show_columns = true;
 
             set_message("OK");
             break;
@@ -133,10 +135,12 @@ static void execute_user_command(enum command command) {
                 break;
             }
 
-            free_columns();
-
             shuffle_linked_list(deck);
-            generate_columns_show(true);
+
+            free_columns();
+            generate_columns_show(deck, columns, true);
+            show_columns = true;
+
             set_message("OK");
             break;
 
@@ -333,56 +337,3 @@ static void quit_game() {
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
         free_linked_list(foundations[i], false);
 }
-
-static void generate_columns_game() {
-    if (!deck)
-        return;
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        columns[i] = init_linked_list();
-
-    int column_lengths[NO_COLUMNS];
-
-    int remaining_cards = 52;
-    for (int i = NO_COLUMNS - 1; i > 0; --i) {
-        column_lengths[i] = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - (i + 1));
-        remaining_cards -= column_lengths[i];
-    }
-
-    if (remaining_cards < 0)
-        remaining_cards = 0;
-    column_lengths[0] = remaining_cards;
-
-    node *cursor = deck->head;
-    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
-        if (length(columns[column_index]) >= column_lengths[column_index])
-            continue;
-
-        cursor->card->visible = length(columns[column_index]) >= column_index;
-        add_last(cursor->card, columns[column_index]);
-
-        cursor = cursor->next;
-    }
-
-    show_columns = true;
-}
-
-static void generate_columns_show(bool visible) {
-    if (!deck)
-        return;
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        columns[i] = init_linked_list();
-
-    node *cursor = deck->head;
-    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
-
-        cursor->card->visible = visible;
-        add_last(cursor->card, columns[column_index]);
-
-        cursor = cursor->next;
-    }
-
-    show_columns = true;
-}
-

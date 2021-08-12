@@ -12,6 +12,10 @@ void print_board(linked_list *columns[], linked_list *foundations[], bool show_c
 
 static void clear_console();
 
+void generate_columns_game(linked_list *deck, linked_list *columns[]);
+
+void generate_columns_show(linked_list *deck, linked_list *columns[], bool visible);
+
 void set_message(char *new_message);
 
 void set_last_command(char *new_last_command);

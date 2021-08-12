@@ -73,6 +73,54 @@ static void clear_console() {
 #endif
 }
 
+void generate_columns_game(linked_list *deck, linked_list *columns[]) {
+    if (!deck)
+        return;
+
+    for (int i = 0; i < NO_COLUMNS; ++i)
+        columns[i] = init_linked_list();
+
+    int column_lengths[NO_COLUMNS];
+
+    int remaining_cards = 52;
+    for (int i = NO_COLUMNS - 1; i > 0; --i) {
+        column_lengths[i] = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - (i + 1));
+        remaining_cards -= column_lengths[i];
+    }
+
+    if (remaining_cards < 0)
+        remaining_cards = 0;
+    column_lengths[0] = remaining_cards;
+
+    node *cursor = deck->head;
+    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
+        if (length(columns[column_index]) >= column_lengths[column_index])
+            continue;
+
+        cursor->card->visible = length(columns[column_index]) >= column_index;
+        add_last(cursor->card, columns[column_index]);
+
+        cursor = cursor->next;
+    }
+}
+
+void generate_columns_show(linked_list *deck, linked_list *columns[], bool visible) {
+    if (!deck)
+        return;
+
+    for (int i = 0; i < NO_COLUMNS; ++i)
+        columns[i] = init_linked_list();
+
+    node *cursor = deck->head;
+    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
+
+        cursor->card->visible = visible;
+        add_last(cursor->card, columns[column_index]);
+
+        cursor = cursor->next;
+    }
+}
+
 void set_message(char *new_message) {
     strcpy(message, new_message);
 }

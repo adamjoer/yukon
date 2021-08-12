@@ -191,7 +191,7 @@ static void execute_user_command(enum command command) {
 
 static void load_default_deck() {
     const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
-    const char suits[] = {'C', 'D', 'S', 'H'};
+    const char suits[] = {'C', 'D', 'H', 'S'};
 
     deck = init_linked_list();
 

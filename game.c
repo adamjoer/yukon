@@ -380,17 +380,12 @@ static void generate_columns_show(bool visible) {
     for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
 
-    int column_index = 0;
-
     card *moving_card;
-    while (!is_empty(deck_copy)) {
-
+    for (int column_index = 0; !is_empty(deck_copy); column_index = (column_index + 1) % NO_COLUMNS) {
         moving_card = remove_first(deck_copy);
         moving_card->visible = visible;
 
         add_last(moving_card, columns[column_index]);
-
-        column_index = (column_index + 1) % NO_COLUMNS;
     }
 
     free_linked_list(deck_copy, false);

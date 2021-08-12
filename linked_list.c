@@ -112,23 +112,15 @@ void add_last(card *insert, linked_list *list) {
         return;
 
     new_node->card = insert;
+    new_node->prev = list->dummy->prev;
+    new_node->next = list->dummy;
 
-    if (is_empty(list)) {
-        new_node->prev = list->dummy;
-        new_node->next = list->dummy;
+    list->dummy->prev->next = new_node;
+    list->dummy->prev = new_node;
 
-        list->dummy->next = new_node;
-        list->dummy->prev = new_node;
-
+    // If the inserted node is the only node in the list, the head needs to point at it
+    if (list->head == list->dummy)
         list->head = new_node;
-
-    } else {
-        new_node->prev = list->dummy->prev;
-        new_node->next = list->dummy;
-
-        list->dummy->prev->next = new_node;
-        list->dummy->prev = new_node;
-    }
 
     // If the list's length variable is valid, increment it
     if (list->length >= 0)
@@ -321,7 +313,7 @@ void move_node(node *moving_node, linked_list *origin, linked_list *destination)
 }
 
 /*
- * Function for copying a linked list, without altering it in any way
+ * Function for copying a linked list, without altering it in any way.
  * This does not copy the cards in that linked list,
  * so the copy's nodes will point at the same cards as the original.
  */
@@ -427,7 +419,7 @@ void free_linked_list(linked_list *list, bool free_cards) {
 
 /*
  * Function for printing a linked list to console.
- * This is provides extensive information about a linked list,
+ * This provides extensive information about a linked list,
  * and is meant to be used for debugging purposes only.
  */
 void print_linked_list(linked_list *list) {

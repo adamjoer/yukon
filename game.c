@@ -338,8 +338,6 @@ static void generate_columns_game() {
     if (!deck)
         return;
 
-    linked_list *deck_copy = copy(deck);
-
     for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
 
@@ -355,18 +353,16 @@ static void generate_columns_game() {
         remaining_cards = 0;
     column_lengths[0] = remaining_cards;
 
-    card *moving_card;
-    for (int column_index = 0; !is_empty(deck_copy); column_index = (column_index + 1) % NO_COLUMNS) {
+    node *cursor = deck->head;
+    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
         if (length(columns[column_index]) >= column_lengths[column_index])
             continue;
 
-        moving_card = remove_first(deck_copy);
-        moving_card->visible = length(columns[column_index]) >= column_index;
+        cursor->card->visible = length(columns[column_index]) >= column_index;
+        add_last(cursor->card, columns[column_index]);
 
-        add_last(moving_card, columns[column_index]);
+        cursor = cursor->next;
     }
-
-    free_linked_list(deck_copy, false);
 
     show_columns = true;
 }
@@ -375,20 +371,17 @@ static void generate_columns_show(bool visible) {
     if (!deck)
         return;
 
-    linked_list *deck_copy = copy(deck);
-
     for (int i = 0; i < NO_COLUMNS; ++i)
         columns[i] = init_linked_list();
 
-    card *moving_card;
-    for (int column_index = 0; !is_empty(deck_copy); column_index = (column_index + 1) % NO_COLUMNS) {
-        moving_card = remove_first(deck_copy);
-        moving_card->visible = visible;
+    node *cursor = deck->head;
+    for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
 
-        add_last(moving_card, columns[column_index]);
+        cursor->card->visible = visible;
+        add_last(cursor->card, columns[column_index]);
+
+        cursor = cursor->next;
     }
-
-    free_linked_list(deck_copy, false);
 
     show_columns = true;
 }

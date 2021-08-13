@@ -332,7 +332,10 @@ static void quit_game() {
         return;
 
     play_phase_active = false;
+
     free_columns();
+    generate_columns_show(deck, columns, false);
+    show_columns = true;
 
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
         free_linked_list(foundations[i], false);

@@ -9,6 +9,8 @@ static void execute_user_command(enum command command);
 
 static void load_default_deck();
 
+static void shuffle_split();
+
 static void free_columns();
 
 static bool move_card_action();

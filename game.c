@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "game.h"
 #include "gui.h"
@@ -124,6 +125,25 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
+        case SHUFFLE_SPLIT:
+            if (play_phase_active) {
+                set_message("Command not available in play phase");
+                break;
+            }
+
+            if (!deck) {
+                set_message("No valid deck loaded");
+                break;
+            }
+
+            shuffle_split();
+
+            free_columns();
+            generate_columns_show(deck, columns, true);
+            show_columns = true;
+
+            break;
+
         case SHUFFLE_RANDOM:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
@@ -179,10 +199,6 @@ static void execute_user_command(enum command command) {
                 set_message("Congratulations, you won!");
             break;
 
-        case SHUFFLE_SPLIT:
-            set_message("Command not implemented");
-            break;
-
         case INVALID_INPUT_FORMAT:
             set_message("Unknown command");
             break;
@@ -216,6 +232,66 @@ static void load_default_deck() {
 
         ranks_index = (ranks_index + 1) % 13;
     }
+}
+
+static void shuffle_split() {
+    if (!deck)
+        return;
+
+    long split;
+
+    if (strlen(argument) > 0) {
+        char *validation_ptr;
+        split = strtol(argument, &validation_ptr, 0);
+
+        if (*validation_ptr != '\0') {
+            char message_buffer[MESSAGE_BUFFER_SIZE];
+            sprintf(message_buffer, "'%s' is not a valid number", argument);
+            set_message(message_buffer);
+            return;
+        }
+
+        if (split < 0 || split > length(deck)) {
+            set_message("Split needs to be positive and less than the deck length");
+            return;
+        }
+
+    } else {
+        srand(time(NULL));
+        split = rand() % (length(deck) + 1);
+    }
+
+    if (split == 0 || split == length(deck)) {
+        set_message("No shuffling necessary");
+        return;
+    }
+
+    linked_list *first_pile = init_linked_list();
+    linked_list *second_pile = init_linked_list();
+
+    node *cursor = deck->head;
+    for (int i = 0; i < split; ++i)
+        cursor = cursor->next;
+
+    move_node(cursor, deck, second_pile);
+    move_node(deck->head, deck, first_pile);
+    deck->length = 0;
+
+    while (!is_empty(first_pile) && !is_empty(second_pile)) {
+        add_last(remove_first(first_pile), deck);
+        add_last(remove_first(second_pile), deck);
+    }
+
+    while (!is_empty(first_pile))
+        add_last(remove_first(first_pile), deck);
+
+    while (!is_empty(second_pile))
+        add_last(remove_first(second_pile), deck);
+
+    free_linked_list(first_pile, false);
+    free_linked_list(second_pile, false);
+
+    set_message("OK");
 }
 
 static void free_columns() {

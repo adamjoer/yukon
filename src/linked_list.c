@@ -266,16 +266,16 @@ bool contains_node(node *search, linked_list *list) {
  * it, from one linked list to another. The nodes will be added
  * to the end of the destination list.
  */
-void move_node(node *moving_node, linked_list *origin, linked_list *destination) {
-    if (origin == destination)
+void move_node(node *moving_node, linked_list *source, linked_list *destination) {
+    if (source == destination)
         return;
 
-    if (!contains_node(moving_node, origin))
+    if (!contains_node(moving_node, source))
         return;
 
     // Save the new last node of both lists
-    node *origin_new_last = moving_node->prev;
-    node *destination_new_last = origin->dummy->prev;
+    node *source_new_last = moving_node->prev;
+    node *destination_new_last = source->dummy->prev;
 
     // Check if the destination list is empty or not
     if (is_empty(destination)) {
@@ -293,23 +293,24 @@ void move_node(node *moving_node, linked_list *origin, linked_list *destination)
         moving_node->prev = destination->dummy->prev;
     }
 
-    // Update the pointers of the origin list's dummy and new last node
-    origin->dummy->prev = origin_new_last;
-    origin_new_last->next = origin->dummy;
+    // Update the pointers of the source list's dummy and new last node
+    source->dummy->prev = source_new_last;
+    source_new_last->next = source->dummy;
 
     // Update the pointers of the destination list's dummy and new last node
     destination->dummy->prev = destination_new_last;
     destination_new_last->next = destination->dummy;
 
-    // If the node being moved was the first node in the origin list, it is now empty
-    if (origin->head == moving_node) {
+    // If the node being moved was the first node in the source list, it is now empty
+    if (source->head == moving_node) {
 
-        // Set origin list's head to be its dummy
-        origin->head = origin->dummy;
+        // Set source list's head to be its dummy
+        source->head = source->dummy;
+
     }
 
     // Invalidate the stored length of both lists
-    origin->length = destination->length = -1;
+    source->length = destination->length = -1;
 }
 
 /*

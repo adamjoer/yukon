@@ -82,16 +82,19 @@ enum validation_status validate_file(char *filepath) {
                     "Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
             set_message(output_buffer);
+
             fclose(file);
             return INVALID_FORMAT;
         }
 
         card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
-            sprintf(output_buffer, "Unknown card rank '%c' on line %d: Valid ranks are A, 2-9, T, J, Q, K",
-                    line_buffer[0],
-                    line_number);
+            sprintf(output_buffer,
+                    "Unknown card rank '%c' on line %d: "
+                    "Valid ranks are A, 2-9, T, J, Q, K",
+                    line_buffer[0], line_number);
             set_message(output_buffer);
+
             fclose(file);
             return INVALID_RANK;
         }
@@ -110,16 +113,21 @@ enum validation_status validate_file(char *filepath) {
                 ++suit_count[3];
                 break;
             default:
-                sprintf(output_buffer, "Unknown card suit '%c' on line %d: Valid suits are C, D, H, S", line_buffer[1],
-                        line_number);
+                sprintf(output_buffer,
+                        "Unknown card suit '%c' on line %d: "
+                        "Valid suits are C, D, H, S",
+                        line_buffer[1], line_number);
                 set_message(output_buffer);
+
                 fclose(file);
                 return INVALID_SUIT;
         }
 
         if (++card_count[card_value - 1] > 4) {
-            sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d", line_buffer[0], line_number);
+            sprintf(output_buffer, "Too many '%c' cards. Excess is on line %d",
+                    line_buffer[0], line_number);
             set_message(output_buffer);
+
             fclose(file);
             return INVALID_RANK_CARD_COUNT;
         }
@@ -147,8 +155,10 @@ enum validation_status validate_file(char *filepath) {
                 default:
                     suit = "UNKNOWN";
             }
+
             sprintf(output_buffer, "Wrong number of %s cards: Should be 13 not %d", suit, suit_count[i]);
             set_message(output_buffer);
+
             fclose(file);
             return INVALID_SUIT_CARD_COUNT;
         }
@@ -238,37 +248,34 @@ enum command get_user_command() {
 
         if (input_buffer[0] == 'L' && input_buffer[1] == 'D' && input_buffer[2] == ' ') {
             // Load a deck from file
-            // Here, a file might be specified (If there is something after the space)
-            if (input_length > 3) {
-                strncpy(argument, input_buffer + 3, input_length - 2);
 
-            } else {
+            // Here, a file might be specified (If there is something after the space)
+            if (input_length > 3)
+                strncpy(argument, input_buffer + 3, input_length - 2);
+            else
                 argument[0] = '\0';
-            }
 
             return LOAD_FILE;
 
         } else if (input_buffer[0] == 'S' && input_buffer[1] == 'D' && input_buffer[2] == ' ') {
             // Save cards to a file
-            // Here, a filename might be specified (If there is something after the space)
-            if (input_length > 3) {
-                strncpy(argument, input_buffer + 3, input_length - 2);
 
-            } else {
+            // Here, a filename might be specified (If there is something after the space)
+            if (input_length > 3)
+                strncpy(argument, input_buffer + 3, input_length - 2);
+            else
                 argument[0] = '\0';
-            }
 
             return SAVE_DECK;
 
         } else if (input_buffer[0] == 'S' && input_buffer[1] == 'I' && input_buffer[2] == ' ') {
             // Shuffle split
             // Here, split might be specified
-            if (input_length > 3) {
+            if (input_length > 3)
                 strncpy(argument, input_buffer + 3, input_length - 2);
 
-            } else {
+            else
                 argument[0] = '\0';
-            }
 
             return SHUFFLE_SPLIT;
 
@@ -277,9 +284,8 @@ enum command get_user_command() {
             // REGEX string if we can use it: /^[\w]{2}(:[\w]{2})?->[\w]{2}$/gm
 
             if (input_length == 6) {
-                if (input_buffer[2] != '-' || input_buffer[3] != '>') {
+                if (input_buffer[2] != '-' || input_buffer[3] != '>')
                     return INVALID_INPUT_FORMAT;
-                }
 
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
@@ -292,9 +298,8 @@ enum command get_user_command() {
                 return MOVE_CARD;
 
             } else if (input_length == 9) {
-                if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>') {
+                if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>')
                     return INVALID_INPUT_FORMAT;
-                }
 
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];

@@ -275,7 +275,6 @@ static void shuffle_split() {
 
     move_node(cursor, deck, second_pile);
     move_node(deck->head, deck, first_pile);
-    deck->length = 0;
 
     while (!is_empty(first_pile) && !is_empty(second_pile)) {
         add_last(remove_first(first_pile), deck);

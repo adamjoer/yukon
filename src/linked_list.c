@@ -307,10 +307,17 @@ void move_node(node *moving_node, linked_list *source, linked_list *destination)
         // Set source list's head to be its dummy
         source->head = source->dummy;
 
+        // We know the length of the source list is 0
+        source->length = 0;
+
+    } else {
+
+        // We don't know what the length of the source list is; invalidate it
+        source->length = -1;
     }
 
-    // Invalidate the stored length of both lists
-    source->length = destination->length = -1;
+    // Invalidate the stored length of the destination list
+    destination->length = -1;
 }
 
 /*

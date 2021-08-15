@@ -122,9 +122,23 @@ void generate_columns_show(linked_list *deck, linked_list *columns[], bool visib
 }
 
 void set_message(char *new_message) {
-    strcpy(message, new_message);
+
+    // Safety check to avoid buffer overrun
+    size_t new_message_length = strlen(new_message);
+    if (new_message_length > MESSAGE_BUFFER_SIZE)
+        new_message_length = MESSAGE_BUFFER_SIZE;
+
+    strncpy(message, new_message, new_message_length);
+    message[new_message_length] = '\0';
 }
 
 void set_last_command(char *new_last_command) {
-    strcpy(last_command, new_last_command);
+
+    // Safety check to avoid buffer overrun
+    size_t new_last_command_length = strlen(new_last_command);
+    if (new_last_command_length > MESSAGE_BUFFER_SIZE)
+        new_last_command_length = MESSAGE_BUFFER_SIZE;
+
+    strncpy(last_command, new_last_command, new_last_command_length);
+    last_command[new_last_command_length] = '\0';
 }

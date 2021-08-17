@@ -16,11 +16,13 @@ bool show_columns = false;
 bool keep_playing = true;
 
 void game_loop() {
+    srand(time(NULL));
 
     set_message("Welcome to Yukon");
 
     while (true) {
         print_board(columns, foundations, show_columns, play_phase_active);
+
         if (!keep_playing) {
             printf("\n");
             break;
@@ -215,7 +217,6 @@ static void load_default_deck() {
 
     deck = init_linked_list();
 
-    int ranks_index = 0;
     card *insert_card;
     for (int i = 0; i < 52; ++i) {
 
@@ -223,14 +224,12 @@ static void load_default_deck() {
         if (!insert_card)
             return;
 
-        insert_card->rank = ranks[ranks_index];
+        insert_card->rank = ranks[i % 13];
         insert_card->suit = suits[i / 13];
-        insert_card->value = get_card_value(ranks[ranks_index]);
+        insert_card->value = get_card_value(insert_card->rank);
         insert_card->visible = false;
 
         add_last(insert_card, deck);
-
-        ranks_index = (ranks_index + 1) % 13;
     }
 }
 
@@ -257,7 +256,6 @@ static void shuffle_split() {
         }
 
     } else {
-        srand(time(NULL));
         split = rand() % (length(deck) + 1);
     }
 

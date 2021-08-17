@@ -385,7 +385,6 @@ void shuffle_linked_list(linked_list *list) {
 }
 
 static void shuffle_array(node *array[], int length) {
-    srand(time(NULL));
 
     node *temp;
     int random_index;

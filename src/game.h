@@ -13,8 +13,8 @@ static void shuffle_split();
 
 static void free_columns();
 
-static bool move_card_action();
+static bool move_card();
 
-static bool is_valid_move(node *moving_node, node *destination_node, bool is_to_foundation);
+static bool is_valid_move(node *moving_node, node *destination_node, bool from_foundation, bool to_foundation);
 
 static void quit_game();

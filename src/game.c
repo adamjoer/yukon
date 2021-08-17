@@ -186,7 +186,7 @@ static void execute_user_command(enum command command) {
                 break;
             }
 
-            if (!move_card_action())
+            if (!move_card())
                 break;
 
             bool game_won = true;
@@ -303,18 +303,26 @@ static void free_columns() {
     show_columns = false;
 }
 
-static bool move_card_action() {
+static bool move_card() {
 
-    if (!is_valid_column(source_column)) {
-        set_message("Invalid source column");
-        return false;
+    bool from_foundation = source_column[0] == 'F';
+    if (from_foundation) {
+        if (!is_valid_foundation(source_column)) {
+            set_message("Invalid source foundation");
+            return false;
+        }
+
+    } else {
+        if (!is_valid_column(source_column)) {
+            set_message("Invalid source column");
+            return false;
+        }
     }
 
-    bool is_to_foundation = destination_column[0] == 'F';
-
-    if (is_to_foundation) {
+    bool to_foundation = destination_column[0] == 'F';
+    if (to_foundation) {
         if (!is_valid_foundation(destination_column)) {
-            set_message("Invalid foundation");
+            set_message("Invalid destination foundation");
             return false;
         }
 
@@ -325,12 +333,15 @@ static bool move_card_action() {
         }
     }
 
-    int source_column_index = source_column[1] - '0' - 1;
-    int destination_column_index = destination_column[1] - '0' - 1;
-    if (source_column_index == destination_column_index && !is_to_foundation) {
-        set_message("Destination column cannot be the same as source column");
+    int source_index = source_column[1] - '0' - 1;
+    int destination_index = destination_column[1] - '0' - 1;
+    if (source_index == destination_index && from_foundation == to_foundation) {
+        set_message("Destination cannot be the same as source");
         return false;
     }
+
+    linked_list *source_list = from_foundation ? foundations[source_index] : columns[source_index];
+    linked_list *destination_list = to_foundation ? foundations[destination_index] : columns[destination_index];
 
     node *moving_node;
     node *destination_node;
@@ -341,60 +352,53 @@ static bool move_card_action() {
             return false;
         }
 
-        moving_node = find_string(moved_card, columns[source_column_index]);
+        moving_node = find_string(moved_card, source_list);
         if (!moving_node || !moving_node->card->visible) {
-            set_message("Source column does not contain specified card");
+            set_message("Source column/foundation does not contain specified card");
             return false;
         }
 
     } else {
-        if (is_empty(columns[source_column_index])) {
-            set_message("Source column empty");
+        if (is_empty(source_list)) {
+            set_message("Source column/foundation empty");
             return false;
         }
 
-        moving_node = columns[source_column_index]->dummy->prev;
+        moving_node = source_list->dummy->prev;
     }
 
-    if (is_to_foundation) {
-        destination_node = !is_empty(foundations[destination_column_index])
-                           ? foundations[destination_column_index]->dummy->prev
-                           : NULL;
+    destination_node = !is_empty(destination_list) ? destination_list->dummy->prev : NULL;
 
-    } else {
-        destination_node = !is_empty(columns[destination_column_index])
-                           ? columns[destination_column_index]->dummy->prev
-                           : NULL;
-    }
-
-    if (!is_valid_move(moving_node, destination_node, is_to_foundation)) {
+    if (!is_valid_move(moving_node, destination_node, from_foundation, to_foundation)) {
         set_message("Invalid move");
         return false;
     }
 
-    if (is_to_foundation)
-        add_last(remove_last(columns[source_column_index]), foundations[destination_column_index]);
+    if (from_foundation || to_foundation)
+        add_last(remove_last(source_list), destination_list);
     else
-        move_node(moving_node, columns[source_column_index], columns[destination_column_index]);
+        move_node(moving_node, source_list, destination_list);
 
-    if (!is_empty(columns[source_column_index]))
-        last(columns[source_column_index])->visible = true;
+    if (!is_empty(source_list))
+        last(source_list)->visible = true;
 
     set_message("OK");
     return true;
 }
 
-static bool is_valid_move(node *moving_node, node *destination_node, bool is_to_foundation) {
+static bool is_valid_move(node *moving_node, node *destination_node, bool from_foundation, bool to_foundation) {
+    if ((from_foundation || to_foundation) && moving_node->next->card)
+        return false;
+
     if (!destination_node) {
-        if (is_to_foundation)
-            return !moving_node->next->card && moving_node->card->value == 1;
+        if (to_foundation)
+            return moving_node->card->value == 1;
 
         return moving_node->card->value == 13;
     }
 
-    if (is_to_foundation) {
-        return !moving_node->next->card &&
-               destination_node->card->value == moving_node->card->value - 1 &&
+    if (to_foundation) {
+        return destination_node->card->value == moving_node->card->value - 1 &&
                destination_node->card->suit == moving_node->card->suit;
     }
 

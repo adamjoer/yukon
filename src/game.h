@@ -11,10 +11,10 @@ static void load_default_deck();
 
 static void shuffle_split();
 
-static void empty_columns();
-
 static bool move_card();
 
 static bool is_valid_move(node *moving_node, node *destination_node, bool from_foundation, bool to_foundation);
+
+static void empty_columns();
 
 static void quit_game();

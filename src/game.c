@@ -304,16 +304,6 @@ static void shuffle_split() {
     set_message("OK");
 }
 
-static void empty_columns() {
-    if (!show_columns)
-        return;
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        empty_linked_list(&columns[i], false);
-
-    show_columns = false;
-}
-
 static bool move_card() {
 
     bool from_foundation = source_column[0] == 'F';
@@ -415,6 +405,16 @@ static bool is_valid_move(node *moving_node, node *destination_node, bool from_f
 
     return destination_node->card->value == moving_node->card->value + 1 &&
            destination_node->card->suit != moving_node->card->suit;
+}
+
+static void empty_columns() {
+    if (!show_columns)
+        return;
+
+    for (int i = 0; i < NO_COLUMNS; ++i)
+        empty_linked_list(&columns[i], false);
+
+    show_columns = false;
 }
 
 static void quit_game() {

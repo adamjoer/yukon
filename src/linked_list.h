@@ -21,7 +21,7 @@ typedef struct linked_list {
     int length;
 } linked_list;
 
-linked_list *init_linked_list();
+void init_linked_list(linked_list *list);
 
 bool is_empty(linked_list *list);
 
@@ -47,11 +47,13 @@ bool contains_node(node *search, linked_list *list);
 
 void move_node(node *moving_node, linked_list *source, linked_list *destination);
 
-linked_list *copy(linked_list *list);
+void copy(linked_list *list, linked_list *list_copy);
 
 void shuffle_linked_list(linked_list *list);
 
 static void shuffle_array(node *array[], int length);
+
+void empty_linked_list(linked_list *list, bool free_cards);
 
 void free_linked_list(linked_list *list, bool free_cards);
 

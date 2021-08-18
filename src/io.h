@@ -33,7 +33,7 @@ extern char source_column[];
 extern char destination_column[];
 extern char argument[];
 
-linked_list *load_from_file(char *filepath, bool check_file);
+linked_list *load_from_file(linked_list *list, char *filepath, bool check_file);
 
 enum validation_status validate_file(char *filepath);
 

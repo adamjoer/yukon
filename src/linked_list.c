@@ -6,23 +6,16 @@
 #include "linked_list.h"
 
 /* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
-linked_list *init_linked_list() {
-
-    // Allocate space on heap for linked_list struct
-    linked_list *list = malloc(sizeof(linked_list));
-
-    // Check for error and don't go any further if no memory was allocated
+void init_linked_list(linked_list *list) {
     if (!list)
-        return NULL;
+        return;
 
     // Allocate space on heap for dummy node
     node *dummy = malloc(sizeof(node));
 
-    // Again, check for error
-    if (!dummy) {
-        free(list);
-        return NULL;
-    }
+    // Check for error and don't go any further if no memory was allocated
+    if (!dummy)
+        return;
 
     // The dummy doesn't contain any card
     dummy->card = NULL;
@@ -35,9 +28,6 @@ linked_list *init_linked_list() {
 
     // Set the list's length to 0
     list->length = 0;
-
-    // Return a pointer to the list
-    return list;
 }
 
 /*
@@ -73,6 +63,8 @@ int length(linked_list *list) {
 
 /* Function for adding a card to the beginning of a linked list */
 void add_first(card *insert, linked_list *list) {
+    if (!list)
+        return;
 
     // Allocate memory for the new list element
     node *new_node = malloc(sizeof(node));
@@ -106,6 +98,8 @@ void add_first(card *insert, linked_list *list) {
 
 /* Function for adding a card to the end of a linked list */
 void add_last(card *insert, linked_list *list) {
+    if (!list)
+        return;
 
     node *new_node = malloc(sizeof(node));
     if (!new_node)
@@ -207,7 +201,7 @@ card *last(linked_list *list) {
  * otherwise returns the node containing the card.
  */
 node *find_string(const char *search, linked_list *list) {
-    if (strlen(search) != 2)
+    if (!list || strlen(search) != 2)
         return NULL;
 
     // Go over each node in the list
@@ -228,6 +222,8 @@ node *find_string(const char *search, linked_list *list) {
  * true otherwise.
  */
 bool contains_card(card *search, linked_list *list) {
+    if (!list || !search)
+        return false;
 
     // Go over each node in the list
     for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
@@ -247,6 +243,8 @@ bool contains_card(card *search, linked_list *list) {
  * true otherwise.
  */
 bool contains_node(node *search, linked_list *list) {
+    if (!list || !search)
+        return false;
 
     // Go over each node in the list
     for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
@@ -267,7 +265,7 @@ bool contains_node(node *search, linked_list *list) {
  * to the end of the destination list.
  */
 void move_node(node *moving_node, linked_list *source, linked_list *destination) {
-    if (source == destination)
+    if (!source || !destination || source == destination)
         return;
 
     if (!contains_node(moving_node, source))
@@ -325,18 +323,12 @@ void move_node(node *moving_node, linked_list *source, linked_list *destination)
  * This does not copy the cards in that linked list,
  * so the copy's nodes will point at the same cards as the original.
  */
-linked_list *copy(linked_list *list) {
-    if (!list)
-        return NULL;
-
-    linked_list *list_copy = init_linked_list();
-    if (!list_copy)
-        return NULL;
+void copy(linked_list *list, linked_list *list_copy) {
+    if (!list || !list->head || !list_copy)
+        return;
 
     for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         add_last(cursor->card, list_copy);
-
-    return list_copy;
 }
 
 /*
@@ -385,6 +377,8 @@ void shuffle_linked_list(linked_list *list) {
 }
 
 static void shuffle_array(node *array[], int length) {
+    if (!array)
+        return;
 
     node *temp;
     int random_index;
@@ -396,8 +390,8 @@ static void shuffle_array(node *array[], int length) {
     }
 }
 
-/* Function for freeing a linked list to prevent memory leak */
-void free_linked_list(linked_list *list, bool free_cards) {
+/* Function for Emptying a linked list to prevent memory leak */
+void empty_linked_list(linked_list *list, bool free_cards) {
     if (!list)
         return;
 
@@ -419,9 +413,20 @@ void free_linked_list(linked_list *list, bool free_cards) {
         free(temp);
     }
 
-    // Free the dummy and the list struct
+    list->head = list->dummy;
+    list->dummy->prev = list->dummy->next = list->dummy;
+    list->length = 0;
+}
+
+/* Function for freeing a linked list to prevent memory leak */
+void free_linked_list(linked_list *list, bool free_cards) {
+    if (!list)
+        return;
+
+    empty_linked_list(list, free_cards);
+
     free(list->dummy);
-    free(list);
+    list->head = list->dummy = NULL;
 }
 
 /*

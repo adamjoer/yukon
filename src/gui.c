@@ -8,18 +8,18 @@
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
-void print_board(linked_list *columns[], linked_list *foundations[], bool show_columns, bool play_phase_active) {
+void print_board(linked_list columns[], linked_list foundations[], bool show_columns, bool play_phase_active) {
     node *cursors[NO_COLUMNS];
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;
 
     if (show_columns) {
         for (int i = 0, len; i < NO_COLUMNS; ++i) {
-            len = length(columns[i]);
+            len = length(&columns[i]);
             if (len > longest_column_length)
                 longest_column_length = len;
 
-            cursors[i] = columns[i]->head;
+            cursors[i] = columns[i].head;
         }
     }
 
@@ -33,7 +33,7 @@ void print_board(linked_list *columns[], linked_list *foundations[], bool show_c
     for (int i = 0; i < longest_column_length; ++i) {
 
         for (int j = 0; j < NO_COLUMNS; ++j) {
-            if (!show_columns || cursors[j] == columns[j]->dummy) {
+            if (!show_columns || cursors[j] == columns[j].dummy) {
                 printf("\t");
                 continue;
             }
@@ -47,10 +47,10 @@ void print_board(linked_list *columns[], linked_list *foundations[], bool show_c
         }
 
         if (i % 2 == 0 && foundation_counter < NO_FOUNDATIONS) {
-            if (play_phase_active && !is_empty(foundations[foundation_counter])) {
+            if (play_phase_active && !is_empty(&foundations[foundation_counter])) {
                 printf("\t%c%c\tF%d",
-                       last(foundations[foundation_counter])->rank,
-                       last(foundations[foundation_counter])->suit,
+                       last(&foundations[foundation_counter])->rank,
+                       last(&foundations[foundation_counter])->suit,
                        foundation_counter + 1);
 
             } else {
@@ -73,12 +73,9 @@ static void clear_console() {
 #endif
 }
 
-void generate_columns_game(linked_list *deck, linked_list *columns[]) {
-    if (!deck)
+void generate_columns_game(linked_list *deck, linked_list columns[]) {
+    if (!deck || !columns)
         return;
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        columns[i] = init_linked_list();
 
     int column_lengths[NO_COLUMNS];
 
@@ -94,28 +91,25 @@ void generate_columns_game(linked_list *deck, linked_list *columns[]) {
 
     node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
-        if (length(columns[column_index]) >= column_lengths[column_index])
+        if (length(&columns[column_index]) >= column_lengths[column_index])
             continue;
 
-        cursor->card->visible = length(columns[column_index]) >= column_index;
-        add_last(cursor->card, columns[column_index]);
+        cursor->card->visible = length(&columns[column_index]) >= column_index;
+        add_last(cursor->card, &columns[column_index]);
 
         cursor = cursor->next;
     }
 }
 
-void generate_columns_show(linked_list *deck, linked_list *columns[], bool visible) {
-    if (!deck)
+void generate_columns_show(linked_list *deck, linked_list columns[], bool visible) {
+    if (!deck || !columns)
         return;
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        columns[i] = init_linked_list();
 
     node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
 
         cursor->card->visible = visible;
-        add_last(cursor->card, columns[column_index]);
+        add_last(cursor->card, &columns[column_index]);
 
         cursor = cursor->next;
     }

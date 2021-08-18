@@ -12,7 +12,10 @@ char source_column[3];
 char destination_column[3];
 char argument[IN_BUFFER_SIZE];
 
-linked_list *load_from_file(char *filepath, bool check_file) {
+linked_list *load_from_file(linked_list *list, char *filepath, bool check_file) {
+    if (!list)
+        return NULL;
+
     if (check_file) {
         if (validate_file(filepath) != OK)
             return NULL;
@@ -20,17 +23,13 @@ linked_list *load_from_file(char *filepath, bool check_file) {
 
     FILE *file = fopen(filepath, "r");
 
-    linked_list *list = init_linked_list();
-
     char rank, suit;
     card *new_card;
 
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(card));
-        if (!new_card) {
-            free_linked_list(list, false);
+        if (!new_card)
             return NULL;
-        }
 
         new_card->rank = rank;
         new_card->suit = suit;

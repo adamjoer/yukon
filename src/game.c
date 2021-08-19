@@ -298,8 +298,8 @@ static void shuffle_split() {
     while (!is_empty(&second_pile))
         add_last(remove_first(&second_pile), &deck);
 
-    free(first_pile.dummy);
-    free(second_pile.dummy);
+    free_linked_list(&first_pile, false);
+    free_linked_list(&second_pile, false);
 
     set_message("OK");
 }

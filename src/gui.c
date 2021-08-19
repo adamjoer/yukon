@@ -117,22 +117,18 @@ void generate_columns_show(linked_list *deck, linked_list columns[], bool visibl
 
 void set_message(char *new_message) {
 
-    // Safety check to avoid buffer overrun
-    size_t new_message_length = strlen(new_message);
-    if (new_message_length > MESSAGE_BUFFER_SIZE)
-        new_message_length = MESSAGE_BUFFER_SIZE;
+    // Copy at most MESSAGE_BUFFER_SIZE chars, to avoid buffer overrun
+    strncpy(message, new_message, MESSAGE_BUFFER_SIZE);
 
-    strncpy(message, new_message, new_message_length);
-    message[new_message_length] = '\0';
+    // In case the new last command is longer than MESSAGE_BUFFER_SIZE, the null terminator needs to be manually added
+    message[MESSAGE_BUFFER_SIZE - 1] = '\0';
 }
 
 void set_last_command(char *new_last_command) {
 
-    // Safety check to avoid buffer overrun
-    size_t new_last_command_length = strlen(new_last_command);
-    if (new_last_command_length > MESSAGE_BUFFER_SIZE)
-        new_last_command_length = MESSAGE_BUFFER_SIZE;
+    // Copy at most IN_BUFFER_SIZE chars, to avoid buffer overrun
+    strncpy(last_command, new_last_command, IN_BUFFER_SIZE);
 
-    strncpy(last_command, new_last_command, new_last_command_length);
-    last_command[new_last_command_length] = '\0';
+    // In case the new last command is longer than ÌN_BUFFER_SIZE, the null terminator needs to be manually added
+    last_command[IN_BUFFER_SIZE - 1] = '\0';
 }

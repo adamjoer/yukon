@@ -6,12 +6,12 @@
 #include "linked_list.h"
 
 /* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
-void init_linked_list(linked_list *list) {
+void init_linked_list(LinkedList *list) {
     if (!list)
         return;
 
     // Allocate space on heap for dummy node
-    node *dummy = malloc(sizeof(node));
+    Node *dummy = malloc(sizeof(Node));
 
     // Check for error and don't go any further if no memory was allocated
     if (!dummy)
@@ -34,7 +34,7 @@ void init_linked_list(linked_list *list) {
  * Function for telling if a given linked list is empty,
  * i.e. doesn't contain any nodes other than dummy.
  */
-bool is_empty(linked_list *list) {
+bool is_empty(LinkedList *list) {
     if (!list)
         return true;
 
@@ -46,7 +46,7 @@ bool is_empty(linked_list *list) {
  * If the length value stored in the linked list is not valid,
  * its length will be calculated and stored in the 'length' variable.
  */
-int length(linked_list *list) {
+int length(LinkedList *list) {
     if (!list)
         return 0;
 
@@ -54,7 +54,7 @@ int length(linked_list *list) {
         return list->length;
 
     int length = 0;
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         ++length;
 
     list->length = length;
@@ -62,12 +62,12 @@ int length(linked_list *list) {
 }
 
 /* Function for adding a card to the beginning of a linked list */
-void add_first(card *insert, linked_list *list) {
+void add_first(Card *insert, LinkedList *list) {
     if (!list)
         return;
 
     // Allocate memory for the new list element
-    node *new_node = malloc(sizeof(node));
+    Node *new_node = malloc(sizeof(Node));
 
     // If malloc returned NULL it couldn't allocate any memory; don't go any further
     if (!new_node)
@@ -97,11 +97,11 @@ void add_first(card *insert, linked_list *list) {
 }
 
 /* Function for adding a card to the end of a linked list */
-void add_last(card *insert, linked_list *list) {
+void add_last(Card *insert, LinkedList *list) {
     if (!list)
         return;
 
-    node *new_node = malloc(sizeof(node));
+    Node *new_node = malloc(sizeof(Node));
     if (!new_node)
         return;
 
@@ -125,12 +125,12 @@ void add_last(card *insert, linked_list *list) {
  * Function for removing the first node in a linked list
  * and returning its card
  */
-card *remove_first(linked_list *list) {
+Card *remove_first(LinkedList *list) {
     if (is_empty(list))
         return NULL;
 
     // Pointer to the node to remove
-    node *delete = list->head;
+    Node *delete = list->head;
 
     // Set the new head, to be the value of the next element
     list->head = list->head->next;
@@ -142,7 +142,7 @@ card *remove_first(linked_list *list) {
     list->dummy->next = list->head;
 
     // Save the card of the node before freeing it
-    card *card = delete->card;
+    Card *card = delete->card;
     free(delete);
 
     // If the list's length variable is valid, decrement it
@@ -157,15 +157,15 @@ card *remove_first(linked_list *list) {
  * Function for removing the last (not dummy) node in a linked list
  * and returning its card.
  */
-card *remove_last(linked_list *list) {
+Card *remove_last(LinkedList *list) {
     if (is_empty(list))
         return NULL;
 
-    node *delete = list->dummy->prev;
+    Node *delete = list->dummy->prev;
 
     delete->prev->next = list->dummy;
     list->dummy->prev = delete->prev;
-    card *card = delete->card;
+    Card *card = delete->card;
 
     if (delete == list->head)
         list->head = list->dummy;
@@ -180,7 +180,7 @@ card *remove_last(linked_list *list) {
 }
 
 /* Function for getting the first card in a linked list */
-card *first(linked_list *list) {
+Card *first(LinkedList *list) {
     if (!list || is_empty(list))
         return NULL;
 
@@ -188,7 +188,7 @@ card *first(linked_list *list) {
 }
 
 /* Function for getting the last card in a linked list */
-card *last(linked_list *list) {
+Card *last(LinkedList *list) {
     if (!list || is_empty(list))
         return NULL;
 
@@ -200,12 +200,12 @@ card *last(linked_list *list) {
  * specified by a string. Returns null if the list doesn't contain it,
  * otherwise returns the node containing the card.
  */
-node *find_string(const char *search, linked_list *list) {
+Node *find_string(const char *search, LinkedList *list) {
     if (!list || strlen(search) != 2)
         return NULL;
 
     // Go over each node in the list
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being searched for, return its node
         if (cursor->card->rank == search[0] && cursor->card->suit == search[1])
@@ -221,12 +221,12 @@ node *find_string(const char *search, linked_list *list) {
  * specified by a pointer. Returns false if the list doesn't contain it,
  * true otherwise.
  */
-bool contains_card(card *search, linked_list *list) {
+bool contains_card(Card *search, LinkedList *list) {
     if (!list || !search)
         return false;
 
     // Go over each node in the list
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being searched for, return true
         if (cursor->card == search)
@@ -242,12 +242,12 @@ bool contains_card(card *search, linked_list *list) {
  * specified by a string. Returns null if the list doesn't contain it,
  * true otherwise.
  */
-bool contains_node(node *search, linked_list *list) {
+bool contains_node(Node *search, LinkedList *list) {
     if (!list || !search)
         return false;
 
     // Go over each node in the list
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
         // If the node's card matches the card being search for, return true
         if (cursor == search)
@@ -256,7 +256,6 @@ bool contains_node(node *search, linked_list *list) {
 
     // The node wasn't found; return false
     return false;
-
 }
 
 /*
@@ -264,7 +263,7 @@ bool contains_node(node *search, linked_list *list) {
  * it, from one linked list to another. The nodes will be added
  * to the end of the destination list.
  */
-void move_node(node *moving_node, linked_list *source, linked_list *destination) {
+void move_node(Node *moving_node, LinkedList *source, LinkedList *destination) {
     if (!source || !destination || source == destination)
         return;
 
@@ -272,8 +271,8 @@ void move_node(node *moving_node, linked_list *source, linked_list *destination)
         return;
 
     // Save the new last node of both lists
-    node *source_new_last = moving_node->prev;
-    node *destination_new_last = source->dummy->prev;
+    Node *source_new_last = moving_node->prev;
+    Node *destination_new_last = source->dummy->prev;
 
     // Check if the destination list is empty or not
     if (is_empty(destination)) {
@@ -323,11 +322,11 @@ void move_node(node *moving_node, linked_list *source, linked_list *destination)
  * This does not copy the cards in that linked list,
  * so the copy's nodes will point at the same cards as the original.
  */
-void copy(linked_list *list, linked_list *list_copy) {
+void copy(LinkedList *list, LinkedList *list_copy) {
     if (!list || !list->head || !list_copy)
         return;
 
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         add_last(cursor->card, list_copy);
 }
 
@@ -336,16 +335,16 @@ void copy(linked_list *list, linked_list *list_copy) {
  * After shuffling, the list will have the same length,
  * and contain the same cards as it did before.
  */
-void shuffle_linked_list(linked_list *list) {
+void shuffle_linked_list(LinkedList *list) {
     int len = length(list);
     if (len <= 1)
         return;
 
-    node **node_pointers = malloc(sizeof(node *) * len);
+    Node **node_pointers = malloc(sizeof(Node *) * len);
     if (!node_pointers)
         return;
 
-    node *cursor = list->head;
+    Node *cursor = list->head;
     for (int i = 0; i < len; ++i) {
         node_pointers[i] = cursor;
         cursor = cursor->next;
@@ -376,11 +375,11 @@ void shuffle_linked_list(linked_list *list) {
     free(node_pointers);
 }
 
-static void shuffle_array(node *array[], int length) {
+static void shuffle_array(Node *array[], int length) {
     if (!array)
         return;
 
-    node *temp;
+    Node *temp;
     int random_index;
     for (int i = 0; i < length - 1; ++i) {
         random_index = i + rand() / (RAND_MAX / (length - i) + 1);
@@ -391,15 +390,15 @@ static void shuffle_array(node *array[], int length) {
 }
 
 /* Function for Emptying a linked list to prevent memory leak */
-void empty_linked_list(linked_list *list, bool free_cards) {
+void empty_linked_list(LinkedList *list, bool free_cards) {
     if (!list)
         return;
 
     // Temporary pointer so a node being freed doesn't get lost
-    node *temp;
+    Node *temp;
 
     // Go over each node in the linked list
-    for (node *cursor = list->head; cursor != list->dummy;) {
+    for (Node *cursor = list->head; cursor != list->dummy;) {
 
         // Save node in temporary pointer
         temp = cursor;
@@ -419,7 +418,7 @@ void empty_linked_list(linked_list *list, bool free_cards) {
 }
 
 /* Function for freeing a linked list to prevent memory leak */
-void free_linked_list(linked_list *list, bool free_cards) {
+void free_linked_list(LinkedList *list, bool free_cards) {
     if (!list)
         return;
 
@@ -434,15 +433,15 @@ void free_linked_list(linked_list *list, bool free_cards) {
  * This provides extensive information about a linked list,
  * and is meant to be used for debugging purposes only.
  */
-void print_linked_list(linked_list *list) {
+void print_linked_list(LinkedList *list) {
     if (!list) {
         printf("linked list: addr=NULL\n");
         return;
     }
 
     int length = 0;
-    node *cursor;
-    card *card;
+    Node *cursor;
+    Card *card;
     printf("linked list: addr=%p head=%p dummy=%p\n"
            "{\n", list, list->head, list->dummy);
     for (cursor = list->head; cursor != list->dummy; cursor = cursor->next) {

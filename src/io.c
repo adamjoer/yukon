@@ -12,7 +12,7 @@ char source_column[3];
 char destination_column[3];
 char argument[IN_BUFFER_SIZE];
 
-linked_list *load_from_file(linked_list *list, char *filepath, bool check_file) {
+LinkedList *load_from_file(LinkedList *list, char *filepath, bool check_file) {
     if (!list)
         return NULL;
 
@@ -24,10 +24,10 @@ linked_list *load_from_file(linked_list *list, char *filepath, bool check_file) 
     FILE *file = fopen(filepath, "r");
 
     char rank, suit;
-    card *new_card;
+    Card *new_card;
 
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
-        new_card = malloc(sizeof(card));
+        new_card = malloc(sizeof(Card));
         if (!new_card)
             return NULL;
 
@@ -44,7 +44,7 @@ linked_list *load_from_file(linked_list *list, char *filepath, bool check_file) 
     return list;
 }
 
-enum validation_status validate_file(char *filepath) {
+enum FileValidationStatus validate_file(char *filepath) {
 
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
@@ -52,7 +52,7 @@ enum validation_status validate_file(char *filepath) {
     if (!file) {
         sprintf(output_buffer, "File '%s' couldn't be opened: %s", filepath, strerror(errno));
         set_message(output_buffer);
-        return FILE_NOT_FOUND;
+        return FileNotFound;
     }
 
     int card_value;
@@ -77,25 +77,25 @@ enum validation_status validate_file(char *filepath) {
 
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
-                    "Unknown card format '%s' on line %d: "
+                    "Unknown Card format '%s' on line %d: "
                     "Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
             set_message(output_buffer);
 
             fclose(file);
-            return INVALID_FORMAT;
+            return InvalidFormat;
         }
 
         card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
             sprintf(output_buffer,
-                    "Unknown card rank '%c' on line %d: "
+                    "Unknown Card rank '%c' on line %d: "
                     "Valid ranks are A, 2-9, T, J, Q, K",
                     line_buffer[0], line_number);
             set_message(output_buffer);
 
             fclose(file);
-            return INVALID_RANK;
+            return InvalidRank;
         }
 
         switch (line_buffer[1]) {
@@ -111,15 +111,16 @@ enum validation_status validate_file(char *filepath) {
             case 'S':
                 ++suit_count[3];
                 break;
+
             default:
                 sprintf(output_buffer,
-                        "Unknown card suit '%c' on line %d: "
+                        "Unknown Card suit '%c' on line %d: "
                         "Valid suits are C, D, H, S",
                         line_buffer[1], line_number);
                 set_message(output_buffer);
 
                 fclose(file);
-                return INVALID_SUIT;
+                return InvalidSuit;
         }
 
         if (++card_count[card_value - 1] > 4) {
@@ -128,7 +129,7 @@ enum validation_status validate_file(char *filepath) {
             set_message(output_buffer);
 
             fclose(file);
-            return INVALID_RANK_CARD_COUNT;
+            return InvalidRankCardCount;
         }
 
         ++line_number;
@@ -159,7 +160,7 @@ enum validation_status validate_file(char *filepath) {
             set_message(output_buffer);
 
             fclose(file);
-            return INVALID_SUIT_CARD_COUNT;
+            return InvalidSuitCardCount;
         }
     }
 
@@ -167,14 +168,14 @@ enum validation_status validate_file(char *filepath) {
     return OK;
 }
 
-enum command get_user_command() {
+enum Command get_user_command() {
 
     source_column[2] = destination_column[2] = moved_card[2] = '\0';
 
     char input_buffer[IN_BUFFER_SIZE];
 
     if (!fgets(input_buffer, IN_BUFFER_SIZE, stdin))
-        return ERROR;
+        return Error;
 
     size_t input_length = strlen(input_buffer);
     if (input_buffer[input_length - 1] == '\n')
@@ -189,58 +190,58 @@ enum command get_user_command() {
 
         if (input_buffer[0] == 'Q') {
             // Quit current game
-            return QUIT_GAME;
+            return QuitGame;
 
         } else if (input_buffer[0] == 'P') {
             // Start game with current deck
-            return PLAY;
+            return Play;
 
         } else {
             // Unknown input
-            return INVALID_INPUT_FORMAT;
+            return InvalidInputFormat;
         }
 
     } else if (input_length == 2) {
 
         if (input_buffer[0] == 'Q' && input_buffer[1] == 'Q') {
             // Quit program
-            return QUIT_PROGRAM;
+            return QuitProgram;
 
         } else if (input_buffer[0] == 'L' && input_buffer[1] == 'D') {
             // Load a deck from file
             // Here, no file is specified, so a default deck should be loaded
             argument[0] = '\0';
-            return LOAD_FILE;
+            return LoadFile;
 
         } else if (input_buffer[0] == 'S') {
 
             if (input_buffer[1] == 'W') {
                 // Show all cards
-                return SHOW_CARDS;
+                return ShowCards;
 
             } else if (input_buffer[1] == 'I') {
                 // Shuffle split
                 // Here, split is not specified, so a random number should be chosen
                 argument[0] = '\0';
-                return SHUFFLE_SPLIT;
+                return ShuffleSplit;
 
             } else if (input_buffer[1] == 'R') {
                 // Shuffle random
-                return SHUFFLE_RANDOM;
+                return ShuffleRandom;
 
             } else if (input_buffer[1] == 'D') {
                 // Save cards to a file
                 // Here, filename is not specified, so cards should be saved to default filename 'cards.txt'
                 argument[0] = '\0';
 
-                return SAVE_DECK;
+                return SaveDeck;
 
             } else {
-                return INVALID_INPUT_FORMAT;
+                return InvalidInputFormat;
             }
         } else {
             // Unknown input
-            return INVALID_INPUT_FORMAT;
+            return InvalidInputFormat;
         }
 
     } else {
@@ -254,7 +255,7 @@ enum command get_user_command() {
             else
                 argument[0] = '\0';
 
-            return LOAD_FILE;
+            return LoadFile;
 
         } else if (input_buffer[0] == 'S' && input_buffer[1] == 'D' && input_buffer[2] == ' ') {
             // Save cards to a file
@@ -265,7 +266,7 @@ enum command get_user_command() {
             else
                 argument[0] = '\0';
 
-            return SAVE_DECK;
+            return SaveDeck;
 
         } else if (input_buffer[0] == 'S' && input_buffer[1] == 'I' && input_buffer[2] == ' ') {
             // Shuffle split
@@ -276,7 +277,7 @@ enum command get_user_command() {
             else
                 argument[0] = '\0';
 
-            return SHUFFLE_SPLIT;
+            return ShuffleSplit;
 
         } else {
             // Game moves
@@ -284,7 +285,7 @@ enum command get_user_command() {
 
             if (input_length == 6) {
                 if (input_buffer[2] != '-' || input_buffer[3] != '>')
-                    return INVALID_INPUT_FORMAT;
+                    return InvalidInputFormat;
 
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
@@ -294,11 +295,11 @@ enum command get_user_command() {
 
                 moved_card[0] = '\0';
 
-                return MOVE_CARD;
+                return MoveCard;
 
             } else if (input_length == 9) {
                 if (input_buffer[2] != ':' || input_buffer[5] != '-' || input_buffer[6] != '>')
-                    return INVALID_INPUT_FORMAT;
+                    return InvalidInputFormat;
 
                 source_column[0] = input_buffer[0];
                 source_column[1] = input_buffer[1];
@@ -309,10 +310,10 @@ enum command get_user_command() {
                 destination_column[0] = (char) toupper(input_buffer[7]);
                 destination_column[1] = (char) toupper(input_buffer[8]);
 
-                return MOVE_CARD;
+                return MoveCard;
 
             } else {
-                return INVALID_INPUT_FORMAT;
+                return InvalidInputFormat;
             }
         }
     }
@@ -359,7 +360,7 @@ bool is_valid_card(char *string) {
            (string[1] == 'C' || string[1] == 'D' || string[1] == 'H' || string[1] == 'S');
 }
 
-void save_deck_to_file(linked_list *list, char *filepath) {
+void save_deck_to_file(LinkedList *list, char *filepath) {
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
     FILE *file = fopen(filepath, "w");
@@ -369,7 +370,7 @@ void save_deck_to_file(linked_list *list, char *filepath) {
         return;
     }
 
-    for (node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
+    for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         fprintf(file, "%c%c\n", cursor->card->rank, cursor->card->suit);
 
     fclose(file);

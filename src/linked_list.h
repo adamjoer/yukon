@@ -2,59 +2,59 @@
 
 #include <stdbool.h>
 
-typedef struct card {
+typedef struct Card {
     char rank;
     char suit;
     int value;
     bool visible;
-} card;
+} Card;
 
-typedef struct node {
-    card *card;
-    struct node *prev;
-    struct node *next;
-} node;
+typedef struct Node {
+    Card *card;
+    struct Node *prev;
+    struct Node *next;
+} Node;
 
-typedef struct linked_list {
-    node *head;
-    node *dummy;
+typedef struct LinkedList {
+    Node *head;
+    Node *dummy;
     int length;
-} linked_list;
+} LinkedList;
 
-void init_linked_list(linked_list *list);
+void init_linked_list(LinkedList *list);
 
-bool is_empty(linked_list *list);
+bool is_empty(LinkedList *list);
 
-int length(linked_list *list);
+int length(LinkedList *list);
 
-void add_first(card *insert, linked_list *list);
+void add_first(Card *insert, LinkedList *list);
 
-void add_last(card *insert, linked_list *list);
+void add_last(Card *insert, LinkedList *list);
 
-card *remove_first(linked_list *list);
+Card *remove_first(LinkedList *list);
 
-card *remove_last(linked_list *list);
+Card *remove_last(LinkedList *list);
 
-card *first(linked_list *list);
+Card *first(LinkedList *list);
 
-card *last(linked_list *list);
+Card *last(LinkedList *list);
 
-node *find_string(const char *search, linked_list *list);
+Node *find_string(const char *search, LinkedList *list);
 
-bool contains_card(card *search, linked_list *list);
+bool contains_card(Card *search, LinkedList *list);
 
-bool contains_node(node *search, linked_list *list);
+bool contains_node(Node *search, LinkedList *list);
 
-void move_node(node *moving_node, linked_list *source, linked_list *destination);
+void move_node(Node *moving_node, LinkedList *source, LinkedList *destination);
 
-void copy(linked_list *list, linked_list *list_copy);
+void copy(LinkedList *list, LinkedList *list_copy);
 
-void shuffle_linked_list(linked_list *list);
+void shuffle_linked_list(LinkedList *list);
 
-static void shuffle_array(node *array[], int length);
+static void shuffle_array(Node *array[], int length);
 
-void empty_linked_list(linked_list *list, bool free_cards);
+void empty_linked_list(LinkedList *list, bool free_cards);
 
-void free_linked_list(linked_list *list, bool free_cards);
+void free_linked_list(LinkedList *list, bool free_cards);
 
-void print_linked_list(linked_list *list);
+void print_linked_list(LinkedList *list);

@@ -6,9 +6,9 @@
 #include "game.h"
 #include "gui.h"
 
-linked_list deck;
-linked_list columns[NO_COLUMNS];
-linked_list foundations[NO_FOUNDATIONS];
+LinkedList deck;
+LinkedList columns[NO_COLUMNS];
+LinkedList foundations[NO_FOUNDATIONS];
 
 bool deck_loaded = false;
 bool play_phase_active = false;
@@ -49,12 +49,12 @@ void game_loop() {
         free_linked_list(&foundations[i], false);
 }
 
-static void execute_user_command(enum command command) {
+static void execute_user_command(enum Command command) {
 
     char *filepath;
 
     switch (command) {
-        case QUIT_PROGRAM:
+        case QuitProgram:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -64,7 +64,7 @@ static void execute_user_command(enum command command) {
             keep_playing = false;
             break;
 
-        case LOAD_FILE:
+        case LoadFile:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -91,7 +91,7 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
-        case PLAY:
+        case Play:
             if (!deck_loaded) {
                 set_message("No valid deck loaded");
                 break;
@@ -111,7 +111,7 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
-        case QUIT_GAME:
+        case QuitGame:
             if (!play_phase_active) {
                 set_message("No active game");
                 break;
@@ -122,7 +122,7 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
-        case SHOW_CARDS:
+        case ShowCards:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -140,7 +140,7 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
-        case SHUFFLE_SPLIT:
+        case ShuffleSplit:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -159,7 +159,7 @@ static void execute_user_command(enum command command) {
 
             break;
 
-        case SHUFFLE_RANDOM:
+        case ShuffleRandom:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -179,7 +179,7 @@ static void execute_user_command(enum command command) {
             set_message("OK");
             break;
 
-        case SAVE_DECK:
+        case SaveDeck:
             if (play_phase_active) {
                 set_message("Command not available in play phase");
                 break;
@@ -195,7 +195,7 @@ static void execute_user_command(enum command command) {
             save_deck_to_file(&deck, filepath);
             break;
 
-        case MOVE_CARD:
+        case MoveCard:
             if (!play_phase_active) {
                 set_message("No active game");
                 break;
@@ -214,11 +214,11 @@ static void execute_user_command(enum command command) {
                 set_message("Congratulations, you won!");
             break;
 
-        case INVALID_INPUT_FORMAT:
-            set_message("Unknown command");
+        case InvalidInputFormat:
+            set_message("Unknown Command");
             break;
 
-        case ERROR:
+        case Error:
         default:
             set_message("Input parser failed");
     }
@@ -228,10 +228,10 @@ static void load_default_deck() {
     const char ranks[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
     const char suits[] = {'C', 'D', 'H', 'S'};
 
-    card *insert_card;
+    Card *insert_card;
     for (int i = 0; i < 52; ++i) {
 
-        insert_card = malloc(sizeof(card));
+        insert_card = malloc(sizeof(Card));
         if (!insert_card)
             return;
 
@@ -275,12 +275,12 @@ static void shuffle_split() {
         return;
     }
 
-    linked_list first_pile;
-    linked_list second_pile;
+    LinkedList first_pile;
+    LinkedList second_pile;
     init_linked_list(&first_pile);
     init_linked_list(&second_pile);
 
-    node *cursor = deck.head;
+    Node *cursor = deck.head;
     for (int i = 0; i < split; ++i)
         cursor = cursor->next;
 
@@ -341,21 +341,21 @@ static bool move_card() {
         return false;
     }
 
-    linked_list *source_list = from_foundation ? &foundations[source_index] : &columns[source_index];
-    linked_list *destination_list = to_foundation ? &foundations[destination_index] : &columns[destination_index];
+    LinkedList *source_list = from_foundation ? &foundations[source_index] : &columns[source_index];
+    LinkedList *destination_list = to_foundation ? &foundations[destination_index] : &columns[destination_index];
 
-    node *moving_node;
-    node *destination_node;
+    Node *moving_node;
+    Node *destination_node;
 
     if (strlen(moved_card) > 0) {
         if (!is_valid_card(moved_card)) {
-            set_message("Invalid card");
+            set_message("Invalid Card");
             return false;
         }
 
         moving_node = find_string(moved_card, source_list);
         if (!moving_node || !moving_node->card->visible) {
-            set_message("Source column/foundation does not contain specified card");
+            set_message("Source column/foundation does not contain specified Card");
             return false;
         }
 
@@ -387,7 +387,7 @@ static bool move_card() {
     return true;
 }
 
-static bool is_valid_move(node *moving_node, node *destination_node, bool from_foundation, bool to_foundation) {
+static bool is_valid_move(Node *moving_node, Node *destination_node, bool from_foundation, bool to_foundation) {
     if ((from_foundation || to_foundation) && moving_node->next->card)
         return false;
 

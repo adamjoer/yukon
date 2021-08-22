@@ -8,8 +8,8 @@
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
-void print_board(linked_list columns[], linked_list foundations[], bool show_columns, bool play_phase_active) {
-    node *cursors[NO_COLUMNS];
+void print_board(LinkedList columns[], LinkedList foundations[], bool show_columns, bool play_phase_active) {
+    Node *cursors[NO_COLUMNS];
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;
 
@@ -73,7 +73,7 @@ static void clear_console() {
 #endif
 }
 
-void generate_columns_game(linked_list *deck, linked_list columns[]) {
+void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
     if (!deck || !columns)
         return;
 
@@ -89,7 +89,7 @@ void generate_columns_game(linked_list *deck, linked_list columns[]) {
         remaining_cards = 0;
     column_lengths[0] = remaining_cards;
 
-    node *cursor = deck->head;
+    Node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
         if (length(&columns[column_index]) >= column_lengths[column_index])
             continue;
@@ -101,11 +101,11 @@ void generate_columns_game(linked_list *deck, linked_list columns[]) {
     }
 }
 
-void generate_columns_show(linked_list *deck, linked_list columns[], bool visible) {
+void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible) {
     if (!deck || !columns)
         return;
 
-    node *cursor = deck->head;
+    Node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
 
         cursor->card->visible = visible;

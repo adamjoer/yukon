@@ -8,32 +8,29 @@
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
-void print_board(LinkedList columns[], LinkedList foundations[], bool show_columns, bool play_phase_active) {
+void print_board(LinkedList columns[], LinkedList foundations[]) {
+    clear_console();
+
     Node *cursors[NO_COLUMNS];
 
     int longest_column_length = LONGEST_COLUMN_LENGTH;
 
-    if (show_columns) {
-        for (int i = 0, len; i < NO_COLUMNS; ++i) {
-            len = length(&columns[i]);
-            if (len > longest_column_length)
-                longest_column_length = len;
+    for (int i = 0, len; i < NO_COLUMNS; ++i) {
+        len = length(&columns[i]);
+        if (len > longest_column_length)
+            longest_column_length = len;
 
-            cursors[i] = columns[i].head;
-        }
-    }
+        cursors[i] = columns[i].head;
 
-    clear_console();
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
         printf("C%d\t", i + 1);
+    }
     printf("\n\n");
 
     int foundation_counter = 0;
     for (int i = 0; i < longest_column_length; ++i) {
 
         for (int j = 0; j < NO_COLUMNS; ++j) {
-            if (!show_columns || cursors[j] == columns[j].dummy) {
+            if (cursors[j] == columns[j].dummy) {
                 printf("\t");
                 continue;
             }
@@ -47,7 +44,7 @@ void print_board(LinkedList columns[], LinkedList foundations[], bool show_colum
         }
 
         if (i % 2 == 0 && foundation_counter < NO_FOUNDATIONS) {
-            if (play_phase_active && !is_empty(&foundations[foundation_counter])) {
+            if (!is_empty(&foundations[foundation_counter])) {
                 printf("\t%c%c\tF%d",
                        last(&foundations[foundation_counter])->rank,
                        last(&foundations[foundation_counter])->suit,

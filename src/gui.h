@@ -8,7 +8,7 @@
 #define LONGEST_COLUMN_LENGTH 11
 #define NO_FOUNDATIONS 4
 
-void print_board(LinkedList columns[], LinkedList foundations[], bool show_columns, bool play_phase_active);
+void print_board(LinkedList columns[], LinkedList foundations[]);
 
 static void clear_console();
 

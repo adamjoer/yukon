@@ -10,7 +10,6 @@ LinkedList deck;
 LinkedList columns[NO_COLUMNS];
 LinkedList foundations[NO_FOUNDATIONS];
 
-bool deck_loaded = false;
 bool play_phase_active = false;
 bool show_columns = false;
 
@@ -30,7 +29,7 @@ void game_loop() {
     set_message("Welcome to Yukon");
 
     while (true) {
-        print_board(columns, foundations, show_columns, play_phase_active);
+        print_board(columns, foundations);
 
         if (!keep_playing) {
             printf("\n");
@@ -83,8 +82,6 @@ static void execute_user_command(enum Command command) {
             else
                 load_default_deck();
 
-            deck_loaded = true;
-
             generate_columns_show(&deck, columns, false);
             show_columns = true;
 
@@ -92,7 +89,7 @@ static void execute_user_command(enum Command command) {
             break;
 
         case Play:
-            if (!deck_loaded) {
+            if (length(&deck) == 0) {
                 set_message("No valid deck loaded");
                 break;
             }
@@ -128,7 +125,7 @@ static void execute_user_command(enum Command command) {
                 break;
             }
 
-            if (!deck_loaded) {
+            if (length(&deck) == 0) {
                 set_message("No valid deck loaded");
                 break;
             }
@@ -146,7 +143,7 @@ static void execute_user_command(enum Command command) {
                 break;
             }
 
-            if (!deck_loaded) {
+            if (length(&deck) == 0) {
                 set_message("No valid deck loaded");
                 break;
             }
@@ -165,7 +162,7 @@ static void execute_user_command(enum Command command) {
                 break;
             }
 
-            if (!deck_loaded) {
+            if (length(&deck) == 0) {
                 set_message("No valid deck loaded");
                 break;
             }
@@ -185,7 +182,7 @@ static void execute_user_command(enum Command command) {
                 break;
             }
 
-            if (!deck_loaded) {
+            if (length(&deck) == 0) {
                 set_message("No valid deck loaded");
                 break;
             }
@@ -245,7 +242,9 @@ static void load_default_deck() {
 }
 
 static void shuffle_split() {
-    if (!deck_loaded)
+    int deck_length = length(&deck);
+
+    if (deck_length == 0)
         return;
 
     long split;
@@ -261,16 +260,16 @@ static void shuffle_split() {
             return;
         }
 
-        if (split < 0 || split > length(&deck)) {
+        if (split < 0 || split > deck_length) {
             set_message("Split needs to be positive and less than the deck length");
             return;
         }
 
     } else {
-        split = rand() % (length(&deck) + 1);
+        split = rand() % (deck_length + 1);
     }
 
-    if (split == 0 || split == length(&deck)) {
+    if (split == 0 || split == deck_length) {
         set_message("No shuffling necessary");
         return;
     }

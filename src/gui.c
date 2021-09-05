@@ -74,17 +74,7 @@ void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
     if (!deck || !columns)
         return;
 
-    int column_lengths[NO_COLUMNS];
-
-    int remaining_cards = 52;
-    for (int i = NO_COLUMNS - 1; i > 0; --i) {
-        column_lengths[i] = LONGEST_COLUMN_LENGTH - (NO_COLUMNS - (i + 1));
-        remaining_cards -= column_lengths[i];
-    }
-
-    if (remaining_cards < 0)
-        remaining_cards = 0;
-    column_lengths[0] = remaining_cards;
+    const int column_lengths[NO_COLUMNS] = {1, 6, 7, 8, 9, 10, 11};
 
     Node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {

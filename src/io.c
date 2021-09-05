@@ -12,13 +12,13 @@ char source_column[3];
 char destination_column[3];
 char argument[IN_BUFFER_SIZE];
 
-LinkedList *load_from_file(LinkedList *list, char *filepath, bool check_file) {
+void load_from_file(LinkedList *list, char *filepath, bool check_file) {
     if (!list)
-        return NULL;
+        return;
 
     if (check_file) {
         if (validate_file(filepath) != OK)
-            return NULL;
+            return;
     }
 
     FILE *file = fopen(filepath, "r");
@@ -29,7 +29,7 @@ LinkedList *load_from_file(LinkedList *list, char *filepath, bool check_file) {
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
         new_card = malloc(sizeof(Card));
         if (!new_card)
-            return NULL;
+            return;
 
         new_card->rank = rank;
         new_card->suit = suit;
@@ -40,8 +40,6 @@ LinkedList *load_from_file(LinkedList *list, char *filepath, bool check_file) {
     }
 
     fclose(file);
-
-    return list;
 }
 
 enum FileValidationStatus validate_file(char *filepath) {

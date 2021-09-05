@@ -50,8 +50,6 @@ void game_loop() {
 
 static void execute_user_command(enum Command command) {
 
-    char *filepath;
-
     switch (command) {
         case QuitProgram:
             if (play_phase_active) {
@@ -187,9 +185,7 @@ static void execute_user_command(enum Command command) {
                 break;
             }
 
-            filepath = (strlen(argument) > 0) ? argument : "cards.txt";
-
-            save_deck_to_file(&deck, filepath);
+            save_deck_to_file(&deck, strlen(argument) > 0 ? argument : "cards.txt");
             break;
 
         case MoveCard:
@@ -218,6 +214,7 @@ static void execute_user_command(enum Command command) {
         case Error:
         default:
             set_message("Input parser failed");
+			break;
     }
 }
 
@@ -344,7 +341,6 @@ static bool move_card() {
     LinkedList *destination_list = to_foundation ? &foundations[destination_index] : &columns[destination_index];
 
     Node *moving_node;
-    Node *destination_node;
 
     if (strlen(moved_card) > 0) {
         if (!is_valid_card(moved_card)) {
@@ -367,7 +363,7 @@ static bool move_card() {
         moving_node = source_list->dummy->prev;
     }
 
-    destination_node = !is_empty(destination_list) ? destination_list->dummy->prev : NULL;
+    Node *destination_node = !is_empty(destination_list) ? destination_list->dummy->prev : NULL;
 
     if (!is_valid_move(moving_node, destination_node, from_foundation, to_foundation)) {
         set_message("Invalid move");

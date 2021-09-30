@@ -39,6 +39,8 @@ enum FileValidationStatus validate_file(char *filepath);
 
 enum Command get_user_command();
 
+static void flush_stdin();
+
 int get_card_value(char rank);
 
 bool is_valid_column(char *string);

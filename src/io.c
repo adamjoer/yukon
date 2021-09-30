@@ -178,6 +178,8 @@ enum Command get_user_command() {
     size_t input_length = strlen(input_buffer);
     if (input_buffer[input_length - 1] == '\n')
         input_buffer[--input_length] = '\0';
+    else
+        flush_stdin();
 
     set_last_command(input_buffer);
 
@@ -315,6 +317,12 @@ enum Command get_user_command() {
             }
         }
     }
+}
+
+static void flush_stdin() {
+    int c;
+
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 int get_card_value(char rank) {

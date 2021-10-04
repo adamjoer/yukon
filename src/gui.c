@@ -102,19 +102,27 @@ void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible)
     }
 }
 
-void set_message(char *new_message) {
+void set_message(const char *new_message) {
 
     // Copy at most MESSAGE_BUFFER_SIZE chars, to avoid buffer overrun
+#ifdef _WIN32
+    strncpy_s(message, MESSAGE_BUFFER_SIZE, new_message, MESSAGE_BUFFER_SIZE);
+#else
     strncpy(message, new_message, MESSAGE_BUFFER_SIZE);
+#endif
 
     // In case the new last command is longer than MESSAGE_BUFFER_SIZE, the null terminator needs to be manually added
     message[MESSAGE_BUFFER_SIZE - 1] = '\0';
 }
 
-void set_last_command(char *new_last_command) {
+void set_last_command(const char *new_last_command) {
 
     // Copy at most IN_BUFFER_SIZE chars, to avoid buffer overrun
+#ifdef _WIN32
+    strncpy_s(last_command, MESSAGE_BUFFER_SIZE, new_last_command, IN_BUFFER_SIZE);
+#else
     strncpy(last_command, new_last_command, IN_BUFFER_SIZE);
+#endif
 
     // In case the new last command is longer than ÌN_BUFFER_SIZE, the null terminator needs to be manually added
     last_command[IN_BUFFER_SIZE - 1] = '\0';

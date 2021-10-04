@@ -21,12 +21,17 @@ void load_from_file(LinkedList *list, char *filepath, bool check_file) {
             return;
     }
 
-    FILE *file = fopen(filepath, "r");
-
     char rank, suit;
     Card *new_card;
 
+#ifdef _WIN32
+    FILE *file;
+    fopen_s(&file, filepath, "r");
+    while (fscanf_s(file, "%c%c\n", &rank, 1, &suit, 1) != EOF) {
+#else
+    FILE *file = fopen(filepath, "r");
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
+#endif
         new_card = malloc(sizeof(Card));
         if (!new_card)
             return;
@@ -46,9 +51,16 @@ enum FileValidationStatus validate_file(char *filepath) {
 
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
+#ifdef _WIN32
+    FILE *file;
+    if (fopen_s(&file, filepath, "r") != 0) {
+        int bytes_written = sprintf(output_buffer, "File '%s' couldn't be opened: ", filepath);
+        strerror_s(output_buffer + bytes_written, MESSAGE_BUFFER_SIZE - bytes_written, errno);
+#else
     FILE *file = fopen(filepath, "r");
     if (!file) {
         sprintf(output_buffer, "File '%s' couldn't be opened: %s", filepath, strerror(errno));
+#endif
         set_message(output_buffer);
         return FileNotFound;
     }
@@ -71,7 +83,11 @@ enum FileValidationStatus validate_file(char *filepath) {
      *       This prevents that lines that are longer than the line buffer
      *       causes buffer overflow.
      */
+#ifdef _WIN32
+    while (fscanf_s(file, "%63[^\r\n] ", line_buffer, IN_BUFFER_SIZE) != EOF) {
+#else
     while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
+#endif
 
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
@@ -251,7 +267,11 @@ enum Command get_user_command() {
 
             // Here, a file might be specified (If there is something after the space)
             if (input_length > 3)
+#ifdef _WIN32
+                strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
+#else
                 strncpy(argument, input_buffer + 3, input_length - 2);
+#endif
             else
                 argument[0] = '\0';
 
@@ -262,7 +282,11 @@ enum Command get_user_command() {
 
             // Here, a filename might be specified (If there is something after the space)
             if (input_length > 3)
+#ifdef _WIN32
+                strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
+#else
                 strncpy(argument, input_buffer + 3, input_length - 2);
+#endif
             else
                 argument[0] = '\0';
 
@@ -272,8 +296,11 @@ enum Command get_user_command() {
             // Shuffle split
             // Here, split might be specified
             if (input_length > 3)
+#ifdef _WIN32
+                strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
+#else
                 strncpy(argument, input_buffer + 3, input_length - 2);
-
+#endif
             else
                 argument[0] = '\0';
 
@@ -369,9 +396,16 @@ bool is_valid_card(char *string) {
 void save_deck_to_file(LinkedList *list, char *filepath) {
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
+#ifdef _WIN32
+    FILE *file;
+    if (fopen_s(&file, filepath, "w") != 0) {
+        int bytes_written = sprintf(output_buffer, "File '%s' not created: ", filepath);
+        strerror_s(output_buffer + bytes_written, MESSAGE_BUFFER_SIZE - bytes_written, errno);
+#else
     FILE *file = fopen(filepath, "w");
     if (!file) {
         sprintf(output_buffer, "File '%s' not created: %s", filepath, strerror(errno));
+#endif
         set_message(output_buffer);
         return;
     }

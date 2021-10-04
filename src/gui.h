@@ -16,6 +16,6 @@ void generate_columns_game(LinkedList *deck, LinkedList columns[]);
 
 void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible);
 
-void set_message(char *new_message);
+void set_message(const char *new_message);
 
-void set_last_command(char *new_last_command);
+void set_last_command(const char *new_last_command);

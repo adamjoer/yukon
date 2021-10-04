@@ -6,7 +6,7 @@
 #include "linked_list.h"
 
 /* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
-void init_linked_list(LinkedList *list) {
+void linked_list_init(LinkedList *list) {
     if (!list)
         return;
 
@@ -28,6 +28,17 @@ void init_linked_list(LinkedList *list) {
 
     // Set the list's length to 0
     list->length = 0;
+}
+
+/* Function for freeing a linked list to prevent memory leak */
+void linked_list_destroy(LinkedList *list, bool free_cards) {
+    if (!list)
+        return;
+
+    empty_linked_list(list, free_cards);
+
+    free(list->dummy);
+    list->head = list->dummy = NULL;
 }
 
 /*
@@ -415,17 +426,6 @@ void empty_linked_list(LinkedList *list, bool free_cards) {
     list->head = list->dummy;
     list->dummy->prev = list->dummy->next = list->dummy;
     list->length = 0;
-}
-
-/* Function for freeing a linked list to prevent memory leak */
-void free_linked_list(LinkedList *list, bool free_cards) {
-    if (!list)
-        return;
-
-    empty_linked_list(list, free_cards);
-
-    free(list->dummy);
-    list->head = list->dummy = NULL;
 }
 
 /*

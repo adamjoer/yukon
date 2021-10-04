@@ -3,7 +3,13 @@
 #include "linked_list.h"
 #include "io.h"
 
-void game_loop();
+static void game_init();
+
+static void game_destroy();
+
+void start_game();
+
+static void game_loop();
 
 static void execute_user_command(enum Command command);
 

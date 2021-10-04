@@ -15,19 +15,39 @@ bool show_columns = false;
 
 bool keep_playing = true;
 
-void game_loop() {
+static void game_init() {
     srand(time(NULL));
 
-    init_linked_list(&deck);
+    linked_list_init(&deck);
 
     for (int i = 0; i < NO_COLUMNS; ++i)
-        init_linked_list(&columns[i]);
+        linked_list_init(&columns[i]);
 
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
-        init_linked_list(&foundations[i]);
+        linked_list_init(&foundations[i]);
 
     set_message("Welcome to Yukon");
+}
 
+static void game_destroy() {
+    linked_list_destroy(&deck, true);
+
+    for (int i = 0; i < NO_COLUMNS; ++i)
+        linked_list_destroy(&columns[i], false);
+
+    for (int i = 0; i < NO_FOUNDATIONS; ++i)
+        linked_list_destroy(&foundations[i], false);
+}
+
+void start_game() {
+    game_init();
+
+    game_loop();
+
+    game_destroy();
+}
+
+static void game_loop() {
     while (true) {
         print_board(columns, foundations);
 
@@ -38,14 +58,6 @@ void game_loop() {
 
         execute_user_command(get_user_command());
     }
-
-    free_linked_list(&deck, true);
-
-    for (int i = 0; i < NO_COLUMNS; ++i)
-        free_linked_list(&columns[i], false);
-
-    for (int i = 0; i < NO_FOUNDATIONS; ++i)
-        free_linked_list(&foundations[i], false);
 }
 
 static void execute_user_command(enum Command command) {
@@ -273,8 +285,8 @@ static void shuffle_split() {
 
     LinkedList first_pile;
     LinkedList second_pile;
-    init_linked_list(&first_pile);
-    init_linked_list(&second_pile);
+    linked_list_init(&first_pile);
+    linked_list_init(&second_pile);
 
     Node *cursor = deck.head;
     for (int i = 0; i < split; ++i)
@@ -294,8 +306,8 @@ static void shuffle_split() {
     while (!is_empty(&second_pile))
         add_last(remove_first(&second_pile), &deck);
 
-    free_linked_list(&first_pile, false);
-    free_linked_list(&second_pile, false);
+    linked_list_destroy(&first_pile, false);
+    linked_list_destroy(&second_pile, false);
 
     set_message("OK");
 }

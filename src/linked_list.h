@@ -21,7 +21,9 @@ typedef struct LinkedList {
     int length;
 } LinkedList;
 
-void init_linked_list(LinkedList *list);
+void linked_list_init(LinkedList *list);
+
+void linked_list_destroy(LinkedList *list, bool free_cards);
 
 bool is_empty(LinkedList *list);
 
@@ -54,7 +56,5 @@ void shuffle_linked_list(LinkedList *list);
 static void shuffle_array(Node *array[], int length);
 
 void empty_linked_list(LinkedList *list, bool free_cards);
-
-void free_linked_list(LinkedList *list, bool free_cards);
 
 void print_linked_list(LinkedList *list);

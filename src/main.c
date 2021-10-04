@@ -2,7 +2,7 @@
 
 int main() {
 
-    game_loop();
+    start_game();
 
     return 0;
 }

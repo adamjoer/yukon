@@ -91,7 +91,7 @@ enum FileValidationStatus validate_file(char *filepath) {
 
         if (strlen(line_buffer) != 2) {
             sprintf(output_buffer,
-                    "Unknown Card format '%s' on line %d: "
+                    "Unknown card format '%s' on line %d: "
                     "Valid format is [rank-char][suit-char] e.g. TH for ten of hearts",
                     line_buffer, line_number);
             set_message(output_buffer);
@@ -103,7 +103,7 @@ enum FileValidationStatus validate_file(char *filepath) {
         card_value = get_card_value(line_buffer[0]);
         if (card_value == -1) {
             sprintf(output_buffer,
-                    "Unknown Card rank '%c' on line %d: "
+                    "Unknown card rank '%c' on line %d: "
                     "Valid ranks are A, 2-9, T, J, Q, K",
                     line_buffer[0], line_number);
             set_message(output_buffer);
@@ -128,7 +128,7 @@ enum FileValidationStatus validate_file(char *filepath) {
 
             default:
                 sprintf(output_buffer,
-                        "Unknown Card suit '%c' on line %d: "
+                        "Unknown card suit '%c' on line %d: "
                         "Valid suits are C, D, H, S",
                         line_buffer[1], line_number);
                 set_message(output_buffer);

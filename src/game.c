@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <signal.h>
 
 #include "game.h"
 #include "gui.h"
@@ -356,13 +357,13 @@ static bool move_card() {
 
     if (strlen(moved_card) > 0) {
         if (!is_valid_card(moved_card)) {
-            set_message("Invalid Card");
+            set_message("Invalid card");
             return false;
         }
 
         moving_node = find_string(moved_card, source_list);
         if (!moving_node || !moving_node->card->visible) {
-            set_message("Source column/foundation does not contain specified Card");
+            set_message("Source column/foundation does not contain specified card");
             return false;
         }
 

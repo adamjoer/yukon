@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <assert.h>
 
 #include "io.h"
 #include "gui.h"
@@ -15,8 +16,8 @@ char destination_column[3];
 char argument[IN_BUFFER_SIZE];
 
 void load_from_file(LinkedList *list, char *filepath, bool check_file) {
-    if (!list)
-        return;
+    ASSERT_LINKED_LIST_REF(list);
+    assert(filepath != NULL);
 
     if (check_file) {
         if (validate_file(filepath) != OK)
@@ -35,8 +36,7 @@ void load_from_file(LinkedList *list, char *filepath, bool check_file) {
     while (fscanf(file, "%c%c\n", &rank, &suit) != EOF) {
 #endif
         new_card = malloc(sizeof(Card));
-        if (!new_card)
-            return;
+        assert(new_card != NULL);
 
         new_card->rank = rank;
         new_card->suit = suit;

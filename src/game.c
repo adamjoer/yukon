@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <signal.h>
+#include <assert.h>
 
 #include "game.h"
 #include "gui.h"
@@ -246,7 +247,7 @@ static void execute_user_command(enum Command command) {
         case Error:
         default:
             set_message("Input parser failed");
-			break;
+            break;
     }
 }
 
@@ -258,8 +259,7 @@ static void load_default_deck() {
     for (int i = 0; i < 52; ++i) {
 
         insert_card = malloc(sizeof(Card));
-        if (!insert_card)
-            return;
+        assert(insert_card != NULL);
 
         insert_card->rank = ranks[i % 13];
         insert_card->suit = suits[i / 13];

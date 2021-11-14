@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "gui.h"
 #include "io.h"
@@ -13,6 +14,16 @@ char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
 void print_board(LinkedList columns[], LinkedList foundations[]) {
+#ifndef NDEBUG
+    for (int i = 0; i < NO_COLUMNS; ++i) {
+        ASSERT_LINKED_LIST_STRUCT(columns[i]);
+    }
+
+    for (int i = 0; i < NO_FOUNDATIONS; ++i) {
+        ASSERT_LINKED_LIST_STRUCT(foundations[i]);
+    }
+#endif
+
     clear_console();
 
     Node *cursors[NO_COLUMNS];
@@ -77,8 +88,13 @@ static void clear_console() {
 }
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
-    if (!deck || !columns)
-        return;
+#ifndef NDEBUG
+    ASSERT_LINKED_LIST_REF(deck);
+
+    for (int i = 0; i < NO_COLUMNS; ++i) {
+        ASSERT_LINKED_LIST_STRUCT(columns[i]);
+    }
+#endif
 
     const int column_lengths[NO_COLUMNS] = {1, 6, 7, 8, 9, 10, 11};
 
@@ -95,8 +111,13 @@ void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
 }
 
 void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible) {
-    if (!deck || !columns)
-        return;
+#ifndef NDEBUG
+    ASSERT_LINKED_LIST_REF(deck);
+
+    for (int i = 0; i < NO_COLUMNS; ++i) {
+        ASSERT_LINKED_LIST_STRUCT(columns[i]);
+    }
+#endif
 
     Node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
@@ -109,6 +130,7 @@ void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible)
 }
 
 void set_message(const char *new_message) {
+    assert(new_message);
 
     // Copy at most MESSAGE_BUFFER_SIZE chars, to avoid buffer overrun
 #ifdef _WIN32
@@ -122,6 +144,7 @@ void set_message(const char *new_message) {
 }
 
 void set_last_command(const char *new_last_command) {
+    assert(new_last_command);
 
     // Copy at most IN_BUFFER_SIZE chars, to avoid buffer overrun
 #ifdef _WIN32

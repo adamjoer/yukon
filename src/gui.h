@@ -10,8 +10,6 @@
 
 void print_board(LinkedList columns[], LinkedList foundations[]);
 
-static void clear_console();
-
 void generate_columns_game(LinkedList *deck, LinkedList columns[]);
 
 void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible);

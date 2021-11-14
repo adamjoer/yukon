@@ -7,13 +7,32 @@
 #include "game.h"
 #include "gui.h"
 
+static void game_init();
+
+static void game_destroy();
+
+static void game_loop();
+
+static void execute_user_command(enum Command command);
+
+static void load_default_deck();
+
+static void shuffle_split();
+
+static bool move_card();
+
+static bool is_valid_move(Node *moving_node, Node *destination_node, bool from_foundation, bool to_foundation);
+
+static void empty_columns();
+
+static void quit_game();
+
 LinkedList deck;
 LinkedList columns[NO_COLUMNS];
 LinkedList foundations[NO_FOUNDATIONS];
 
 bool play_phase_active = false;
 bool show_columns = false;
-
 bool keep_playing = true;
 
 static void game_init() {

@@ -7,6 +7,8 @@
 #include "io.h"
 #include "gui.h"
 
+static void flush_stdin();
+
 char moved_card[3];
 char source_column[3];
 char destination_column[3];

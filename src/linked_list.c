@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <string.h>
 
 #include "linked_list.h"
+
+static void shuffle_array(Node *array[], int length);
 
 /* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
 void linked_list_init(LinkedList *list) {

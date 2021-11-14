@@ -5,6 +5,10 @@
 #include "gui.h"
 #include "io.h"
 
+static void print_board_safe();
+
+static void clear_console();
+
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 

@@ -53,8 +53,6 @@ void copy(LinkedList *list, LinkedList *list_copy);
 
 void shuffle_linked_list(LinkedList *list);
 
-static void shuffle_array(Node *array[], int length);
-
 void empty_linked_list(LinkedList *list, bool free_cards);
 
 void print_linked_list(LinkedList *list);

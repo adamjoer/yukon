@@ -14,6 +14,10 @@ static void game_destroy();
 
 static void game_loop();
 
+static void abort_handler(int signal);
+
+static void interrupt_handler(int signal);
+
 static void execute_user_command(enum Command command);
 
 static void load_default_deck();
@@ -32,11 +36,26 @@ LinkedList deck;
 LinkedList columns[NO_COLUMNS];
 LinkedList foundations[NO_FOUNDATIONS];
 
+bool game_initialised = false;
 bool play_phase_active = false;
 bool show_columns = false;
 bool keep_playing = true;
 
+void start_game() {
+    game_init();
+
+    game_loop();
+
+    game_destroy();
+}
+
 static void game_init() {
+    if (game_initialised)
+        return;
+
+    signal(SIGABRT, abort_handler);
+    signal(SIGINT, interrupt_handler);
+
     srand(time(NULL));
 
     linked_list_init(&deck);
@@ -48,9 +67,14 @@ static void game_init() {
         linked_list_init(&foundations[i]);
 
     set_message("Welcome to Yukon");
+
+    game_initialised = true;
 }
 
 static void game_destroy() {
+    if (!game_initialised)
+        return;
+
     linked_list_destroy(&deck, true);
 
     for (int i = 0; i < NO_COLUMNS; ++i)
@@ -58,14 +82,8 @@ static void game_destroy() {
 
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
         linked_list_destroy(&foundations[i], false);
-}
 
-void start_game() {
-    game_init();
-
-    game_loop();
-
-    game_destroy();
+    game_initialised = false;
 }
 
 static void game_loop() {
@@ -79,6 +97,23 @@ static void game_loop() {
 
         execute_user_command(get_user_command());
     }
+}
+
+static void abort_handler(int signal) {
+    set_message("Oh shit, something fucked up!");
+    print_board(NULL, NULL);
+
+    game_destroy();
+    exit(1);
+}
+
+static void interrupt_handler(int signal) {
+    set_last_command("*Program interrupted*");
+    set_message("Goodbye!");
+    print_board(NULL, NULL);
+
+    game_destroy();
+    exit(0);
 }
 
 static void execute_user_command(enum Command command) {
@@ -298,10 +333,8 @@ static void shuffle_split() {
         split = rand() % (deck_length + 1);
     }
 
-    if (split == 0 || split == deck_length) {
-        set_message("No shuffling necessary");
-        return;
-    }
+    if (split == 0 || split == deck_length)
+        goto out;
 
     LinkedList first_pile;
     LinkedList second_pile;
@@ -329,6 +362,7 @@ static void shuffle_split() {
     linked_list_destroy(&first_pile, false);
     linked_list_destroy(&second_pile, false);
 
+out:
     set_message("OK");
 }
 

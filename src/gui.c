@@ -14,6 +14,11 @@ char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
 
 void print_board(LinkedList columns[], LinkedList foundations[]) {
+    if (!columns || !foundations) {
+        print_board_safe();
+        return;
+    }
+
 #ifndef NDEBUG
     for (int i = 0; i < NO_COLUMNS; ++i) {
         ASSERT_LINKED_LIST_STRUCT(columns[i]);
@@ -77,6 +82,30 @@ void print_board(LinkedList columns[], LinkedList foundations[]) {
     printf("LAST Command: %s\n"
            "Message: %s\n"
            "INPUT> ", last_command, message);
+}
+
+static void print_board_safe() {
+    clear_console();
+
+    for (int i = 0; i < NO_COLUMNS; ++i)
+        printf("C%d\t", i + 1);
+    printf("\n\n");
+
+    int foundation_counter = 0;
+    for (int i = 0; i < LONGEST_COLUMN_LENGTH; ++i) {
+
+        for (int j = 0; j < NO_COLUMNS; ++j)
+            printf("\t");
+
+        if (i % 2 == 0 && foundation_counter < NO_FOUNDATIONS)
+            printf("\t[]\tF%d", ++foundation_counter);
+
+        printf("\n");
+    }
+
+    printf("LAST Command: %s\n"
+           "Message: %s\n"
+           "INPUT>\n", last_command, message);
 }
 
 static void clear_console() {

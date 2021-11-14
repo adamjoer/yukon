@@ -1,3 +1,6 @@
 #pragma once
+void yukon_init();
 
-void start_game();
+void yukon_destroy();
+
+int start_game();

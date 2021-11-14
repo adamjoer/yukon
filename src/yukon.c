@@ -9,10 +9,6 @@
 #include "gui.h"
 #include "io.h"
 
-static void yukon_init();
-
-static void yukon_destroy();
-
 static void game_loop();
 
 static void abort_handler(int signal);
@@ -42,15 +38,16 @@ bool play_phase_active = false;
 bool show_columns = false;
 bool keep_playing = true;
 
-void start_game() {
-    yukon_init();
+int start_game() {
+    if (!game_initialised)
+        return 1;
 
     game_loop();
 
-    yukon_destroy();
+    return 0;
 }
 
-static void yukon_init() {
+void yukon_init() {
     if (game_initialised)
         return;
 
@@ -72,7 +69,7 @@ static void yukon_init() {
     game_initialised = true;
 }
 
-static void yukon_destroy() {
+void yukon_destroy() {
     if (!game_initialised)
         return;
 

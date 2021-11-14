@@ -2,7 +2,11 @@
 
 int main() {
 
-    start_game();
+    yukon_init();
 
-    return 0;
+    int ret = start_game();
+
+    yukon_destroy();
+
+    return ret;
 }

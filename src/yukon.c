@@ -5,12 +5,13 @@
 #include <signal.h>
 #include <assert.h>
 
-#include "game.h"
+#include "yukon.h"
 #include "gui.h"
+#include "io.h"
 
-static void game_init();
+static void yukon_init();
 
-static void game_destroy();
+static void yukon_destroy();
 
 static void game_loop();
 
@@ -42,14 +43,14 @@ bool show_columns = false;
 bool keep_playing = true;
 
 void start_game() {
-    game_init();
+    yukon_init();
 
     game_loop();
 
-    game_destroy();
+    yukon_destroy();
 }
 
-static void game_init() {
+static void yukon_init() {
     if (game_initialised)
         return;
 
@@ -71,7 +72,7 @@ static void game_init() {
     game_initialised = true;
 }
 
-static void game_destroy() {
+static void yukon_destroy() {
     if (!game_initialised)
         return;
 
@@ -103,7 +104,7 @@ static void abort_handler(int signal) {
     set_message("Oh shit, something fucked up!");
     print_board(NULL, NULL);
 
-    game_destroy();
+    yukon_destroy();
     exit(1);
 }
 
@@ -112,7 +113,7 @@ static void interrupt_handler(int signal) {
     set_message("Goodbye!");
     print_board(NULL, NULL);
 
-    game_destroy();
+    yukon_destroy();
     exit(0);
 }
 

@@ -55,11 +55,11 @@ void yukon_init() {
 
     signal(SIGINT,
 #ifdef _WIN32
-            SIG_IGN
+           SIG_IGN
 #else
            interrupt_handler
 #endif
-           );
+    );
 
     srand(time(NULL));
 

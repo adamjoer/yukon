@@ -52,7 +52,14 @@ void yukon_init() {
         return;
 
     signal(SIGABRT, abort_handler);
-    signal(SIGINT, interrupt_handler);
+
+    signal(SIGINT,
+#ifdef _WIN32
+            SIG_IGN
+#else
+           interrupt_handler
+#endif
+           );
 
     srand(time(NULL));
 
@@ -106,9 +113,13 @@ static void abort_handler(int signal) {
 }
 
 static void interrupt_handler(int signal) {
-    set_last_command("*Program interrupted*");
+    set_last_command("Ctrl+C");
     set_message("Goodbye!");
-    print_board(NULL, NULL);
+
+    quit_game();
+
+    print_board(columns, foundations);
+    printf("\n");
 
     yukon_destroy();
     exit(0);
@@ -360,7 +371,7 @@ static void shuffle_split() {
     linked_list_destroy(&first_pile, false);
     linked_list_destroy(&second_pile, false);
 
-out:
+    out:
     set_message("OK");
 }
 

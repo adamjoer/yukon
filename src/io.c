@@ -191,7 +191,7 @@ enum Command get_user_command() {
     char input_buffer[IN_BUFFER_SIZE];
 
     if (!fgets(input_buffer, IN_BUFFER_SIZE, stdin))
-        return Error;
+        return InvalidInputFormat;
 
     size_t input_length = strlen(input_buffer);
     if (input_buffer[input_length - 1] == '\n')
@@ -404,9 +404,9 @@ void save_deck_to_file(LinkedList *list, char *filepath) {
         int bytes_written = sprintf(output_buffer, "File '%s' not created: ", filepath);
         strerror_s(output_buffer + bytes_written, MESSAGE_BUFFER_SIZE - bytes_written, errno);
 #else
-    FILE *file = fopen(filepath, "w");
-    if (!file) {
-        sprintf(output_buffer, "File '%s' not created: %s", filepath, strerror(errno));
+        FILE *file = fopen(filepath, "w");
+        if (!file) {
+            sprintf(output_buffer, "File '%s' not created: %s", filepath, strerror(errno));
 #endif
         set_message(output_buffer);
         return;

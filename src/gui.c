@@ -9,8 +9,20 @@ static void print_board_safe();
 
 static void clear_console();
 
+static bool clear_console_before_print;
+
 char last_command[IN_BUFFER_SIZE];
 char message[MESSAGE_BUFFER_SIZE];
+
+void gui_init(bool clear_console, char *first_last_command, char *first_message) {
+    assert(first_last_command != NULL);
+    assert(first_message != NULL);
+
+    clear_console_before_print = clear_console;
+
+    set_last_command(first_last_command);
+    set_message(first_message);
+}
 
 void print_board(LinkedList columns[], LinkedList foundations[]) {
     if (!columns || !foundations) {
@@ -108,11 +120,16 @@ static void print_board_safe() {
 }
 
 static void clear_console() {
+
+    if (clear_console_before_print) {
 #ifdef _WIN32
-    system("cls");
+        system("cls");
 #else
-    printf("\e[1;1H\e[2J");
+        printf("\e[1;1H\e[2J");
 #endif
+    } else {
+        printf("\n");
+    }
 }
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]) {

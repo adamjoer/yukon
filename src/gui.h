@@ -9,6 +9,8 @@
 #define LONGEST_COLUMN_LENGTH 11
 #define NO_FOUNDATIONS 4
 
+void gui_init(bool clear_console, char *first_last_command, char *first_message);
+
 void print_board(LinkedList columns[], LinkedList foundations[]);
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]);

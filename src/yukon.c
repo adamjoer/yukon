@@ -9,13 +9,15 @@
 #include "gui.h"
 #include "io.h"
 
+static void print_usage(char *argv[]);
+
 static void game_loop();
 
 static void abort_handler(int signal);
 
 static void interrupt_handler(int signal);
 
-static void execute_user_command(enum Command command);
+static bool execute_user_command(enum Command command);
 
 static void load_default_deck();
 
@@ -36,7 +38,6 @@ LinkedList foundations[NO_FOUNDATIONS];
 bool game_initialised = false;
 bool play_phase_active = false;
 bool show_columns = false;
-bool keep_playing = true;
 
 int start_game() {
     if (!game_initialised)
@@ -47,19 +48,41 @@ int start_game() {
     return 0;
 }
 
-void yukon_init() {
+void yukon_init(int argc, char **argv) {
     if (game_initialised)
         return;
 
-    signal(SIGABRT, abort_handler);
+    bool clear_console = true;
 
-    signal(SIGINT,
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            print_usage(argv);
+            exit(0);
+
+        } else if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--no-clear-console") == 0) {
+            clear_console = false;
+
+        } else {
+            printf("Unknown argument \"%s\"\n", argv[i]);
+            print_usage(argv);
+            exit(1);
+        }
+    }
+
+    if (signal(SIGABRT, abort_handler) == SIG_ERR)
+        return;
+    if (signal(SIGSEGV, abort_handler) == SIG_ERR)
+        return;
+    if (signal(SIGTERM, abort_handler) == SIG_ERR)
+        return;
+    if (signal(SIGINT,
 #ifdef _WIN32
            SIG_IGN
 #else
            interrupt_handler
 #endif
-    );
+    ) == SIG_ERR)
+        return;
 
     srand(time(NULL));
 
@@ -71,9 +94,13 @@ void yukon_init() {
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
         linked_list_init(&foundations[i]);
 
-    set_message("Welcome to Yukon");
+    gui_init(clear_console, "", "Welcome to Yukon");
 
     game_initialised = true;
+}
+
+static void print_usage(char *argv[]) {
+    printf("Usage: %s [-n|--no-clear-console] [-h|--help]\n", argv[0]);
 }
 
 void yukon_destroy() {
@@ -92,6 +119,9 @@ void yukon_destroy() {
 }
 
 static void game_loop() {
+
+    bool keep_playing = true;
+
     while (true) {
         print_board(columns, foundations);
 
@@ -100,7 +130,7 @@ static void game_loop() {
             break;
         }
 
-        execute_user_command(get_user_command());
+        keep_playing = execute_user_command(get_user_command());
     }
 }
 
@@ -125,7 +155,7 @@ static void interrupt_handler(int signal) {
     exit(0);
 }
 
-static void execute_user_command(enum Command command) {
+static bool execute_user_command(enum Command command) {
 
     switch (command) {
         case QuitProgram:
@@ -135,8 +165,7 @@ static void execute_user_command(enum Command command) {
             }
 
             set_message("Goodbye!");
-            keep_playing = false;
-            break;
+            return false;
 
         case LoadFile:
             if (play_phase_active) {
@@ -293,6 +322,8 @@ static void execute_user_command(enum Command command) {
             set_message("Input parser failed");
             break;
     }
+
+    return true;
 }
 
 static void load_default_deck() {

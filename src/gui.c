@@ -4,7 +4,6 @@
 #include <assert.h>
 
 #include "gui.h"
-#include "io.h"
 
 static void print_board_safe();
 

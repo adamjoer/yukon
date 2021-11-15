@@ -2,8 +2,6 @@
 
 #include "linked_list.h"
 
-#define IN_BUFFER_SIZE 64
-
 enum FileValidationStatus {
     OK,
     FileNotFound,

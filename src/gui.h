@@ -3,6 +3,7 @@
 #include "linked_list.h"
 
 #define MESSAGE_BUFFER_SIZE 256
+#define IN_BUFFER_SIZE 64
 
 #define NO_COLUMNS 7
 #define LONGEST_COLUMN_LENGTH 11

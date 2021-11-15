@@ -11,8 +11,8 @@ static void clear_console();
 
 static bool clear_console_before_print;
 
-char last_command[IN_BUFFER_SIZE];
-char message[MESSAGE_BUFFER_SIZE];
+static char last_command[IN_BUFFER_SIZE];
+static char message[MESSAGE_BUFFER_SIZE];
 
 void gui_init(bool clear_console, char *first_last_command, char *first_message) {
     assert(first_last_command != NULL);

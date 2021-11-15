@@ -31,13 +31,13 @@ static void empty_columns();
 
 static void quit_game();
 
-LinkedList deck;
-LinkedList columns[NO_COLUMNS];
-LinkedList foundations[NO_FOUNDATIONS];
+static LinkedList deck;
+static LinkedList columns[NO_COLUMNS];
+static LinkedList foundations[NO_FOUNDATIONS];
 
-bool game_initialised = false;
-bool play_phase_active = false;
-bool show_columns = false;
+static bool game_initialised = false;
+static bool play_phase_active = false;
+static bool show_columns = false;
 
 int start_game() {
     if (!game_initialised)

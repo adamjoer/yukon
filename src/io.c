@@ -27,7 +27,7 @@ void load_from_file(LinkedList *list, char *filepath, bool check_file) {
     char rank, suit;
     Card *new_card;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     FILE *file;
     fopen_s(&file, filepath, "r");
     while (fscanf_s(file, "%c%c\n", &rank, 1, &suit, 1) != EOF) {
@@ -53,7 +53,7 @@ enum FileValidationStatus validate_file(char *filepath) {
 
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     FILE *file;
     if (fopen_s(&file, filepath, "r") != 0) {
         int bytes_written = sprintf(output_buffer, "File '%s' couldn't be opened: ", filepath);
@@ -85,7 +85,7 @@ enum FileValidationStatus validate_file(char *filepath) {
      *       This prevents that lines that are longer than the line buffer
      *       causes buffer overflow.
      */
-#ifdef _WIN32
+#ifdef _MSC_VER
     while (fscanf_s(file, "%63[^\r\n] ", line_buffer, IN_BUFFER_SIZE) != EOF) {
 #else
     while (fscanf(file, "%63[^\r\n] ", line_buffer) != EOF) {
@@ -269,7 +269,7 @@ enum Command get_user_command() {
 
             // Here, a file might be specified (If there is something after the space)
             if (input_length > 3)
-#ifdef _WIN32
+#ifdef _MSC_VER
                 strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
 #else
                 strncpy(argument, input_buffer + 3, input_length - 2);
@@ -284,7 +284,7 @@ enum Command get_user_command() {
 
             // Here, a filename might be specified (If there is something after the space)
             if (input_length > 3)
-#ifdef _WIN32
+#ifdef _MSC_VER
                 strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
 #else
                 strncpy(argument, input_buffer + 3, input_length - 2);
@@ -298,7 +298,7 @@ enum Command get_user_command() {
             // Shuffle split
             // Here, split might be specified
             if (input_length > 3)
-#ifdef _WIN32
+#ifdef _MSC_VER
                 strncpy_s(argument, IN_BUFFER_SIZE, input_buffer + 3, input_length - 2);
 #else
                 strncpy(argument, input_buffer + 3, input_length - 2);
@@ -398,7 +398,7 @@ bool is_valid_card(char *string) {
 void save_deck_to_file(LinkedList *list, char *filepath) {
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     FILE *file;
     if (fopen_s(&file, filepath, "w") != 0) {
         int bytes_written = sprintf(output_buffer, "File '%s' not created: ", filepath);

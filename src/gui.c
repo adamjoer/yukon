@@ -178,7 +178,7 @@ void set_message(const char *new_message) {
     assert(new_message);
 
     // Copy at most MESSAGE_BUFFER_SIZE chars, to avoid buffer overrun
-#ifdef _WIN32
+#ifdef _MSC_VER
     strncpy_s(message, MESSAGE_BUFFER_SIZE, new_message, MESSAGE_BUFFER_SIZE);
 #else
     strncpy(message, new_message, MESSAGE_BUFFER_SIZE);
@@ -192,7 +192,7 @@ void set_last_command(const char *new_last_command) {
     assert(new_last_command);
 
     // Copy at most IN_BUFFER_SIZE chars, to avoid buffer overrun
-#ifdef _WIN32
+#ifdef _MSC_VER
     strncpy_s(last_command, MESSAGE_BUFFER_SIZE, new_last_command, IN_BUFFER_SIZE);
 #else
     strncpy(last_command, new_last_command, IN_BUFFER_SIZE);

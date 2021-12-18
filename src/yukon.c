@@ -48,7 +48,7 @@ int start_game() {
     return 0;
 }
 
-void yukon_init(int argc, char **argv) {
+void yukon_init(int argc, char *argv[]) {
     if (game_initialised)
         return;
 
@@ -77,9 +77,9 @@ void yukon_init(int argc, char **argv) {
         return;
     if (signal(SIGINT,
 #ifdef _WIN32
-           SIG_IGN
+               SIG_IGN
 #else
-           interrupt_handler
+               interrupt_handler
 #endif
     ) == SIG_ERR)
         return;

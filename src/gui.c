@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "gui.h"
@@ -106,16 +105,10 @@ static void print_board_safe() {
 }
 
 static void clear_console() {
-
-    if (clear_console_before_print) {
-#ifdef _WIN32
-        system("cls");
-#else
-        printf("\e[1;1H\e[2J");
-#endif
-    } else {
+    if (clear_console_before_print)
+        printf("\033[1;1H\033[2J");
+    else
         printf("\n");
-    }
 }
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]) {

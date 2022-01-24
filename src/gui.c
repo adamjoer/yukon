@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "gui.h"
 
@@ -15,9 +14,6 @@ static char last_command[IN_BUFFER_SIZE];
 static char message[MESSAGE_BUFFER_SIZE];
 
 void gui_init(bool clear_console, char *first_last_command, char *first_message) {
-    assert(first_last_command != NULL);
-    assert(first_message != NULL);
-
     clear_console_before_print = clear_console;
 
     set_last_command(first_last_command);
@@ -29,16 +25,6 @@ void print_board(LinkedList columns[], LinkedList foundations[]) {
         print_board_safe();
         return;
     }
-
-#ifndef NDEBUG
-    for (int i = 0; i < NO_COLUMNS; ++i) {
-        ASSERT_LINKED_LIST_STRUCT(columns[i]);
-    }
-
-    for (int i = 0; i < NO_FOUNDATIONS; ++i) {
-        ASSERT_LINKED_LIST_STRUCT(foundations[i]);
-    }
-#endif
 
     clear_console();
 
@@ -133,14 +119,6 @@ static void clear_console() {
 }
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
-#ifndef NDEBUG
-    ASSERT_LINKED_LIST_REF(deck);
-
-    for (int i = 0; i < NO_COLUMNS; ++i) {
-        ASSERT_LINKED_LIST_STRUCT(columns[i]);
-    }
-#endif
-
     const int column_lengths[NO_COLUMNS] = {1, 6, 7, 8, 9, 10, 11};
 
     Node *cursor = deck->head;
@@ -156,14 +134,6 @@ void generate_columns_game(LinkedList *deck, LinkedList columns[]) {
 }
 
 void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible) {
-#ifndef NDEBUG
-    ASSERT_LINKED_LIST_REF(deck);
-
-    for (int i = 0; i < NO_COLUMNS; ++i) {
-        ASSERT_LINKED_LIST_STRUCT(columns[i]);
-    }
-#endif
-
     Node *cursor = deck->head;
     for (int column_index = 0; cursor != deck->dummy; column_index = (column_index + 1) % NO_COLUMNS) {
 
@@ -175,7 +145,6 @@ void generate_columns_show(LinkedList *deck, LinkedList columns[], bool visible)
 }
 
 void set_message(const char *new_message) {
-    assert(new_message);
 
     // Copy at most MESSAGE_BUFFER_SIZE chars, to avoid buffer overrun
 #ifdef _MSC_VER
@@ -189,7 +158,6 @@ void set_message(const char *new_message) {
 }
 
 void set_last_command(const char *new_last_command) {
-    assert(new_last_command);
 
     // Copy at most IN_BUFFER_SIZE chars, to avoid buffer overrun
 #ifdef _MSC_VER

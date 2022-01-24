@@ -2,9 +2,6 @@
 
 #include <stdbool.h>
 
-#define ASSERT_LINKED_LIST_REF(list) assert(list != NULL); assert(list->head != NULL); assert(list->dummy != NULL)
-#define ASSERT_LINKED_LIST_STRUCT(list) assert(list.head != NULL); assert(list.dummy != NULL)
-
 typedef struct Card {
     char rank;
     char suit;

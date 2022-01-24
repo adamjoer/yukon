@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 #include <signal.h>
-#include <assert.h>
 
 #include "yukon.h"
 #include "gui.h"
@@ -334,7 +333,8 @@ static void load_default_deck() {
     for (int i = 0; i < 52; ++i) {
 
         insert_card = malloc(sizeof(Card));
-        assert(insert_card != NULL);
+        if (!insert_card)
+            return;
 
         insert_card->rank = ranks[i % 13];
         insert_card->suit = suits[i / 13];

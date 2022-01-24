@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 #include "linked_list.h"
 
@@ -9,11 +7,11 @@ static void shuffle_array(Node *array[], int length);
 
 /* Function for initialising an empty linked list with a dummy and returning a pointer to it. */
 void linked_list_init(LinkedList *list) {
-    assert(list != NULL);
 
     // Allocate space on heap for dummy node
     Node *dummy = malloc(sizeof(Node));
-    assert(dummy != NULL);
+    if (!dummy)
+        return;
 
     // The dummy doesn't contain any card
     dummy->card = NULL;
@@ -30,8 +28,6 @@ void linked_list_init(LinkedList *list) {
 
 /* Function for freeing a linked list to prevent memory leak */
 void linked_list_destroy(LinkedList *list, bool free_cards) {
-    ASSERT_LINKED_LIST_REF(list);
-
     empty_linked_list(list, free_cards);
 
     free(list->dummy);
@@ -43,8 +39,6 @@ void linked_list_destroy(LinkedList *list, bool free_cards) {
  * i.e. doesn't contain any nodes other than dummy.
  */
 bool is_empty(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-
     return list->head == list->dummy;
 }
 
@@ -54,8 +48,6 @@ bool is_empty(LinkedList *list) {
  * its length will be calculated and stored in the 'length' variable.
  */
 int length(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-
     if (list->length >= 0)
         return list->length;
 
@@ -69,11 +61,10 @@ int length(LinkedList *list) {
 
 /* Function for adding a card to the beginning of a linked list */
 void add_first(Card *insert, LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-
     // Allocate memory for the new list element
     Node *new_node = malloc(sizeof(Node));
-    assert(new_node != NULL);
+    if (!new_node)
+        return;
 
     // Set the new node's card to point at the card being inserted
     new_node->card = insert;
@@ -100,10 +91,9 @@ void add_first(Card *insert, LinkedList *list) {
 
 /* Function for adding a card to the end of a linked list */
 void add_last(Card *insert, LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-
     Node *new_node = malloc(sizeof(Node));
-    assert(new_node != NULL);
+    if (!new_node)
+        return;
 
     new_node->card = insert;
     new_node->prev = list->dummy->prev;
@@ -126,9 +116,6 @@ void add_last(Card *insert, LinkedList *list) {
  * and returning its card
  */
 Card *remove_first(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(!is_empty(list));
-
     // Pointer to the node to remove
     Node *delete = list->head;
 
@@ -158,9 +145,6 @@ Card *remove_first(LinkedList *list) {
  * and returning its card.
  */
 Card *remove_last(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(!is_empty(list));
-
     Node *delete = list->dummy->prev;
 
     delete->prev->next = list->dummy;
@@ -181,17 +165,11 @@ Card *remove_last(LinkedList *list) {
 
 /* Function for getting the first card in a linked list */
 Card *first(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(!is_empty(list));
-
     return list->head->card;
 }
 
 /* Function for getting the last card in a linked list */
 Card *last(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(!is_empty(list));
-
     return list->dummy->prev->card;
 }
 
@@ -201,9 +179,6 @@ Card *last(LinkedList *list) {
  * otherwise returns the node containing the card.
  */
 Node *find_string(const char *search, LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(strlen(search) == 2);
-
     // Go over each node in the list
     for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
@@ -222,9 +197,6 @@ Node *find_string(const char *search, LinkedList *list) {
  * true otherwise.
  */
 bool contains_card(Card *search, LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(search != NULL);
-
     // Go over each node in the list
     for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
@@ -243,9 +215,6 @@ bool contains_card(Card *search, LinkedList *list) {
  * true otherwise.
  */
 bool contains_node(Node *search, LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-    assert(search != NULL);
-
     // Go over each node in the list
     for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next) {
 
@@ -264,13 +233,6 @@ bool contains_node(Node *search, LinkedList *list) {
  * to the end of the destination list.
  */
 void move_node(Node *moving_node, LinkedList *source, LinkedList *destination) {
-    ASSERT_LINKED_LIST_REF(source);
-    ASSERT_LINKED_LIST_REF(destination);
-
-    assert(moving_node != NULL);
-    assert(contains_node(moving_node, source));
-    assert(source != destination);
-
     // Save the new last node of both lists
     Node *source_new_last = moving_node->prev;
     Node *destination_new_last = source->dummy->prev;
@@ -324,9 +286,6 @@ void move_node(Node *moving_node, LinkedList *source, LinkedList *destination) {
  * so the copy's nodes will point at the same cards as the original.
  */
 void copy(LinkedList *list, LinkedList *list_copy) {
-    ASSERT_LINKED_LIST_REF(list);
-    ASSERT_LINKED_LIST_REF(list_copy);
-
     for (Node *cursor = list->head; cursor != list->dummy; cursor = cursor->next)
         add_last(cursor->card, list_copy);
 }
@@ -337,14 +296,13 @@ void copy(LinkedList *list, LinkedList *list_copy) {
  * and contain the same cards as it did before.
  */
 void shuffle_linked_list(LinkedList *list) {
-    ASSERT_LINKED_LIST_REF(list);
-
     int len = length(list);
     if (len <= 1)
         return;
 
     Node **node_pointers = malloc(sizeof(Node *) * len);
-    assert(node_pointers != NULL);
+    if (!node_pointers)
+        return;
 
     Node *cursor = list->head;
     for (int i = 0; i < len; ++i) {
@@ -378,7 +336,6 @@ void shuffle_linked_list(LinkedList *list) {
 }
 
 static void shuffle_array(Node *array[], int length) {
-    assert(array != NULL);
 
     Node *temp;
     int random_index;
@@ -392,7 +349,6 @@ static void shuffle_array(Node *array[], int length) {
 
 /* Function for Emptying a linked list to prevent memory leak */
 void empty_linked_list(LinkedList *list, bool free_cards) {
-    ASSERT_LINKED_LIST_REF(list);
 
     // Temporary pointer so a node being freed doesn't get lost
     Node *temp;
@@ -455,5 +411,4 @@ void print_linked_list(LinkedList *list) {
            "  length=%d, (saved length=%d)\n"
            "}\n", cursor->prev, cursor, cursor->next, length, list->length
     );
-
 }

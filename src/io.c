@@ -14,7 +14,7 @@ char source_column[3];
 char destination_column[3];
 char argument[IN_BUFFER_SIZE];
 
-void load_from_file(LinkedList *list, char *filepath, bool check_file) {
+void load_from_file(LinkedList *list, const char *filepath, bool check_file) {
     if (check_file) {
         if (validate_file(filepath) != OK)
             return;
@@ -46,7 +46,7 @@ void load_from_file(LinkedList *list, char *filepath, bool check_file) {
     fclose(file);
 }
 
-enum FileValidationStatus validate_file(char *filepath) {
+enum FileValidationStatus validate_file(const char *filepath) {
 
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
@@ -377,22 +377,22 @@ int get_card_value(char rank) {
     }
 }
 
-bool is_valid_column(char *string) {
+bool is_valid_column(const char *string) {
     return strlen(string) == 2 && string[0] == 'C' && isdigit(string[1]) &&
            string[1] >= '1' && string[1] <= NO_COLUMNS + '0';
 }
 
-bool is_valid_foundation(char *string) {
+bool is_valid_foundation(const char *string) {
     return strlen(string) == 2 && string[0] == 'F' && isdigit(string[1]) &&
            string[1] >= '1' && string[1] <= NO_FOUNDATIONS + '0';
 }
 
-bool is_valid_card(char *string) {
+bool is_valid_card(const char *string) {
     return strlen(string) == 2 && get_card_value(string[0]) != -1 &&
            (string[1] == 'C' || string[1] == 'D' || string[1] == 'H' || string[1] == 'S');
 }
 
-void save_deck_to_file(LinkedList *list, char *filepath) {
+void save_deck_to_file(LinkedList *list, const char *filepath) {
     char output_buffer[MESSAGE_BUFFER_SIZE];
 
 #ifdef _MSC_VER

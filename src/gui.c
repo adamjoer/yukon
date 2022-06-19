@@ -10,7 +10,7 @@ static void clear_console();
 static char last_command[IN_BUFFER_SIZE];
 static char message[MESSAGE_BUFFER_SIZE];
 
-void gui_init(char *first_last_command, char *first_message) {
+void gui_init(const char *first_last_command, const char *first_message) {
     set_last_command(first_last_command);
     set_message(first_message);
 }

@@ -9,7 +9,7 @@
 #define LONGEST_COLUMN_LENGTH 11
 #define NO_FOUNDATIONS 4
 
-void gui_init(char *first_last_command, char *first_message);
+void gui_init(const char *first_last_command, const char *first_message);
 
 void print_board(LinkedList columns[], LinkedList foundations[]);
 

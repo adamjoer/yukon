@@ -8,8 +8,6 @@
 #include "gui.h"
 #include "io.h"
 
-static void print_usage(char *argv[]);
-
 static void game_loop();
 
 static void abort_handler(int signal);
@@ -47,26 +45,9 @@ int start_game() {
     return 0;
 }
 
-void yukon_init(int argc, char *argv[]) {
+void yukon_init() {
     if (game_initialised)
         return;
-
-    bool clear_console = true;
-
-    for (int i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            print_usage(argv);
-            exit(0);
-
-        } else if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--no-clear-console") == 0) {
-            clear_console = false;
-
-        } else {
-            printf("Unknown argument \"%s\"\n", argv[i]);
-            print_usage(argv);
-            exit(1);
-        }
-    }
 
     if (signal(SIGABRT, abort_handler) == SIG_ERR)
         return;
@@ -93,13 +74,9 @@ void yukon_init(int argc, char *argv[]) {
     for (int i = 0; i < NO_FOUNDATIONS; ++i)
         linked_list_init(&foundations[i]);
 
-    gui_init(clear_console, "", "Welcome to Yukon");
+    gui_init("", "Welcome to Yukon");
 
     game_initialised = true;
-}
-
-static void print_usage(char *argv[]) {
-    printf("Usage: %s [-n|--no-clear-console] [-h|--help]\n", argv[0]);
 }
 
 void yukon_destroy() {

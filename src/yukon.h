@@ -1,6 +1,6 @@
 #pragma once
 
-void yukon_init(int argc, char **argv);
+void yukon_init();
 
 void yukon_destroy();
 

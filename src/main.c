@@ -1,8 +1,8 @@
 #include "yukon.h"
 
-int main(int argc, char *argv[]) {
+int main(void) {
 
-    yukon_init(argc, argv);
+    yukon_init();
 
     int ret = start_game();
 

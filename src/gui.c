@@ -7,14 +7,10 @@ static void print_board_safe();
 
 static void clear_console();
 
-static bool clear_console_before_print;
-
 static char last_command[IN_BUFFER_SIZE];
 static char message[MESSAGE_BUFFER_SIZE];
 
-void gui_init(bool clear_console, char *first_last_command, char *first_message) {
-    clear_console_before_print = clear_console;
-
+void gui_init(char *first_last_command, char *first_message) {
     set_last_command(first_last_command);
     set_message(first_message);
 }
@@ -105,10 +101,7 @@ static void print_board_safe() {
 }
 
 static void clear_console() {
-    if (clear_console_before_print)
-        printf("\033[1;1H\033[2J");
-    else
-        printf("\n");
+    printf("\033[1;1H\033[2J");
 }
 
 void generate_columns_game(LinkedList *deck, LinkedList columns[]) {

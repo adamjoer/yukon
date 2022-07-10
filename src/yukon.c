@@ -63,6 +63,10 @@ void yukon_init() {
 #endif
     ) == SIG_ERR)
         return;
+#ifndef _WIN32
+    if (signal(SIGQUIT, interrupt_handler) == SIG_ERR)
+        return;
+#endif
 
     srand(time(NULL));
 
@@ -119,7 +123,20 @@ static void abort_handler(int signal) {
 }
 
 static void interrupt_handler(int signal) {
-    set_last_command("Ctrl+C");
+    switch (signal) {
+        case SIGINT:
+            set_last_command("^C");
+            break;
+#ifndef _WIN32
+        case SIGQUIT:
+            set_last_command("^\\");
+            break;
+#endif
+        default:
+            set_last_command("");
+            break;
+    }
+
     set_message("Goodbye!");
 
     quit_game();
